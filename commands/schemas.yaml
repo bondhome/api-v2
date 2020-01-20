@@ -1,0 +1,57 @@
+Command:
+  type: object
+  properties:
+    name:
+      example: Light
+      type: string
+      description: |
+        Name of corresponding button displayed in Bond App
+    action:
+      example: SetSpeed
+      type: string
+      description: |
+        Action which should be triggered when button is pressed.
+    argument:
+      example: 3
+      type: value
+      description: |
+        Argument of `action`. If absent, no argument will be used.
+        May be any JSON value, not only an object.
+    icon:
+      example: speed_3
+      type: string
+      description: |
+        Icon slug. (This is the base of the name of the icon to use to represent
+        this command in the App.)
+    category_name:
+      example: fan
+      type: string
+      description: |
+        The category in which to group this command.
+    button_type:
+      example: tap
+      type: string
+      description: |
+        The type of button to use for this command.
+    hidden:
+      example: true
+      type: boolean
+      description: |
+        Whether to hide this command in the mobile app. Useful for exposing an
+        action, but not showing its command on the device panel.
+  required:
+  - name
+  - action
+
+CommandList:
+  type: object
+  example:
+    _: "7fc1e84b"
+    3b20f300:
+        _: "9a5e1136"
+    4ad874d2:
+        _: "84819a9f"
+    a94328bc:
+        _: "23141efa"
+    d87d6ef2:
+        _: "2425a8bc"

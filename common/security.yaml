@@ -1,0 +1,54 @@
+OAuth:
+  type: oauth2
+  description: |
+    Bond API implements OAuth for authentication and every request must be authenticated with access tokens, to receive data or send bond actions.
+
+    ## tl;dr
+
+    Register an account on Bond App, require for tokens and user access token to obtain permission to use Bond API.
+
+    ## Bond API
+
+    First of all, to obtain access to Bond API, it's necessary signing up on Bond App and set up a Bond. After that,  it's possible to require a list of tokens:
+
+    - id_token: used to identify itself on Bond API;
+    - access_token: used to grant access to Bond API;
+    - refresh_token: used to generate another token if expired.
+
+    Then it could be possible to access Bond API. See some examples:
+
+    ```
+    curl -H 'Authorization: Bearer eyJraWQi...OiJwUk' \
+      https://api.bondhome.io/bonds
+
+    [{
+        "id": "AA01234",
+        "firmware_version": "v123"
+    }]
+    ```
+
+    ```
+    curl -XPOST -H 'Authorization: Basic YWlmMzkzcmltcTRw...rOTNkbDB' \
+      -d 'grant_type=refresh_token&refresh_token=eyJjdHki...OiJKV1Q' \
+      https://api.bondhome.io/oauth/token
+
+    {
+      "id_token": "AbC...123",
+      "access_token": "dEf...456",
+      "expires": 3600,
+      "token_type": "Bearer"
+    }
+    ```
+
+    See more:
+
+    * https://tools.ietf.org/html/rfc6749
+    * https://oauth.net/2/
+
+  flows:
+    authorizationCode:
+      refreshUrl:       https://api.bondapp.io/oauth2/token
+      scopes:
+        read:bonds: read your bonds
+        read:devices: read your devices
+        write:actions: execute an action

@@ -1,0 +1,42 @@
+/bonds:
+  get:
+    $ref: ../bonds/paths.yaml#/GetList
+
+/v2:
+  get:
+    $ref: ../bonds/paths.yaml#/Get
+  parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: number
+
+/devices:
+  get:
+    $ref: ../devices/paths.yaml#/GetList
+
+/devices/{id}:
+  get:
+    $ref: ../devices/paths.yaml#/Get
+  parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: number
+
+/devices/{id}/actions/{action}:
+  put:
+    $ref: ../actions/paths.yaml#/Put
+  parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: number
+  - in: path
+    name: action
+    required: true
+    schema:
+      type: string

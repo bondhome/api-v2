@@ -1,0 +1,116 @@
+GetList:
+  parameters:
+  - example: 1.1.2
+    in: path
+    name: firmware_versioin
+    schema:
+      type: string
+  responses:
+    200:
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: schemas.yaml#/Bond
+            example:
+              $ref: examples.yaml#/list
+      description: List bonds
+    401:
+      $ref: ../common/responses.yaml#/Unauthorized
+    500:
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+    - OAuth: ["oauth2"]
+  summary: List bonds
+  tags:
+  - Bonds
+Post:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Bond
+  responses:
+    '201':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Bond
+      description: Bond was successfully created
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '409':
+      $ref: ../common/responses.yaml#/Conflict
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Create new bond
+  tags:
+  - Bonds
+Get:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Bond
+      description: Get specific bond
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+    - OAuth: ["oauth2"]
+  summary: Get specific bond
+  tags:
+  - Bonds
+Patch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          properties:
+            firmware_version:
+              example: 1.1.2
+              type: string
+            location:
+              example: Room
+              type: string
+          type: object
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Bond
+      description: Change specific bond field
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+    - OAuth: ["oauth2"]
+  summary: Change specific bond field
+  tags:
+  - Bonds
+Delete:
+  responses:
+    '204':
+      description: Remove specific bond
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+    - OAuth: ["oauth2"]
+  summary: Remove specific bond
+  tags:
+  - Bonds

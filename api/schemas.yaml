@@ -1,0 +1,76 @@
+Mqtt:
+  properties:
+    host:
+      example: my-mqtt-server.myhome.com
+      type: string
+      description: |
+        IP address or domain name of the MQTT broker.
+        If set to empty string, the default Bond Cloud server will be used.
+    port:
+      example: 8883
+      type: number
+      description: |
+        Specify a different port number for the MQTT broker.
+        If set to 0, the Bond Cloud default port number will be used (8883).
+        Note that the communication is secured by TLS (SSL).
+    cert_set:
+      example: true
+      type: boolean
+      readOnly: true
+      description: |
+        If true, a custom Bond certificate has been loaded.
+        If false, the Bond's default certificate will be used.
+    cert:
+      example: "certificate_goes_here"
+      type: string
+      writeOnly: true
+      description: |
+        Specify a custom Bond certificate.
+        Typically, this is the Bond-specific certificate
+        concatenated with the Bond-signing CA certificate.
+        Write to empty string to go back to the Bond's default certificate.
+    key_set:
+      example: true
+      type: boolean
+      readOnly: true
+      description: |
+        If true, a custom Bond private key has been loaded.
+        If false, the Bond's default private key will be used.
+    key:
+      example: "key_goes_here"
+      type: string
+      writeOnly: true
+      description: |
+        Specify a custom Bond private key.
+        Write to empty string to go back to the Bond's default private key.
+    server_cert_set:
+      example: true
+      type: boolean
+      readOnly: true
+      description: |
+        If true, a custom server CA has been loaded.
+        If false, the Bond Cloud CA will be used.
+    server_cert:
+      example: "certificate_goes_here"
+      type: string
+      writeOnly: true
+      description: |
+        Specify a custom MQTT server CA.
+        Set to empty string to return to default.
+    server_cert_check:
+      example: true
+      type: boolean
+      description: |
+        Set to false to disable verification of the MQTT server CA.
+        It is strongly recommend to leave this option enabled,
+        because otherwise a man-in-the-middle attack is possible.
+BPUP:
+  properties:
+    broadcast:
+      example: true
+      type: boolean
+      readOnly: true
+      description: |
+        If true, the Bond will broadcast all state updates on port 30007
+        (disabled by default)
+  

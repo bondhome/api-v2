@@ -1,0 +1,299 @@
+Get:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Progress
+      description: Upgrade progress
+    '204':
+      description: No upgrade in progress
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+  security:
+  - BasicAuth: []
+  summary: Get firmware upgrade status
+  description: |
+    Check the progress of a firmware upgrade.
+
+    Note that when an upgrade completes successfully,
+    this endpoint will return a 204 again. The client should
+    check the `sys/version` endpoint to determine whether
+    the new firmware is being used.
+  tags:
+  - Upgrade
+Delete:
+  responses:
+    '204':
+      description: No upgrade in progress (anymore)
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Cancel any running firmware upgrade
+  description: |
+    The Bond will cancel any firmware upgrade in progress.
+
+    Canceling a firmware upgrade is always safe.
+
+    However, power cycling a Bond during a firmware upgrade is not recommended.
+  tags:
+  - Upgrade
+Put:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Upgrade
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Progress
+      description: Progress of newly started upgrade
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '409':
+      description: Upgrade already in progress
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Start a new firmware upgrade
+  description: |
+    Instruct the Bond to upgrade to the specified firmware.
+
+    The client may specify both `port` (HTTPS) and `http_port` (HTTP).
+    Bond will use whichever protocol is implemented in the firmware.
+
+    During the upgrade, the client SHOULD query GET to monitor progress.
+
+    Whether or not the Bond reboots spontaneously at the end of the upgrade
+    process is dependent on the client specifying the reboot parameter.
+
+    If spontaneous reboot is requested,
+    Bond will become unreachable for a period of time during the upgrade.
+    When the Bond becomes reachable again,
+    GET will return 204 No Content, at which time the client should check
+    sys/version to determine whether the upgrade was successful.
+
+    Note that network connection is slow on some networks,
+    especially with Bond Bridge 1st Generation,
+    therefore the client MUST NOT declare an error
+    until a reasonable timeout period (7 minutes).
+
+    Note that network issues may cause the Bond to remain inaccessible
+    despite the update having succeeded.
+    Furthermore, the probability of a failure of the upgrade mechanism
+    after the reboot step is very low.
+    Therefore the client should represent a timeout in upgrading
+    as a communication error rather than a firmware upgrade error.
+
+    In the case that the client did not specify reboot=1,
+    Bond will not reboot spontaneously and the progress indication
+    will reach 1000 and remain there
+    until the client issues an explicit reboot (via sys/reboot).
+    Afterwards the client can confirm firmware upgrade
+    success by checking version as usual.
+
+  tags:
+  - Upgrade
+VersionGet:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Version
+      description: Product verison information
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Get version info
+  description: |
+    Get detailed version information about hardware and firmware.
+  tags:
+  - Version
+FreeGet:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Free
+      description: System Resources
+  summary: Get free system resources
+  tags:
+  - Free
+BackupGet:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Backup
+      description: Backup status
+  summary: Check Backup status
+  description: |
+    Shows whether a backup or a restore is running,
+    including progress indication, and error messages.
+
+    Note that only one operation can run at once.
+  tags:
+  - Backup
+BackupPut:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Backup
+  responses:
+    '200':
+      description: Backup/Restore started
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Start a Backup or Restore
+  description: |
+    Start a backup or restore operation,
+    using the provided `tag` to reference the copy of the Bond database
+    stored in the Bond Cloud.
+
+    NOTE: A backup will send the entire contents of the Bond database to
+    Olibra servers, including plaintext Wi-Fi passwords and information
+    that has been marked for deletion
+    but not yet overwritten in the Bond's flash memory.
+    Therefore, the user should be given an appropriate privacy warning
+    before beginning a backup.
+
+    NOTE: A restore will overwrite all user-configurable data on the Bond,
+    including the Bond's name, location, devices, commands, and network settings.
+    The old settings will be unrecoverable if a backup had not been already performed.
+    Therefore, a user should be given an appropriate warning before starting
+    a restore operation.
+  tags:
+  - Backup
+BackupDelete:
+  responses:
+    '204':
+      description: Backup/Restore canceled
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Cancel Backup or Restore
+  description: |
+    Cancel a failed operation, or clear the success status.
+  tags:
+  - Backup
+LogGet:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Log
+      description: Log upload status
+  summary: Check Log status
+  description: |
+    Shows whether a log is being uploaded,
+    including progress indication, and error messages.
+  tags:
+  - Log
+LogPut:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Log
+  responses:
+    '200':
+      description: Log upload started
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '409':
+      description: Upload already in progress
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Upload a Firmware Log
+  description: |
+    Send detailed firmware logs to the Bond backend,
+    or other HTTP server as specified in `base_url`.
+
+    The `base_url` is needed only by Bond App for "green reset logs",
+    where we need to obtain logs without there being an internet connection
+    available to the Bond.
+  tags:
+  - Log
+LogDelete:
+  responses:
+    '204':
+      description: Log upload canceled
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Cancel Log upload
+  description: |
+    Cancel a failed log upload, or clear the success status.
+  tags:
+  - Log
+
+ResetPut:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Reset
+  responses:
+    '200':
+      description: Reset started
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Reset
+  description: |
+    Perform a reset operation, of which there are several types:
+
+    **Setup reset** will cause:
+       - serves as proof-of-ownership event so as to:
+         - cause Bond Config AP to reappear
+         - allow the product to be set up on a new Wi-Fi network
+         - allow adding to a new Bond account
+       - Wi-Fi station details may be lost, depending on the product
+       - Bond will not reboot
+
+    **Factory reset** will cause:
+      - complete erasure of Bond's local database. Specifically:
+        - All devices and settings will be lost
+        - Bond will need to be reconnected to Wi-Fi
+      - Bond will also reboot
+      - Bond will remain on the current firmware version.
+  tags:
+  - Reset
+
+RebootPut:
+  responses:
+    '200':
+      description: Rebooting
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Reboot
+  description: |
+    Reboot Bond. No settings are modified.
+
+    This does NOT perform a factory reset!
+  tags:
+    - Reboot

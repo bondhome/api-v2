@@ -1,0 +1,557 @@
+DevicesPath:
+  get:
+    description: |
+      Returns a list of device IDs and the corresponding device hashes.
+      The hashes change if any part of the device (its name, location,
+      state) has changed. Please see the "Hash Tree" documentation for
+      an example.
+    responses:
+      '200':
+        content:
+          application/json:
+            schema:
+              $ref: schemas.yaml#/DeviceList
+        description: List active devices
+      '401':
+        $ref: ../common/responses.yaml#/Unauthorized
+      '500':
+        $ref: ../common/responses.yaml#/InternalServerError
+    security:
+      - OAuth: ["oauth2"]
+    summary: List your devices
+    tags:
+    - Devices
+  post:
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: ../devices/schemas.yaml#/Device
+    responses:
+      '201':
+        $ref: ../common/responses.yaml#/Created
+      '400':
+        $ref: ../common/responses.yaml#/BadRequest
+      '401':
+        $ref: ../common/responses.yaml#/Unauthorized
+      '409':
+        $ref: ../common/responses.yaml#/Conflict
+      '500':
+        $ref: ../common/responses.yaml#/InternalServerError
+    summary: Create new device
+    tags:
+    - Devices
+
+DevicePath:
+  delete:
+    $ref: ../devices/paths.yaml#/Delete
+  get:
+    $ref: ../devices/paths.yaml#/Get
+  parameters:
+    - in: path
+      name: device_id
+      required: true
+      schema:
+        type: number
+  patch:
+    $ref: ../devices/paths.yaml#/Patch
+
+StatePath:
+  get:
+    $ref: ../devices/paths.yaml#/GetState
+  patch:
+    $ref: ../devices/paths.yaml#/PatchState
+  parameters:
+  - in: path
+    name: device_id
+    required: true
+    schema:
+      type: number
+
+ReloadPath:
+  put:
+    $ref: ../devices/paths.yaml#/PutReload
+  parameters:
+  - in: path
+    name: device_id
+    required: true
+    schema:
+      type: number
+PutReload:
+  responses:
+    '204':
+      description: Device definition reloaded
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+    - OAuth: ["oauth2"]
+  summary: Reload device
+  tags:
+  - Device Reload
+  description: |
+    Reload the command table for the given device definition. This deletes all
+    current commands and rebuilds the device definition's default commands.
+    This will overwrite any user customization of the commands, such as
+    renaming, icon changes, and deleting commands.
+
+    The device's `state` and `properties` are preserved, in order to avoid a loss of control.
+    
+    This endpoint may be called after a template device definition has been updated 
+    to cause newly-defined or modified commands to be exported to the device panel.
+    
+    This endpoint is only available for a device with a `template` string.
+
+
+PropertiesPath:
+  get:
+    $ref: ../devices/paths.yaml#/GetProperties
+  patch:
+    $ref: ../devices/paths.yaml#/PatchProperties
+  parameters:
+  - in: path
+    name: device_id
+    required: true
+    schema:
+      type: number
+GetProperties:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Properties
+      description: Get device properties
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+    - OAuth: ["oauth2"]
+  summary: Get device properties
+  tags:
+  - Device Properties
+  description: |
+    Get the Bond's properties. Current device properties exposed are as follows:
+
+    - `max_speed`: the greatest argument that can be handled by `SetSpeed`
+    - `trust_state`: Whether or not the Bond should trust its toggleable state belief.
+        `true` or `false`, and only present on devices with a "Toggle" command.
+
+    A quick description of `trust_state` by example follows:
+
+    The scenario: the Bond has a "ToggleLight" command, and the Bond believes
+    the light to be on. The user requests the action "LightOn". If the Bond trusts
+    its state, it will *do nothing*, as the light is already on, and sending a
+    toggle command would turn it off. If, however, the Bond does not trust its
+    state, it will send the toggle, and believe that now it knows the true state
+    of the physical device.
+
+    `trust_state` set to `false` is mostly useful if the user intends to use a
+    physical remote together with the Bond and is the default, `trust state` set
+    to `true` is mostly useful if the user would like to control their device
+    remotely with complete confidence that what the Bond reports is the device's
+    actual state.
+
+PatchProperties:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Properties
+  responses:
+    '200':
+      description: Properties updated
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+    - OAuth: ["oauth2"]
+  summary: Update properties
+  description: |
+    Update the Bond's properties. Currently, the only PATCHable property is
+    `trust_state`. This is the confidence the Bond has that this device's state
+    belief is accurate, and is only present if a "Toggle" command is present
+    (for `power`, `light`, `direction`, etc.), and is `false` by default.
+
+    A quick description of `trust_state` by example follows:
+
+    The scenario: the Bond has a "ToggleLight" command, and the Bond believes
+    the light to be on. The user requests the action "LightOn". If the Bond trusts
+    its state, it will *do nothing*, as the light is already on, and sending a
+    toggle command would turn it off. If, however, the Bond does not trust its
+    state, it will send the toggle, and believe that now it knows the true state
+    of the physical device.
+
+    `trust_state` set to `false` is mostly useful if the user intends to use a
+    physical remote together with the Bond and is the default, `trust state` set
+    to `true` is mostly useful if the user would like to control their device
+    remotely with complete confidence that what the Bond reports is the device's
+    actual state.
+
+  tags:
+  - Device Properties
+
+GetList:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/DeviceList
+      description: List active devices
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+    - OAuth: ["oauth2"]
+  summary: List your devices
+  tags:
+  - Devices
+Post:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          required: true
+          $ref: schemas.yaml#/Device
+  responses:
+    '201':
+      $ref: ../common/responses.yaml#/Created
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '409':
+      $ref: ../common/responses.yaml#/Conflict
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Create new device
+  tags:
+  - Devices
+Get:
+  description: |
+    Basic device information. The `"_"` in each of `state`, `properties`,
+    `actions`, and `commands` will change if that endpoint's resource changes.
+
+    NOTE: commands are only present on Bridge devices
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            required: true
+            $ref: schemas.yaml#/Device
+      description: Get device
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+    - OAuth: ["oauth2"]
+  summary: Get device
+  tags:
+  - Devices
+Patch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          required: true
+          $ref: schemas.yaml#/Device
+          properties:
+            location:
+              example: Room
+              type: string
+            name:
+              example: Fan
+              type: string
+            type:
+              example: 1
+              type: number
+          type: object
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Device
+      description: Change device field
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Change device field
+  tags:
+  - Devices
+Delete:
+  responses:
+    '204':
+      description: Remove device
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Delete device
+  tags:
+  - Devices
+
+GetState:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/State
+      description: Get device
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+    - OAuth: ["oauth2"]
+  summary: Get device state
+  tags:
+  - Device State
+PatchState:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/State
+  responses:
+    '200':
+      description: State belief updated
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+    - OAuth: ["oauth2"]
+  summary: Update state belief
+  description: |
+    Update the Bond's belief about the state of a device.
+
+    This is useful, for example, for Ceiling Fans that have a command
+    for ToggleLight, but no discrete commands TurnLightOn and TurnLightOff.
+    In this case, it is possible for the Bond's belief about the device
+    state to be incorrect, and so this method allows that belief
+    to be corrected.
+
+    This does NOT cause the Bond to transmit any control signal.
+
+    (Bridge-Only)
+  tags:
+  - Device State
+GetBridge:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Bridge
+      description: Get Bridge info
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+    - OAuth: ["oauth2"]
+  summary: Get Bridge info
+  description: |
+    Information specific to Bond bridges: `name` and `location` are simply
+    the name and location of the bridge. `bluelight` is the amount of blue
+    light emitted from the Bond when it's idle: at `0` the light is off,
+    and at `255` the light is at its maximum brightness.
+  tags:
+  - Bridge
+PatchBridge:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          properties:
+            location:
+              example: My Room
+              type: string
+            name:
+              example: My Bridge
+              type: string
+          type: object
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Bridge
+      description: Change Bridge info
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Change Bridge info
+  description: |
+    `bluelight` can vary from 0-255
+  tags:
+  - Bridge
+DeleteBridge:
+  responses:
+    '204':
+      description: Reset Bridge info
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Reset Bridge info
+  description: |
+    After deletion, default values will be restored, as follows:
+    `"My Room"` for location,
+    `"My Bridge"` for name,
+    `255` for bluelight.
+  tags:
+  - Bridge
+
+RemoteAddrPath:
+  get:
+    $ref: ../devices/paths.yaml#/GetRemoteAddr
+  patch:
+    $ref: ../devices/paths.yaml#/PatchRemoteAddr
+  delete:
+    $ref: ../devices/paths.yaml#/DeleteRemoteAddr
+  parameters:
+  - in: path
+    name: device_id
+    required: true
+    schema:
+      type: number
+
+
+GetRemoteAddr:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/RemoteAddr
+      description: Get SBB Remote Address
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+    - OAuth: ["oauth2"]
+  summary: Get SBB Remote Address and Learn Window
+  description: |
+    [SBB-only]
+    Provides the current SBB remote address and information about the learn window.
+    The SBB unit will only honor commands received with a matching address.
+  tags:
+  - Device Remote Address
+
+PatchRemoteAddr:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/RemoteAddr
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/RemoteAddr
+      description: Modify Device Remote Address or Learn Window
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Modify Device Remote Address or Learn Window
+  description: |
+    [SBB-only]
+    Modify either the Device Remote Address or open/close the learn window.
+    While the learn window is open, the SBB unit may learn
+    a new physical remote when user presses the Learn button
+    (or holds down the Power/Stop button for 5 seconds).
+
+    Note that to add a new remote address, the `addr` field should be PATCHed
+    with a single string, not an array. The provided address will be appended
+    to the array of addresses, with the oldest address being overwritten if
+    len(`addr[]`) was already equal to `addr_slots`.
+
+    If the same address is learned which was already in the list,
+    the duplicate *will indeed* be added.
+    This is to allow an installer to use a low-tech way of forgetting
+    unwanted remotes---by re-learning the same remote 5 times---which the
+    installers are used to doing with similar receivers.
+
+    This is useful especially where there are multiple SBB devices
+    on the same mains circuit.
+  tags:
+  - Device Remote Address
+DeleteRemoteAddr:
+  responses:
+    '200':
+      description: Remote address successfully reset, learn window closed.
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/RemoteAddr
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Reset Device Remote Address and Learn Window
+  description: |
+    [SBB-only]
+    If no `addr` is provided, then:
+      Restores factory default Device Remote Address and closes learn window.
+
+    However, if `addr` is provided, then:
+      Removes just the specified address from the list.
+
+
+  tags:
+  - Device Remote Address

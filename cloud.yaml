@@ -1,0 +1,30 @@
+openapi: "3.0.1"
+
+components:
+  responses:
+    $ref: common/responses.yaml
+  schema:
+    $ref: common/schemas.yaml
+  securitySchemes:
+    $ref: common/security.yaml
+
+paths:
+  $ref: cloud/paths.yaml
+
+servers:
+  $ref: cloud/servers.yaml
+
+info:
+  $ref: cloud/info.yaml
+
+x-tagGroups:
+  - name: Bonds and Users
+    tags:
+      - Bonds
+      - Users
+  - name: Devices
+    tags:
+      - Devices
+      - Device State
+      - Device Properties
+      - Device Actions

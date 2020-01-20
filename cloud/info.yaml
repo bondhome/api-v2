@@ -1,0 +1,8 @@
+---
+title: Bond Cloud API
+version:
+  $ref: ../common/info.yaml#/version
+description:
+  $ref: ../common/info.yaml#/description
+x-logo:
+  url: https://s3.amazonaws.com/bond-api-docs/bond.png

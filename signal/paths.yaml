@@ -1,0 +1,202 @@
+SignalsPath:
+  parameters:
+  - in: path
+    name: device_id
+    required: true
+    schema:
+      type: string
+  - in: path
+    name: command_id
+    required: true
+    schema:
+      type: string
+  get:
+    $ref: ../commands/paths.yaml#/SignalGet
+  put:
+    $ref: ../commands/paths.yaml#/SignalPut
+  patch:
+    $ref: ../commands/paths.yaml#/SignalPatch
+  delete:
+    $ref: ../commands/paths.yaml#/SignalDelete
+
+SignalTxPath:
+  parameters:
+  - in: path
+    name: device_id
+    required: true
+    schema:
+      type: string
+  - in: path
+    name: command_id
+    required: true
+    schema:
+      type: string
+  put:
+    $ref: ../commands/paths.yaml#/TxPut
+
+SignalRssiPath:
+  get:
+    $ref: ../signal/paths.yaml#/RssiGet
+
+SignalScanPath:
+  put:
+    $ref: ../signal/paths.yaml#/ScanPut
+  get:
+    $ref: ../signal/paths.yaml#/ScanGet
+  delete:
+    $ref: ../signal/paths.yaml#/ScanDelete
+TxPath:
+  delete:
+    $ref: ../signal/paths.yaml#/TxDelete
+  put:
+    $ref: ../signal/paths.yaml#/TxPut
+
+SignalScanSignalPath:
+  get:
+    $ref: ../signal/paths.yaml#/ScanSignalGet
+
+TxPut:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Signal
+  responses:
+    '204':
+      description: Signal transmit started
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Transmit a Signal
+  description: |
+    Transmit an RF or IR signal from a Bond Bridge.
+
+    If `use_scan` is present and true, the signal recorded by the previous scan
+    will be used, and all other fields will be ignored
+  tags:
+  - Transmit
+TxDelete:
+  responses:
+    '204':
+      description: Signal transmission canceled
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Cancel a Transmission
+  description: |
+    If a Signal is being transmitted, it is immediately interrupted,
+    and a 204 is returned.
+
+    A 204 is also returned even if there was no Signal being transmitted.
+
+    NOTE: Internally, this flushes the radio command queue,
+     so any requested transmissions which were queued
+     waiting for an earlier tranmission to complete will also be canceled.
+     This also cancels any queued scans, but does not cancel a scan already in progress.
+
+  tags:
+  - Transmit
+ScanPut:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Scan
+  responses:
+    '201':
+      description: Signal transmit started
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Start a Scan
+  description: |
+    Start scanning for RF/IR signals.
+  tags:
+  - Scan
+ScanGet:
+  responses:
+    '200':
+      description: Scan info returned
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Scan
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Check scan progress
+  description: |
+    Get information about a scan in progress,
+    or the last completed scan.
+  tags:
+  - Scan
+ScanDelete:
+  responses:
+    '204':
+      description: Scan canceled
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Cancel a Scan
+  description: |
+    Immediately stop scanning, and delete results.
+  tags:
+  - Scan
+ScanSignalGet:
+  responses:
+    '200':
+      description: Signal resulting from scan
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Signal
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Get Signal from a Scan
+  description: |
+    Get the signal resulting from the most recent scan
+  tags:
+  - Scan Result
+RssiGet:
+  responses:
+    '200':
+      description: Receive Signal Strength
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Rssi
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Get Receive Signal Strength Indication (RSSI)
+  description: |
+    Sweeps over the frequency range supported by the product,
+    and returns a list of frequency-rssi ordered pairs.
+
+    This is useful for determining tuning of antennas.
+  tags:
+  - Rssi

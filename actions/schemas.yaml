@@ -1,0 +1,14 @@
+Actions:
+  example:
+  - TurnOn
+  - TurnOff
+  type: string
+Args:
+  type: object
+  properties:
+    field:
+      type: string
+      example: speed
+    value:
+      type: string
+      example: 70%

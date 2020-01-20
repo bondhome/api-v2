@@ -1,0 +1,65 @@
+get:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/TokenGet
+      description: Local token status
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+  summary: Get Local API Token
+  description: |
+    Request token for accessing Bond over local network.
+
+    If `locked` is true, reply will contain neither the token nor account_code.
+
+    Typical use case for this endpoint is:
+
+       - request GET, finding that the endpoint is locked
+       - perform PATCH with `"locked": 0`, correct `pin`, and desired `account_code`
+       - request GET again to get `token`
+       - perform PATCH with `"locked": 1`
+
+    Alternatively, user may perform the proof-of-ownership event
+    (such as holding down the Power button on a SBB remote for 5 sec),
+    which will unlock the endpoint. In that case, the API client should
+    poll GET waiting for unlock.
+
+    Lastly, this endpoint is unlocked for 10 minutes following power cycle.
+
+    Note: The token is not required for /sys/version and /token endpoints.
+    However, all other endpoints require token to be provided in a BOND-Token
+    HTTP header.
+  tags:
+  - Token
+
+patch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/TokenPatch
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/TokenPatch
+      description: Token unlocked
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Add Bond to an Account
+  description: |
+    Saves provided `account_code` on Bond.
+
+    If locked, then `pin` must be provided.
+
+    If `pin` is required but not provided or incorrect,
+    a 401 will be returned.
+  tags:
+  - Token

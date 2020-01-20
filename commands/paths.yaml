@@ -1,0 +1,228 @@
+CommandsPath:
+  parameters:
+  - in: path
+    name: device_id
+    required: true
+    schema:
+      type: string
+  get:
+    $ref: ../commands/paths.yaml#/GetList
+  post:
+    $ref: ../commands/paths.yaml#/Post
+
+CommandPath:
+  parameters:
+  - in: path
+    name: device_id
+    required: true
+    schema:
+      type: string
+  - in: path
+    name: command_id
+    required: true
+    schema:
+      type: string
+  get:
+    $ref: ../commands/paths.yaml#/Get
+  patch:
+    $ref: ../commands/paths.yaml#/Patch
+  delete:
+    $ref: ../commands/paths.yaml#/Delete
+
+Post:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Command
+  responses:
+    '201':
+      $ref: ../common/responses.yaml#/Created
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Create new Command
+  description: |
+    Creates a Command under a specific Device.
+  tags:
+  - Device Commands
+Patch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Command
+  responses:
+    '200':
+      description: Command modified
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Modify an existing Command
+  description: |
+    Modifies any fields of an existing Command.
+  tags:
+  - Device Commands
+GetList:
+  description: |
+    Returns a list of command IDs and the corresponding command hashes.
+    Please see the "Hash Tree" documentation for an explanation of hashes.
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/CommandList
+      description: Command list returned
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Get list of Commands
+  tags:
+  - Device Commands
+Get:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Command
+      description: Command object returned
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Get specific Command
+  description: |
+    Get information about a Command.
+  tags:
+  - Device Commands
+Delete:
+  responses:
+    '204':
+      description: Command deleted
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Delete a Command
+  description: |
+    Deletes specified Command.
+
+    Any associated Signal will be implicitly deleted.
+  tags:
+  - Device Commands
+SignalPut:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: ../signal/schemas.yaml#/Signal
+  responses:
+    '200':
+      description: Signal set
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Store new Signal
+  description: |
+    Creates a Signal associated with this Command.
+  tags:
+  - Device Command Signal
+SignalPatch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: ../signal/schemas.yaml#/Signal
+  responses:
+    '200':
+      description: Signal modified
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Modify an existing Signal
+  description: |
+    Modifies any fields of an existing Signal.
+  tags:
+  - Device Command Signal
+SignalGet:
+  responses:
+    '200':
+      description: Signal returned
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Get Signal associated with Command
+  description: |
+    Get signal associated with this command.
+  tags:
+  - Device Command Signal
+SignalDelete:
+  responses:
+    '204':
+      description: Signal deleted
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Delete a Signal
+  description: |
+    Deletes specified Signal.
+
+    Attempts to use the corresponding Actions will return 500 until
+    a new Signal is associated with this Command or the Command is deleted.
+  tags:
+  - Device Command Signal
+TxPut:
+  requestBody:
+    content:
+      application/json:
+        example:
+          {}
+  responses:
+    '204':
+      description: Command transmitted
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Transmit Command
+  description: |
+    Transmits the signal associated with the command.
+
+    Note: This does NOT execute the associated Action,
+     but rather just transmits the signal as if it had been PUT to signal/tx,
+     so the device state will not be updated and light gating will not be checked.
+  tags:
+  - Device Command Transmit

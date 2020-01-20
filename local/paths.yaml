@@ -1,0 +1,51 @@
+---
+/v2/devices:
+    $ref: ../devices/paths.yaml#/DevicesPath
+/v2/devices/{device_id}:
+    $ref: ../devices/paths.yaml#/DevicePath
+/v2/devices/{device_id}/state:
+    $ref: ../devices/paths.yaml#/StatePath
+/v2/devices/{device_id}/addr:
+    $ref: ../devices/paths.yaml#/RemoteAddrPath
+/v2/devices/{device_id}/reload:
+    $ref: ../devices/paths.yaml#/ReloadPath
+/v2/devices/{device_id}/properties:
+    $ref: ../devices/paths.yaml#/PropertiesPath
+/v2/devices/{device_id}/actions/{action_id}:
+    $ref: ../actions/paths.yaml#/ActionPath
+/v2/devices/{device_id}/commands:
+    $ref: ../commands/paths.yaml#/CommandsPath
+/v2/devices/{device_id}/commands/{command_id}:
+    $ref: ../commands/paths.yaml#/CommandPath
+/v2/devices/{device_id}/commands/{command_id}/signal:
+    $ref: ../signal/paths.yaml#/SignalsPath
+/v2/devices/{device_id}/commands/{command_id}/tx:
+    $ref: ../signal/paths.yaml#/SignalTxPath
+/v2/signal/tx:
+    $ref: ../signal/paths.yaml#/TxPath
+/v2/signal/rssi:
+    $ref: ../signal/paths.yaml#/SignalRssiPath
+/v2/signal/scan:
+    $ref: ../signal/paths.yaml#/SignalScanPath
+/v2/signal/scan/signal:
+    $ref: ../signal/paths.yaml#/SignalScanSignalPath
+/v2/token:
+    $ref: ../token/paths.yaml
+/v2/api/mqtt:
+    $ref: ../api/paths.yaml#/MQTTPath
+/v2/api/bpup:
+    $ref: ../api/paths.yaml#/BPUPPath
+/v2/sys/wifi/scan:
+  $ref: ../wifi/paths.yaml#/WifiScanPath
+/v2/sys/wifi/sta:
+  $ref: ../wifi/paths.yaml#/WifiStaPath
+/v2/sys/wifi/watchdog:
+  $ref: ../wifi/paths.yaml#/WifiWatchDogPath
+/v2/sys/upgrade:
+  $ref: ../wifi/paths.yaml#/WifiUpgradePath
+/v2/sys/version:
+  $ref: ../wifi/paths.yaml#/WifiVersionPath
+/v2/sys/reset:
+  $ref: ../wifi/paths.yaml#/WifiResetPath
+/v2/sys/reboot:
+  $ref: ../wifi/paths.yaml#/WifiRebootPath

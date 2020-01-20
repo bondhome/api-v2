@@ -1,0 +1,37 @@
+User:
+  properties:
+    email:
+      example: user@email.com
+      type: string
+    feature_group:
+      default: C
+      example: A
+      type: string
+    id:
+      example: 1
+      readOnly: true
+      type: number
+    password:
+      example: secret
+      format: password
+      type: string
+      writeOnly: true
+  required:
+  - email
+  - password
+
+UserCollection:
+  additionalProperties:
+    $ref: '#/User'
+  example:
+    '1':
+      email: user@email.com
+      feature_group: B
+      id: 1
+      password: secretpass
+    '2':
+      email: anotheruser@email.com
+      feature_group: C
+      id: 2
+      password: secretpass
+  type: object

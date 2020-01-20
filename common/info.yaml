@@ -1,0 +1,730 @@
+---
+title: Bond API
+version: "v2.10.8"
+x-logo:
+  url: https://s3.amazonaws.com/docs-cloud.appbond.com/bond.png
+description: |
+  # Introduction
+
+  ## Scope
+
+  The Bond V2 API allows control of Ceiling Fans, Fireplaces,
+  and other Bond devices. It is intended for integration with offline control
+  systems, for use by advanced users, hobbiests, integrators, and installers.
+
+  For the purposes of device control,
+  it does not matter whether these devices are
+  remote-controlled devices that Work with Bond (connected via a Bond Bridge)
+  or smart devices that are Smart by Bond.
+
+  This documentation describes the Local HTTP API for Bond products running v2 firmware.
+  This API does not require an internet connection, but does require that the API client
+  be able to directly communicate with the Bond over HTTP. Typically this means being
+  on the same Wi-Fi network. We are still working on a Cloud API, which will be very similar to the Local API.
+
+  ## Security
+
+  The Bond Local API uses unencrypted HTTP
+  using a simple token-based authentication mechanism.
+
+  ### Why HTTP and not HTTPS?
+
+  After speaking with many users interested in Local API,
+  we discovered that users were satisfied with the protection provided
+  by their Wi-Fi network's password, and that it is more important to
+  provide easy and low-latency control of Bond devices than to provide
+  security against other devices and users on the Wi-Fi network.
+
+  Furthermore, it can be challenging for an API client to use HTTPS securely.
+  In order to protect against malicious devices or users inside your Wi-Fi network,
+  it would be necessary for an HTTPS API client to check the validity of the
+  Bond's HTTPS certificate against an Olibra Certificate Authority.
+  The web standard of using domain-based certificate chain-of-trust
+  does not work when offline, because the Bond does not have a domain name,
+  being a device on your local network rather than on the public internet.
+  As a consequence, an HTTPS API would not work from many webbrowsers due to
+  the certificate being untrusted.
+
+  That said, if you have untrusted users or devices on your Wi-Fi network,
+  we recommend placing Bond on a seperate home automation network
+  to which the untrusted users do not have the password.
+
+  ### Security on the Internet
+
+  Rest assured that when Bond products communicate with Bond Cloud
+  (which is needed for integration and voice control support),
+  we use industry-standard secure TLS connections,
+  secured with per-unit public key cryptography. There is no unencrypted
+  communication between Bond hardware and Bond Cloud.
+
+  Please be sure to always use Bond behind a firewall,
+  and do not set up port-forwarding to the Bond Local API,
+  to ensure that unsecured communications do not take place over the public internet.
+
+  # Getting Started
+
+  ## Finding the Bond IP
+
+  First, power on a Bond device and connect it to your Wi-Fi network.
+  Use the Bond app to confirm that the Bond's firmware is at least version v2.
+
+  The newest versions of the Bond Home app (starting in v2.15) have the Bond's IP address
+  in the Bond's "Network Info" screen.  Tapping it will copy it to your clipboard.
+  If `ping` is more convenient for you,
+  please refer to the instructions below.
+
+  From your PC connected to the same network, try pinging the Bond.
+  For example, if your Bond ID is ZZBL12345, you can ping it by running
+  the following command in a terminal:
+
+      ping BB18038.local
+
+  You should see the IP address printed, along with reply messages.
+  Press Ctrl-C to exit the ping program:
+
+      PING bb18038.local (192.100.0.61): 56 data bytes
+      64 bytes from 192.100.0.61: icmp_seq=0 ttl=64 time=96.800 ms
+      64 bytes from 192.100.0.61: icmp_seq=1 ttl=64 time=34.902 ms
+      64 bytes from 192.100.0.61: icmp_seq=2 ttl=64 time=4.226 ms
+      ^C
+      --- bb18038.local ping statistics ---
+      3 packets transmitted, 3 packets received, 0.0% packet loss
+      round-trip min/avg/max/stddev = 4.226/45.309/96.800/38.503 ms
+
+  You can see the IP address of this Bond is `192.100.0.61`.
+
+  Note that the lookup from Bond ID to IP address is performed using mDNS.
+  You will need to make sure that mDNS is installed and enabled on
+  your system (this is the default for most Linux distros and on MacOS).
+
+  You can search for all Bonds on your local network.
+  On Linux, do:
+
+      avahi-browse -a | grep bond
+
+  And on MacOS, do:
+
+      dns-sd -B _bond._tcp .
+
+  In both cases, you will see a list of Bonds on your Wi-Fi network
+  and their IP addresses.
+
+  ## Check Bond Version
+
+  Next, let's check the Bond's firmware version.
+  To do this, we will use a command-line utility called cURL.
+  cURL is installed by default on MacOS and most Linux distributions.
+
+  To check the firmware version, run this command:
+
+      curl -i http://192.100.0.61/v2/sys/version
+
+  The flag `-i` means "display header information".
+  You should see output similar to this:
+
+      HTTP/1.1 200 OK
+      Content-Length: 243
+      Content-Type: application/json; charset=utf-8
+
+      {"target":"snowbird","fw_ver":"v2.5.2","fw_date":"Fri Feb 22 14:13:25 -03 2019","make":"Olibra LLC","model":"model","branding_profile":"O_SNOWBIRD","uptime_s":380,"_":"c342ae74"}
+
+  Where, we see the firmware version is `v2.5.2`.
+
+  ## Getting the Bond Token
+
+  Note that no token is required for the version endpoint,
+  but other endpoints will require token-based authentication.
+  
+  The Bond Home app has the Bond's token in the Bond's "Settings" screen. Tapping it will copy it to your clipboard.
+  If `curl` is more convenient for you, please refer to the instructions below.
+
+  To get the token, follow this procedure:
+
+    Power cycle the Bond, and then within 10 minutes, access the `token` endpoint as follows:
+
+        curl -i http://192.100.0.61/v2/token
+
+    You should see a return body containing `token` such as this:
+
+      {locked":0,"pin_attempts_left":10,"token":"f074b61f628018fd","nonce":"0000000000000000","v1_nonce":"0000000000000000","account_code":"","v1_email":"","_":"c9bb9590"}
+
+    Copy the token and use it with a `BOND-Token` header in subsequent requests.
+
+    Alternatively, the token may be provided by setting the `_token` field within the request body. [Since v2.6.23]
+
+  ## Get Device Information
+
+  To get a list of devices on the Bond, do:
+
+      curl -H "BOND-Token: f074b61f628018fd" -i http://192.100.0.61/v2/devices
+
+  Or, to use the embedded token technique:
+
+      curl -i http://192.100.0.61/v2/devices -X GET -d "{\"_token\": \"f074b61f628018fd\"}"
+
+  You will get a list of devices such as this:
+
+      {"_":"f7e407f1","79135791":{"_":"599b0fc5"}}
+
+  Here we see there is one device with id `79135791`.
+
+  We can request the device details by doing:
+
+      curl -H "BOND-Token: f074b61f628018fd" -i http://192.100.0.61/v2/devices/79135791
+
+  And we can see the device name, location, and available Actions:
+
+      {"name":"Magic Fan","type":"CF","actions":["TurnOn","TurnOff","SetSpeed","IncreaseSpeed","DecreaseSpeed"],"location":"Dungeon","_":"599b0fc5","commands":{"_":"be8e1896"}}
+
+  ## Set the Fan Speed
+
+  Finally, let's try setting the fan's speed:
+
+      curl -H "BOND-Token: f074b61f628018fd" -i http://192.100.0.61/v2/devices/79135791/actions/SetSpeed -X PUT -d "{\"argument\": 3}"
+
+  # API Concepts
+
+  ## Hash Tree
+
+  The Bond API is organized as a tree of endpoints,
+  starting at the root. Here's an incomplete example:
+
+      - v2
+        - devices
+          - 00000001
+            - commands
+            - state
+          - 00000002
+            - commands
+            - state
+          - 00000003
+            - commands
+            - state
+        - sys
+          - wifi
+
+  Clearly, if the entire tree were expanded on a request of the root,
+  then the resulting request may be very large! This large response body
+  would cause several problems, including taking a long time to transmit over
+  slow networks, taking time to generate, and being too large to be effectively
+  transmitted over the message-based protocol MQTT.
+
+  Therefore, Bond only returns a single level of the tree on every request.
+
+  Each node of the tree has a 32-bit "hash" value which is changed
+  whenever that node, or any of the child nodes, are modified.
+  This hash is provided in every reply body as the "_" object.
+
+  When a requested endpoint has children that are not expanded,
+  the child values are replaced with just the child hashes.
+
+  For example, when requesting the `devices` endpoint,
+  you may receive the following response:
+
+      {"_":"f7e407f1","79135791":{"_":"599b0fc5"}}
+
+  Let's break this down:
+
+    - `"_":"f7e407f1"` : This is the hash value of the devices object.
+       If any devices are added, modified, or deleted, this hash will change.
+
+    - `"79135791"` : This is the device id of the one device on this Bond.
+
+    - `{"_":"599b0fc5"}` : This is the hash object representing device with id `79135791`.
+
+  If the API client wants to get the name of the device, it is necessary to make
+  a seperate request on the device itself: `GET devices/79135791`,
+  which would return the name and location directly associated with the device,
+  as well as hash objects for the child nodes of device: `commands` and `state`.
+
+  ## Request ID
+
+  The purpose of the Request ID is to allow a client to retry a non-idempotent
+  request (PUT, POST, PATCH, or DELETE) without risk of Bond taking the same
+  action twice.
+
+  If you need to implement a retry mechanism in your integration,
+  please contact the Bond Engineering Team via the Bond Forums https://forum.bondhome.io/
+
+  # Bond Push UDP Protocol (BPUP)
+  
+  NOTE: BPUP is available as of v2.10.2 firmware.
+  
+  CAVEAT: BPUP is currently in Beta status. Breaking changes may occur to this API as we collect community feedback.
+
+  A common problem in writing drivers to support Bond devices is a need
+  to update the client whenever device state changes. With the HTTP API,
+  this implies inefficient polling. So we've added support for "Bond Push",
+  a UDP-based API for low-latency control and feedback within the local network.
+
+  A client initiates a connection by opening a UDP socket to the Bond on
+  port 30007 and sending a Keep-Alive datagram, which is just a single
+  newline character. This subscribes the client to state updates from devices.
+  Equivalent to the regex `devices/.*/state`.
+
+  The Bond will acknowledge the subscription by immediately replying with
+  the Bond ID:
+
+      {"B":"ZZBL12345"}\n
+
+  The client should continue to send the Keep-Alive
+  datagram on the same socket every 60 seconds to keep the connection active.
+  If no Keep-Alive datagram is received after 125 seconds,
+  Bond will stop sending feedback to the client.
+
+  A future update will allow subscribing to a different topic pattern.
+
+  The Bond will send to all active clients Update datagrams consisting of
+  a JSON object terminated by a newline character. Here's an example Update datagram:
+
+      {"B":"ZZBL12345","t":"devices/aabbccdd/state","i":"00112233bbeeeeff","s":200,"m":0,"f":255,"b":{"_":"ab9284ef","power":1,"speed":2}}\n
+
+  Breaking down the fields:
+
+    - `B`: the Bond ID
+    - `t`: topic (the path from HTTP URL)
+    - `i`: request ID
+    - `s`: HTTP status code
+    - `m`: HTTP method (0=GET, 1=POST, 2=PUT, 3=DELETE, 4=PATCH)
+    - `f`: flags (Olibra-internal use)
+    - `b`: HTTP response body
+
+  There's also some client-specific error messages,
+
+      {"B":"ZZBL12345","err_id":631,"err_msg":"BPUP client timeout"}\n
+
+  For feature requests and concerns, please contact the Bond Engineering Team
+  via the Bond Forums https://forum.bondhome.io/
+
+  # Glossary
+
+  ## Bond Bridge
+
+  The Bond Bridge, also referred to simply as "Bond",
+  connects RF- and IR-controlled devices to Wi-Fi.
+  Learn more at https://bondhome.io/product/.
+
+  ## Smart by Bond
+
+  A "Smart by Bond" appliance is a smart appliance that
+  uses the API described here, other than those parts
+  designated as "Bridge Only".
+
+  ## Device
+
+  Within the Bond ecosystem, the term "device" always refers to
+  a home appliance connected to Bond. A Bond Bridge is not itself a device.
+
+  ## Feature
+
+  Bond devices support one or more "features", such as Speed or Brightness,
+  which come with a set of Actions, State Variables, and Properties
+  that define and control some aspect of the device.
+
+  For example, a device which supports the Light feature will always
+  have actions for TurnLightOn, TurnLightOff, and ToggleLight.
+  Furthermore, it will always have the `light` state variable.
+
+  See the Features section below for detail on all supported features.
+
+  ## Action
+
+  Devices are controlled by calling "actions" such as SetSpeed or TurnOff.
+
+  Some actions require an "argument" to be included. For example,
+  SetSpeed requires an integer argument with the speed number to set.
+
+  Actions represent a user's intent, but do not nessisarly map one-to-one
+  onto the commands that are sent to a device.
+  Actions abstract away the complexity of the underlying commands needed
+  to achieve the desired change in state of a device.
+
+  ## Commands
+
+  Bond Bridges operate by translating actions into "commands".
+  While actions are in a user's language, commands are in the device's remote control's
+  language. Often there is a one-to-one mapping from actions to commands,
+  for example, most ceiling fans have distinct RF commands for each speed.
+  So the action "SetSpeed(3)" is always translated into the same RF signal
+  that tells the device to go to the third speed.
+
+  However, sometimes a device does not have a single command which always
+  accomplishes a specific action. For example, most ceiling fans do not have
+  a specific command corresponding to the TurnOn action, but rather, Bond
+  remembers the previous speed that the fan was set to, and uses a particular
+  SetSpeed command to accompish the TurnOn action. On the other hand,
+  certain ceiling fans do have a specific TurnOn command. In that case the
+  TurnOn action will always map to the TurnOn command. This results in the
+  correct speed being restored even if the factory remote control was used.
+
+  ## Signal
+
+  The term "signal" refers to the actual RF or IR transmission sent to the
+  remote-controlled device to accomplish a particular command.
+
+  Every command should have exactly one corresponding signal. However,
+  the Bond Bridge supports a number of `signal` endpoints which allow
+  manipulation of signals directly, such as `signal/scan` to receive signals,
+  or `signal/tx` to transmit a signal without association to a device.
+
+  ## State Variable
+
+  The Bond Bridge makes an effort to track the state of devices,
+  and this state is represented by a set of "state variables",
+  such as speed and brightness.
+
+  Speed variables cannot be set directly, but rather are manipulated
+  indirectly through actions. For example, the SetSpeed action with an
+  argument of 3 has the side-effect of setting the speed state variable
+  to 3 and the power variable to 1.
+
+  ## Properties
+
+  Some device Features have a "Property" which parameterizes the devices
+  capabilities. For example, multi-speed ceiling fans supporting the Speed
+  feature will always have a `max_speed` property which gives the maximum
+  speed which the `speed` state varible may take.
+
+  Properties are read-only.
+
+  # Features
+
+  Devices have a combination of actions, state variables, and fixed properties.
+  In order to understand how these relate to each other,
+  it is helpful to organize actions into features and study one feature at a time.
+
+  ## Power
+
+  The Power feature controls the basic on/off state of a device.
+
+  For Ceiling Fans, it refers to the state of the fan motor.
+  Note that most ceiling fans have lights which are not governed
+  by the Power feature.
+
+  For Fireplaces, it refers to the state of the flame.
+  Note that many fireplaces have separate light or fan functions,
+   which are not governed by the Power feature.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+   - **power**: (integer) 1 = on, 0 = off
+
+  ### Actions
+
+  - **TurnOn()**: Turn device power on.
+  - **TurnOff()**: Turn device power off.
+  - **TogglePower()**: Change device power from on to off, or off to on.
+
+  ## Timer
+
+  The Timer feature allows turning off a device after a specified delay,
+  similar to the dial timer interface on toaster ovens.
+
+  The Timer feature requires the Power feature.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+   - **timer**: (integer) seconds remaining on timer, or 0 meaning no timer running
+
+  ### Actions
+
+  - **SetTimer(s)**: Start timer for `s` seconds. If power if off, device is
+    implicitly turned on.
+    If argument is zero, the timer is canceled without turning off the device.
+
+  NOTE: The timer is canceled implicitly by any action on the Power, Speed,
+    or Breeze features, other than TurnOn. For example, if a timer is running,
+    and the user turns off the device and then turns it back on, the timer
+    will be canceled and therefore the device will not turn off again
+    unexpectedly. The intention that a timer is designed to help reduce
+    energy consumption, but should never surprise the user who forgot that
+    they enabled the timer function earlier.  When the timer reaches zero
+    it runs TurnOff, so it will turn off the device whether it is set at a
+    specific speed or it is set to breeze.
+
+  ## Speed
+
+  The Speed feature is used by multiple-speed Ceiling Fans to track the motor speed.
+
+  The Speed feature requires the Power feature.
+
+  Note that while many Fireplaces have a built-in fan,
+   they do not use the Speed feature. See *FpFan* feature.
+
+  ### Properties
+
+   - **max_speed**: (integer) highest speed available
+
+  ### State Variables
+
+   - **speed**: (integer) value from 1 to max_speed. If power=0, speed represents the last speed setting and the speed to which the device resumes when user asks to turn on.
+
+  ### Actions
+
+  - **SetSpeed(speed)**: Set speed and turn on. If speed>max_speed, max_speed is assumed. If the fan is off, implicitly turn on the power. Setting speed to zero or a negative value is ignored.
+  - **IncreaseSpeed(speeds)**: Increase speed of fan by specified number of *speeds*. If the fan is off, implicitly turn on the power.
+  - **DecreaseSpeed(speeds)**: Decrease fan speed by specified number of *speeds*. If attempting to decrease fan speed below `1`, the fan will remain at speed 1. That is, power will not be implicitly turned off. If the power is already off, DecreaseSpeed is ignored.
+
+  NOTE: When the device is turned off, the previous speed is remembered. When the fan is then turned back on, it will resume at the previous speed.
+
+  ## Breeze
+
+  The Breeze feature of many multi-speed Ceiling Fans provides a randomized breeze.
+
+  Breeze works by pseudorandomly changing the power and speed of the fan over time to create a natural breeze effect.
+  There are two parameters of the breeze which may be adjusted to provide
+  the desired breeze effect.
+
+  The Breeze feature requires the Speed feature.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+   - **breeze**: (array) array of the form `[ <mode>, <mean>, <var> ]`:
+     - **mode**: (integer) 0 = breeze mode disabled, 1 = breeze mode enabled
+     - **mean**: (integer) sets the average speed. 0 = minimum average speed (calm), 100 = maximum average speed (storm)
+     - **var**: (integer) sets the variability of the speed. 0 = minimum variation (steady), 100 = maximum variation (gusty)
+
+  ### Actions
+
+  - **BreezeOn()**: Enable breeze with remembered parameters. Defaults to [50,50].
+  - **BreezeOff()**: Stop breeze. Fan remains on at current speed.
+  - **SetBreeze(breeze)**: Enable breeze with specified parameters (same as breeze state variable).
+    Example `SetBreeze([1, 20, 90])`.
+
+  NOTE: If breeze is enabled when the fan is powered off, then breeze will be restored at power on.
+
+  NOTE: Calling SetBreeze with first parameter equal to 0 will disable breeze,
+    but still set the specified mean and var parameters.
+
+  NOTE: SetSpeed implicitly disables breeze mode.
+
+  ## Direction
+
+  The Direction feature is used by reversible Ceiling Fans to track the direction of the fan motor.
+
+  The Direction feature requires the Power feature.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+   - **direction**: (integer) 1 = forward, -1 = reverse.
+
+  The forward and reverse modes are sometimes called Summer and Winter, respectively.
+
+  ### Actions
+
+  - **SetDirection(direction)**: Control forward and reverse.
+  - **ToggleDirection()**: Reverse the direction of the fan.
+
+  ## Light
+
+  The Light feature governs the basic on/off status of a device's main light.
+
+  This is a very common feature of Ceiling Fans, and present on many Fireplaces.
+
+  See the UpDownLight feature for the behavior of devices with dual lights.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+   - **light**: (integer) 1 = light on, 0 = light off
+
+  ### Actions
+
+  - **TurnLightOn()**: Turn light on.
+  - **TurnLightOff()**: Turn off light.
+  - **ToggleLight()**: Change light from on to off, or off to on.
+
+  ## UpDownLight
+
+  The UpDownLight feature governs the on/off status of a device's upwards-
+  and downards-facing lights,
+  such as the ceiling-wash "up light" and direct "down light"
+  found on some high-end ceiling fans.
+
+  The corresponding physical remote often has seperate buttons for the UpLight
+  and DownLight, but no button for just "Light". However, Bond always makes the
+  Light feature available along with UpDownLight to make these devices easy to integrate.
+  For example, saying "Alexa, Turn on the Light" corresponds to the TurnLightOn
+  action, which will have a reasonable result for devices with UpDownLight.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+   - **up_light**: (integer) 1 = up light enabled, 0 = up light disabled
+   - **down_light**: (integer) 1 = down light enabled, 0 = down light disabled
+
+   If both up_light and light are 1, then the up light will be on,
+   and similar for down light.
+
+   Note that both up_light and down_light may not be simultaneously zero,
+   so that the device is always ready to respond to a TurnLightOn request.
+
+  ### Actions
+
+  - **TurnUpLightOn()**: Turn up light on.
+  - **TurnDownLightOn()**: Turn down light on.
+  - **TurnUpLightOff()**: Turn off up light.
+  - **TurnDownLightOff()**: Turn off down light.
+  - **ToggleUpLight()**: Change up light from on to off, or off to on.
+  - **ToggleDownLight()**: Change down light from on to off, or off to on.
+
+  Note that TurnLightOff/TurnLightOn honor the up_light and down_light
+  enable variables. That is, the user is able to use the factory remote
+  to select a prefered combination of up and down light, and that combination
+  is restored when TurnLightOn is called, perhaps through a voice integration.
+
+  ## Brightness
+
+  The Brightness feature governs lights which can be dimmed to specified brightness level.
+
+  This feature is common on classic Ceiling Fans whose remotes have displays.
+  Note, however, that classic Ceiling Fans whose remotes do *not* have displays typically only support HoldToDim or HoldToDimUpDown feature.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+   - **brightness**: (integer) percentage value of brightness, 1-100. If light=0, brightness represents the last brightness setting and the brightness to resume when user turns on light. If fan has no dimmer or a non-stateful dimmer, brightness is always 100.
+
+  ### Actions
+
+  - **SetBrightness(brightness)**: Set the brightness of the light to specified percentage. Value of 0 is ignored, use TurnLightOff instead.
+  - **IncreaseBrightness(amount)**: Increase brightness of light by specified percentage. If light is off, it will be turned on at (0 + amount).
+  - **DecreaseBrightness(amount)**: Decrease light brightness by specified percentage. If attempting to decrease brightness below 1%, light will remain at 1%. Use TurnLightOff to turn off the light. If the light is off, the light will remain off but the remembered brightness will be decreased.
+
+  NOTE: The brightness level is remembered on TurnLightOff and restored on TurnLightOn.
+
+
+  ## UpDownBrightness
+
+  The UpDownBrightness feature extends the Brightness feature to cover
+  the ability of ceiling fans with separately dimmable up and down lights.
+
+  This feature is almost only found on Smart by Bond Ceiling Fans.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+   - **up_light_brightness**: (integer) percentage value of up light brightness, 1-100.
+   - **down_light_brightness**: (integer) percentage value of down light brightness, 1-100.
+
+  ### Actions
+
+  - **SetUpLightBrightness(brightness)**: Similar to SetBrightness but only for the up light.
+  - **SetDownLightBrightness(brightness)**: Similar to SetBrightness but only for the down light.
+  - **IncreaseUpLightBrightness(amount)**: Similar to IncreaseBrightness but only for the up light.
+  - **IncreaseDownLightBrightness(amount)**: Similar to IncreaseBrightness but only for the down light.
+  - **DecreaseUpLightBrightness(amount)**: Similar to DecreaseBrightness but only for the up light.
+  - **DecreaseDownLightBrightness(amount)**: Similar to DecreaseBrightness but only for the down light.
+
+  NOTE: The brightness level of each light is remembered on
+  TurnLightOff, TurnUpLightOff, TurnDownLightOff and restored on TurnLightOn,
+  etc.
+
+  NOTE: IncreaseBrightness and DecreaseBrightness operate on whichever
+   of the up and down lights are enabled, but will never enable or disable
+   one or the other light.
+
+  ## Flame
+
+  The Flame feature is used by fireplaces to indicate flame level.
+
+  The Flame feature requires the Power feature.
+
+  ### Properties
+
+  ### State Variables
+
+   - **flame**: (integer) value from 1 to 100. If power=0, flame represents the last flame setting and the flame to which the device resumes when user asks to turn on.
+
+  ### Actions
+
+  - **SetFlame(flame)**: Set flame and turn on. If flame>100, 100 is assumed. If the fireplace is off, implicitly turn on the power. Setting flame to zero or a negative value is ignored.
+  - **IncreaseFlame(flames)**: Increase flame level of fireplace by specified number of *flames*. If the fireplace is off, implicitly turn on the power.
+  - **DecreaseFlame(flames)**: Decrease flame level by specified number of *flames*. If attempting to decrease fireplace flame below `1`, the fireplace will remain at fflame 1. That is, power will not be implicitly turned off. If the power is already off, DecreaseFlame is ignored.
+
+  ## Open
+
+  The open feature is used to describe a device that can be opened and closed.
+  Common use cases are motorized shades and garage doors.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+   - **open**: (integer) 1 = open, 0 = closed
+
+  ### Actions
+
+  - **Open()**: Open the device.
+  - **Close()**: Close the device.
+  - **ToggleOpen()**: Close the device if it's open, open it if it's closed
+
+  ### Notes
+
+  If your remote has a discrete stopping command, consider using the **Hold()** action
+  to stop the motion of the device.
+
+  ## FpFan
+
+  The FpFan feature controls a fireplace fan. The FpFan feature is independent
+  of the power feature, which for fireplaces indicates whether the flame is on
+  or off.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+   - **fpfan_power**: (integer) 1 = on, 0 = off
+   - **fpfan_speed**: (integer) from 1-100
+
+  ### Actions
+
+  - **TurnFpFanOff()**: Turn the fireplace fan off
+  - **TurnFpFanOn()**: Turn the fireplace fan on, restoring the previous speed
+  - **SetFpFan(speed)**: Sets the speed of the fireplace fan
+
+  ## Misc, including dimmers
+
+  Collected here are some actions that may be used with other features, but
+  have no state-change behavior on the Bond.
+
+  ### Actions
+
+  - **Stop()**: This action tells the Bond to stop any in-progress transmission and empty its transmission queue.
+  - **Hold()**: Can be used when a signal is required to tell a device to stop moving or the like, since *Stop* is a special "stop transmitting" action
+  - **Pair()**: Used in devices that need to be paired with a receiver.
+  - **StartDimmer()**: Start dimming. The Bond should time out its transmission after 30 seconds, or when the *Stop* action is called.
+  - **StartUpLightDimmer()**: Use this and the *StartDownLightDimmer* instead of *StartDimmer* if your device has two dimmable lights.
+  - **StartDownLightDimmer()**: The counterpart to *StartUpLightDimmer*

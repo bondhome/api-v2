@@ -1,0 +1,82 @@
+TokenGet:
+  properties:
+    locked:
+      example: 0
+      type: int
+      description: |
+        If 1, means that client must provide pin to unlock.
+
+        Alternatively, the Bond user may perform an out-of-band proof-of-ownership event
+        on the physical Bond unit to cause this field to become 0.
+    token:
+      example: "8f514567acaf9869"
+      type: string
+      description: |
+        Token for controlling this Bond over local network.
+
+        Required to be provided as an HTTP header for all local communications.
+
+        This is a hex representation of a random uint64,
+        which is regenerated on Bond factory reset.
+
+        Only provided if locked is 0.
+    account_code:
+      example: "1234567890"
+      type: string
+      description: |
+        Account code previously set by PATCH.
+
+        Only provided if locked is 0.
+    nonce:
+      example: "876a2b14c55b3e5a"
+      type: string
+      description: |
+        Random 64-bit hex string generated whenever client sets account_code,
+        even if accound_code is unmodified.
+    pin_attempts_left:
+      example: 9
+      type: int
+      description: |
+        Number of times which the PIN may be guessed.
+
+        Once `pin_attempts_left` reaches 0, user must either use an
+        out-of-band proof-of-ownership event, or reboot/power-cycle the Bond.
+    disable:
+      example: false
+      type: boolean
+      description: |
+        If disabled, HTTP and other local APIs will not require token to function.
+        Only disable on trusted networks, and only when using fixed IP addresses
+        to avoid controlling the wrong Bond. Defaults to false, i.e., token required by default.
+        Available as of firmware v2.10.2.
+TokenPatch:
+  properties:
+    locked:
+      example: 0
+      type: int
+      description: |
+        If 1, means that the client wants to immediately re-lock this endpoint.
+
+        If 0, means that the client wants to unlock the endpoint.
+    account_code:
+      example: "1234567890"
+      type: string
+      description: |
+        10-digit account code, used to specify which account to associate the Bond with.
+
+        (Absolute maximum for this field is 16 alpha-numeric characters)
+
+        This does NOT include any checksum digits which may be added when displayed
+        for the customer in the app, and required by the Bond WebGUI to eliminate typo issues.
+    pin:
+      example: "1234"
+      type: string
+      description: |
+        Pin number, if required, as part of unlocking procedure.
+    disable:
+      example: false
+      type: boolean
+      description: |
+        If disabled, HTTP and other local APIs will not require token to function.
+        Only disable on trusted networks, and only when using fixed IP addresses
+        to avoid controlling the wrong Bond. Defaults to false, i.e., token required by default.

@@ -1,0 +1,64 @@
+ErrorBaseSchema:
+  properties:
+    error_code:
+      example: 2ea086b5-c67f-4185-a0da-1f518a8de42c
+      format: uuid
+      type: string
+    error_id:
+      example: 1
+      type: number
+BadRequest:
+  allOf:
+  - $ref: '#/ErrorBaseSchema'
+  - properties:
+      error_msg:
+        example: The resource wasn't create because has a validation problem
+        type: string
+    type: object
+Conflict:
+  allOf:
+  - $ref: '#/ErrorBaseSchema'
+  - properties:
+      error_msg:
+        example: The resource wasn't create because has a field conflict
+        type: string
+    type: object
+Forbidden:
+  allOf:
+  - $ref: '#/ErrorBaseSchema'
+  - properties:
+      error_msg:
+        example: You don't have authorization for access this resource
+        type: string
+    type: object
+InternalServerError:
+  allOf:
+  - $ref: '#/ErrorBaseSchema'
+  - properties:
+      error_msg:
+        example: Something unexpected happened
+        type: string
+    type: object
+NotFound:
+  allOf:
+  - $ref: '#/ErrorBaseSchema'
+  - properties:
+      error_msg:
+        example: Resource not found
+        type: string
+    type: object
+Unauthorized:
+  allOf:
+  - $ref: '#/ErrorBaseSchema'
+  - properties:
+      error_msg:
+        example: You need authentication credentials to continue
+        type: string
+    type: object
+Created:
+  properties:
+    _id:
+      example: "01234567"
+      type: string
+      description: id of new device
+  type: object

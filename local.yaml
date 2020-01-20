@@ -1,0 +1,53 @@
+---
+openapi: "3.0.2"
+
+info:
+  $ref: local/info.yaml
+
+servers:
+  $ref: local/servers.yaml
+
+paths:
+  $ref: local/paths.yaml
+
+x-tagGroups:
+  - name: Devices
+    tags:
+      - Devices
+      - Device State
+      - Device Properties
+      - Device Actions
+      - Device Remote Address
+      - Device Reload
+  - name: Commands
+    tags:
+      - Device Commands
+      - Device Command Signal
+      - Device Command Transmit
+  - name: Bridge
+    tags:
+      - Bridge
+  - name: Signals
+    tags:
+      - Transmit
+      - Scan
+      - Scan Result
+      - Rssi
+  - name: API
+    tags:
+      - Token
+      - MQTT
+      - BPUP
+  - name: System
+    tags:
+      - Wi-Fi Scan
+      - Wi-Fi Station
+      - Wi-Fi Watchdog
+      - Upgrade
+      - Version
+      - Reset
+      - Reboot
+      - Bluelight
+  - name: Debug
+    tags:
+      - Database

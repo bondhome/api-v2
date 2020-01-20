@@ -1,0 +1,153 @@
+Device:
+  properties:
+    name:
+      example: My Fan
+      type: string
+    type:
+      description: |
+        - `CF` : Ceiling Fan
+        - `FP` : Fireplace
+        - `MS` : Motorized Shades
+        - `GX` : Generic device
+      example: "CF"
+      type: string
+    template:
+      description: |
+        An internal name describing what sort of protocol the remote represented
+        by the device implements. Upon a POST with a valid template string, the
+        device self-populates its panel with some default controls, initializes
+        its state, and finds a script to define its behavior.
+
+        Most templated devices need additional parameters, such as an address
+        `addr`, frequency `freq`, bits per second `bps`, and length of the zeros
+        between repetititions `zero_gap`. These should be specified in an object
+        `properties` in the POST body.
+      example: "A1"
+      type: string
+    location:
+      example: Kitchen
+      type: string
+    actions:
+      readOnly: true
+      type: object
+      example:
+        _: "7fc1e84b"
+    properties:
+      readOnly: true
+      type: object
+      example:
+        _: "84cd8a43"
+    state:
+      readOnly: true
+      type: object
+      example:
+        _: "ad9bcde4"
+    commands:
+      readOnly: true
+      type: object
+      example:
+        _: "ad9bcde4"
+  required:
+  - name
+  - type
+
+DeviceList:
+  type: object
+  example:
+    _: "7fc1e84b"
+    3b20f300:
+        _: "9a5e1136"
+    4caf6472:
+        _: "409d124b"
+State:
+  example:
+    breeze:
+    - 1
+    - 0.2
+    - 0.9
+    brightness: 75
+    light: 1
+    power: 0
+    speed: 2
+    timer: 3599
+Properties:
+  properties:
+    max_speed:
+      readOnly: true
+      example: 3
+      type: int
+    trust_state:
+      example: false
+      type: boolean
+    addr:
+      readOnly: true
+      example: "10101"
+      type: string
+    freq:
+      readOnly: true
+      example: 434300
+      type: int
+    bps:
+      readOnly: true
+      example: 3000
+      type: int
+    zero_gap:
+      readOnly: true
+      example: 30
+      type: int
+Bridge:
+  properties:
+    location:
+      example: My Room
+      type: string
+    name:
+      example: My Bridge
+      type: string
+    bluelight:
+      example: 127
+      type: int
+
+RemoteAddr:
+  properties:
+    addr:
+      example: ["0f2a", "0002", "0003"]
+      type: string
+      description: |
+        Learned remote address(es) in hexadecimal,
+        may be patched only with a single address string to be added.
+    addr_slots:
+      example: 5
+      type: int
+      readOnly: true
+      description: |
+        Maximum number of addresses which can be learned by this device.
+        Typical values are 1 (for devices whose corresponding transmitters
+        ship with DIP switches, allowing the user to manually put all
+        transmitters on the same address) and 5 (for devices where each
+        transmitter is shipped with a random address).
+    learn_window_ms:
+      example: 60000
+      type: int
+      readOnly: true
+      description: |
+        Duration of learn window (milliseconds).
+    learn_window_remaining_ms:
+      example: 1100
+      type: int
+      readOnly: true
+      description: |
+        Milliseconds remaining before learn window closes.
+    learn_window_open:
+      example: true
+      type: bool
+      description: |
+        Whether new address can be learned via RF.
+        True iff learn_window_remaining_ms is nonzero.
+    learn_count:
+      example: 0
+      type: int
+      readOnly: true
+      description: |
+        Number of times a new address has been learned on this boot.
+        Useful in UI design to know that the learn process completed,
+        even if the learned address is the same.

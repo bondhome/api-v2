@@ -1,0 +1,154 @@
+Watchdog:
+  properties:
+    rwdg_disable:
+      example: false
+      type: boolean
+      description: |
+        - `true`: disable Bond Cloud watchdog
+        - `false`: enable Bond Cloud watchdog (default)
+
+        If enabled, Bond will reboot if not connected to Bond Cloud
+        within first 10 minutes of boot, or if disconnected for 3 minutes.
+
+        NOTE: Any communication with the Bond over the HTTP transport
+        will reset the timer as if the Bond were connected to the cloud.
+    rwdg_timer_ms:
+      example: 60000
+      type: number
+      readOnly: true
+      description: |
+        Number of milliseconds left on watchdog timer before Bond will reboot
+        by itself to attempt to reconnect to the Bond cloud.
+        NOTE: If `rwdg_disable` is true, then Bond will not actually reboot,
+        but timer will continue to tick down.
+Sta:
+  properties:
+    status:
+      example: 2
+      type: number
+    ssid:
+      example: bGlua3N5cw==
+      type: string
+    bssid:
+      example: "001122334455"
+      type: string
+    bssid_set:
+      readOnly: true
+      example: true
+      type: boolean
+    mac:
+      example: '30aea48fa8e8'
+      type: string
+      readOnly: true
+    static_ip_set:
+      readOnly: true
+      example: false
+      type: boolean
+    ip:
+      example: '192.168.1.42'
+      type: string
+    gw:
+      example: '192.168.1.1'
+      type: string
+    netmask:
+      example: '255.255.255.0'
+      type: string
+    dns_set:
+      readOnly: true
+      example: true
+      type: boolean
+    dns:
+      example: '8.8.8.8'
+      type: string
+    dns_alt_set:
+      readOnly: true
+      example: true
+      type: boolean
+    dns_alt:
+      example: '8.8.4.4'
+      type: string
+    password:
+      example: cGFzc3dvcmQ=
+      format: password
+      type: string
+      writeOnly: true
+Scan:
+  example:
+    hidden_requires_bssid: true
+    format:
+    - ssid
+    - bssid
+    - auth
+    - ch
+    - signal
+    results:
+    - - REIyQzk1
+      - 00A423DB2C9D
+      - 4
+      - 1
+      - 90
+    - - b2xpYnJhIGFpcnBvcnQgMQ==
+      - 4C3275C649C4
+      - 3
+      - 11
+      - 74
+    - - UGxheVNpZ2h0XzVH
+      - 003E5D921274
+      - 4
+      - 6
+      - 73
+    - - b2xpYnJhIG1pZmkgMw==
+      - 101331C514C7
+      - 3
+      - 6
+      - 61
+    - - S0VFQk9YIFcxNTBOUg==
+      - D8EB97B1B322
+      - 0
+      - 11
+      - 60
+    - - VmVyaXpvbi1NQkhBMTAtMTRDNy1ndWVzdA==
+      - 121331C514C8
+      - 3
+      - 6
+      - 60
+    - - b2xpYnJhIGFpcnBvcnQgMQ==
+      - 9801A7E7ABD4
+      - 3
+      - 6
+      - 57
+    - - b3B0aW11bXdpZmlfUGFzc3BvaW50
+      - E00EDA137575
+      - 5
+      - 1
+      - 39
+    - - NkMxNDYw
+      - 0072826C1468
+      - 4
+      - 1
+      - 36
+    - - UkRMRiBXaS1GaSBOZXR3b3Jr
+      - 881FA13633AA
+      - 3
+      - 1
+      - 33
+    - - SFAtUHJpbnQtRjEtT2ZmaWNlamV0IFBybyA4NjAw
+      - 28924ABF85F1
+      - 3
+      - 6
+      - 30
+    - - Wm9oYXIgYWlycG9ydA==
+      - 00F76FCDE89C
+      - 3
+      - 11
+      - 28
+    - - aWM=
+      - 149182C06087
+      - 3
+      - 1
+      - 26
+    - - bWVkaWFsaW5r
+      - 14358B0B1920
+      - 2
+      - 1
+      - 24

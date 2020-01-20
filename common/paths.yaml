@@ -1,0 +1,216 @@
+/v2/devices:
+  get:
+    $ref: ../devices/paths.yaml#/GetList
+  post:
+    $ref: ../devices/paths.yaml#/Post
+/v2/devices/{device_id}:
+  delete:
+    $ref: ../devices/paths.yaml#/Delete
+  get:
+    $ref: ../devices/paths.yaml#/Get
+  parameters:
+  - in: path
+    name: device_id
+    required: true
+    schema:
+      type: number
+  patch:
+    $ref: ../devices/paths.yaml#/Patch
+/v2/devices/{device_id}/state:
+  get:
+    $ref: ../devices/paths.yaml#/GetState
+  patch:
+    $ref: ../devices/paths.yaml#/PatchState
+  parameters:
+  - in: path
+    name: device_id
+    required: true
+    schema:
+      type: number
+/v2/devices/{device_id}/actions/{action_id}:
+  put:
+    $ref: ../actions/paths.yaml#/Put
+  parameters:
+  - in: path
+    name: action_id
+    required: true
+    schema:
+      type: number
+  - in: path
+    name: device_id
+    required: true
+    schema:
+      type: number
+/v2/devices/{device_id}/commands:
+  get:
+    $ref: ../commands/paths.yaml#/GetList
+  post:
+    $ref: ../commands/paths.yaml#/Post
+/v2/devices/{device_id}/commands/{command_id}:
+  get:
+    $ref: ../commands/paths.yaml#/Get
+  patch:
+    $ref: ../commands/paths.yaml#/Patch
+  delete:
+    $ref: ../commands/paths.yaml#/Delete
+/v2/devices/{device_id}/commands/{command_id}/signal:
+  get:
+    $ref: ../commands/paths.yaml#/SignalGet
+  put:
+    $ref: ../commands/paths.yaml#/SignalPut
+  patch:
+    $ref: ../commands/paths.yaml#/SignalPatch
+  delete:
+    $ref: ../commands/paths.yaml#/SignalDelete
+/v2/devices/{device_id}/addr:
+  get:
+    $ref: ../commands/paths.yaml#/GetRemoteAddr
+  patch:
+    $ref: ../commands/paths.yaml#/PatchRemoteAddr
+  delete:
+    $ref: ../commands/paths.yaml#/DeleteRemoteAddr
+/v2/devices/{device_id}/commands/{command_id}/tx:
+  put:
+    $ref: ../commands/paths.yaml#/TxPut
+/v2/bridge:
+  get:
+    $ref: ../devices/paths.yaml#/GetBridge
+  patch:
+    $ref: ../devices/paths.yaml#/PatchBridge
+  delete:
+    $ref: ../devices/paths.yaml#/DeleteBridge
+/v2/signal/tx:
+  delete:
+    $ref: ../signal/paths.yaml#/TxDelete
+  put:
+    $ref: ../signal/paths.yaml#/TxPut
+/v2/signal/rssi:
+  get:
+    $ref: ../signal/paths.yaml#/RssiGet
+/v2/signal/scan:
+  put:
+    $ref: ../signal/paths.yaml#/ScanPut
+  get:
+    $ref: ../signal/paths.yaml#/ScanGet
+  delete:
+    $ref: ../signal/paths.yaml#/ScanDelete
+/v2/signal/scan/signal:
+  get:
+    $ref: ../signal/paths.yaml#/ScanSignalGet
+#/v2:
+#  delete:
+#    $ref: ../bonds/paths.yaml#/Delete
+#  get:
+#    $ref: ../bonds/paths.yaml#/Get
+#    patch:
+#    $ref: ../bonds/paths.yaml#/Patch
+/users:
+  get:
+    $ref: ../users/paths.yaml#/GetList
+  post:
+    $ref: ../users/paths.yaml#/Post
+/users/{user_id}:
+  delete:
+    $ref: ../users/paths.yaml#/Delete
+  get:
+    $ref: ../users/paths.yaml#/Get
+  parameters:
+  - in: path
+    name: user_id
+    required: true
+    schema:
+      type: number
+  patch:
+    $ref: ../users/paths.yaml#/Patch
+/v2/sys/wifi/sta:
+  get:
+    $ref: ../wifi/paths.yaml#/StaGet
+  put:
+    $ref: ../wifi/paths.yaml#/StaPut
+  delete:
+    $ref: ../wifi/paths.yaml#/StaDelete
+/v2/sys/wifi/scan:
+  get:
+    $ref: ../wifi/paths.yaml#/ScanGet
+/v2/sys/wifi/watchdog:
+  get:
+    $ref: ../wifi/paths.yaml#/WatchdogGet
+  patch:
+    $ref: ../wifi/paths.yaml#/WatchdogPatch
+/v2/sys/upgrade:
+  get:
+    $ref: ../firmware/paths.yaml#/Get
+  put:
+    $ref: ../firmware/paths.yaml#/Put
+  delete:
+    $ref: ../firmware/paths.yaml#/Delete
+/v2/sys/version:
+  get:
+    $ref: ../firmware/paths.yaml#/VersionGet
+/v2/sys/free:
+  get:
+    $ref: ../firmware/paths.yaml#/FreeGet
+/v2/sys/backup:
+  get:
+    $ref: ../firmware/paths.yaml#/BackupGet
+  put:
+    $ref: ../firmware/paths.yaml#/BackupPut
+  delete:
+    $ref: ../firmware/paths.yaml#/BackupDelete
+/v2/sys/reset:
+  put:
+    $ref: ../firmware/paths.yaml#/ResetPut
+/v2/sys/reboot:
+  put:
+    $ref: ../firmware/paths.yaml#/RebootPut
+/v2/sys/log:
+  get:
+    $ref: ../firmware/paths.yaml#/LogGet
+  put:
+    $ref: ../firmware/paths.yaml#/LogPut
+  delete:
+    $ref: ../firmware/paths.yaml#/LogDelete
+/v2/token:
+  get:
+    $ref: ../token/paths.yaml#/Get
+  put:
+    $ref: ../token/paths.yaml#/Patch
+/v2/api/mqtt:
+  get:
+    $ref: ../api/paths.yaml#/MqttGet
+  patch:
+    $ref: ../api/paths.yaml#/MqttPatch
+  delete:
+    $ref: ../api/paths.yaml#/MqttDelete
+/v2/api/bpup:
+  get:
+    $ref: ../api/paths.yaml#/BPUPGet
+  patch:
+    $ref: ../api/paths.yaml#/BPUPPatch
+  delete:
+    $ref: ../api/paths.yaml#/BPUPDelete
+/v2/debug/wifi:
+  get:
+    $ref: ../debug/paths.yaml#/WifiGet
+  patch:
+    $ref: ../debug/paths.yaml#/WifiPatch
+/v2/debug/leds:
+  get:
+    $ref: ../debug/paths.yaml#/LedsGet
+  patch:
+    $ref: ../debug/paths.yaml#/LedsPatch
+/v2/debug/si446x:
+  get:
+    $ref: ../debug/paths.yaml#/FccGet
+  patch:
+    $ref: ../debug/paths.yaml#/FccPatch
+/v2/debug/livelog:
+  get:
+    $ref: ../debug/paths.yaml#/LiveLogGet
+  put:
+    $ref: ../debug/paths.yaml#/LiveLogPut
+  delete:
+    $ref: ../debug/paths.yaml#/LiveLogDelete
+/v2/debug/beau/db:
+  get:
+    $ref: ../debug/paths.yaml#/BeauDbGet

@@ -1,0 +1,224 @@
+WifiScanPath:
+  get:
+    $ref: ../wifi/paths.yaml#/ScanGet
+WifiStaPath:
+  get:
+    $ref: ../wifi/paths.yaml#/StaGet
+  put:
+    $ref: ../wifi/paths.yaml#/StaPut
+  delete:
+    $ref: ../wifi/paths.yaml#/StaDelete
+WifiWatchDogPath:
+  get:
+    $ref: ../wifi/paths.yaml#/WatchdogGet
+  patch:
+    $ref: ../wifi/paths.yaml#/WatchdogPatch
+WifiUpgradePath:
+  get:
+    $ref: ../firmware/paths.yaml#/Get
+  put:
+    $ref: ../firmware/paths.yaml#/Put
+  delete:
+    $ref: ../firmware/paths.yaml#/Delete
+WifiVersionPath:
+  get:
+    $ref: ../firmware/paths.yaml#/VersionGet
+WifiResetPath:
+  put:
+    $ref: ../firmware/paths.yaml#/ResetPut
+WifiRebootPath:
+  put:
+    $ref: ../firmware/paths.yaml#/RebootPut
+
+StaGet:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Sta
+      description: Current Wi-Fi settings
+    '204':
+      description: Not connected to Wi-Fi
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+  security:
+  - BasicAuth: []
+  summary: Get current Wi-Fi settings
+  description: |
+    Get the name (base64-encoded in `ssid`) of the Wi-Fi network to which the Bond is currently connected.
+
+    The `status` field gives an indication of whether the Wi-Fi settings
+    have been successful:
+      - -2 = authentication failure
+      - -1 = network not found
+      - 0 = attempting to connect
+      - 1 = connected, but no IP address (yet)
+      - 2 = connected with IP address assigned
+
+    The BSSID of the network's access point is provided, hex-encoded in `bssid`.
+    If `bssid_set` is present and `true`, then the Bond has been configured to
+    only connect to an access point with a specific BSSID, specified in an
+    earlier PUT.
+
+    The MAC address of the Bond is also provided, hex-encoded in `mac`. If this MAC
+    address is not available, it will be `null`.
+
+    Some network configuration fields are returned: the Bond's IP address (`ip`),
+    its default gateway (`gw`), its netmask (`netmask`), and its DNS and fallback
+    DNS (`dns` and `dns_alt`). `static_ip_set` is present and `true` if a previous
+    PUT has configured the Bond to use static values for these field. `dns_set`
+    and `dns_alt_set` are present and `true` if an earlier PUT has configured the
+    DNS used by the Bond.
+  tags:
+  - Wi-Fi Station
+StaDelete:
+  responses:
+    '204':
+      description: Disconnect from Wi-Fi network
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Disconnect from Wi-Fi network
+  description: |
+    The Bond will disconnect from the current Wi-Fi network,
+    and will not attempt to reconnect, even after a power cycle.
+    It will be necessary to use PUT again to reconfigure Wi-Fi.
+  tags:
+  - Wi-Fi Station
+StaPut:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Sta
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Sta
+      description: New Wi-Fi settings
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Connect to a Wi-Fi network
+  description: |
+    Instruct the Bond to connect to the network specified.
+
+    The Bond immediately saves the settings in non-volatile storage,
+    and therefore the settings will persist even after power cycle.
+
+    The network name must be specified in `ssid` (base64-encoded).
+    A `password` (again base64-encoded) is required unless it is an unsecured (open) network.
+    The required security type (WEP/WPA/WPA2) is automatically determined by the Bond.
+
+    If `ip`, `gw`, and `netmask` are all present, the Bond will attempt to use
+    the three values to configure its STA interface's IP address, default gateway,
+    and netmask, respectively. If any of these fields are present, all three must
+    be present.
+
+    If `dns` or `dns_alt` are present, the Bond will use them in place of its
+    default main DNS and fallback DNS, respectively.
+
+    If `bssid` is present, the Bond will only connect to an access point with the supplied,
+    hex-encoded BSSID.
+  tags:
+  - Wi-Fi Station
+ScanGet:
+  responses:
+    '204':
+      description: No results available yet
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Scan
+      description: Scan results
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Scan for Wi-Fi networks
+  description: |
+    A GET request starts a new Wi-Fi network scan (unless a scan is already in progress),
+    and returns the results of the most recently completed scan. It is not an error for scan to be
+    called before the scan has completed; however, the old results will be returned.
+    A 204 is returned if no scan has been run yet since boot.
+
+    The `results` are returned as a nested JSON array (a 2D table) rather than a JSON object for compactness.
+    The `format` array gives the meaning of each column of the `results` table.
+
+    The `ssid` field contains the network name. It is base64-encoded because arbitrary characters are allowed by the Wi-Fi standard.
+
+    The `auth` field gives the type of network security:
+      - 0 = unsecured (open)
+      - 1 = WEP
+      - 2 = WPA PSK
+      - 3 = WPA2 PSK
+      - 4 = WPA/WPA2 PSK
+      - 5 = WPA2 Enterprise [currently unsupported by Bond]
+
+    Note that for `auth` types 0 and 1, the application should
+    warn the user that the network could be more secure,
+    and should be set to WPA2 for best security.
+
+    The `signal` field contains an indication of access point signal quality
+    (which may be derived from signal strength and/or signal-to-noise ratio),
+    ranging from 0 to 100.
+
+    If `hidden_requires_bssid` is present and true, and the user wants to connect
+    to a hidden network, the user must supply the BSSID (that is, the MAC address
+    of the access point).
+  tags:
+  - Wi-Fi Scan
+
+WatchdogGet:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Watchdog
+      description: Wi-Fi Watchdog settings
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Check Wi-Fi Watchdog configuration
+  tags:
+  - Wi-Fi Watchdog
+WatchdogPatch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Watchdog
+  responses:
+    '200':
+      description: Wi-Fi Watchdog config updated
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Configure Wi-Fi Watchdog
+  description: |
+    Configure the Wi-Fi watchdog, which runs whenever the Wi-Fi station (`sta`)
+    is configured.
+
+    This watchdog feature is useful on some Wi-Fi networks where the Bond
+    may lose its connection after some period of time.
+  tags:
+  - Wi-Fi Watchdog

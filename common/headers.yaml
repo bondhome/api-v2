@@ -1,0 +1,9 @@
+PaginationHeader:
+  BONDAPI-NEXT-PAGE:
+    description: Pagination next page
+    schema:
+      type: number
+  BONDAPI-PREVIOUS-PAGE:
+    description: Pagination previous page
+    schema:
+      type: number

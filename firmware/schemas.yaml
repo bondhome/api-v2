@@ -1,0 +1,331 @@
+Version:
+  properties:
+    upgrade_http:
+      example: true
+      type: boolean
+      description: |
+        If true, Bond will use HTTP protocol using `http_port` specified
+          in sys/upgrade endpoint.
+
+        If false or absent, Bond will use HTTPS protocol using `port`
+          specified in sys/upgrade endpoint.
+    bondid:
+      example: KSMJWCE12345
+      type: string
+      description: Bond ID (serial number). Unique within the Bond platform.
+    target:
+      example: zermatt
+      type: string
+      description: |
+        The target identifies the configuration of bond-core firmware
+        running on the device. Target is often, though not always,
+        in a one-to-one relationship with product models.
+        The target, together with the firmware version,
+        uniquely identify the exact image on the device.
+    api:
+      example: 2
+      type: integer
+      description: |
+        API version increments only when a change occurs in the firmware API
+          which requires a new version of the Bond App. Incrementing this
+          field will cause older apps to strongly encourage user to upgrade
+          the app on the next interaction with the product.
+    fw_ver:
+      example: "v2.9"
+      type: string
+      description: |
+        Firmware version.
+
+        Examples of release versions:
+
+          - `v2.2`
+          - `v2.2.1`
+          - `v2.3-alpha`
+          - `v2.3-beta`
+
+        Unreleased versions have a more complex general form. Example:
+
+        `v1.204.2-57-g9c88a66-dirty-smith-great-new-feature`
+
+        Where `v1.204.2` is the previous release,
+        there have been 57 commits since that release,
+        the last commit short-hash is `9c88a66`,
+        the working directory was dirty when the image was built,
+        it was on a branch owned by developer `smith`,
+        and the rest of the branch name was `great-new-feature`.
+
+        The version number will always match the regex
+        `v[\d]+.[\d]+(.[\d]+)?(-[0-9A-Za-z\-]+)?`.
+
+        Note that any user other than the developer should
+        reject a firmware with the `dirty` tag.
+    fw_date:
+      example: "Wed Nov 22 15:45:19 UTC 2020"
+      type: string
+      description: |
+        Human-readable string describing the firmware build date.
+
+        For display only. Do not use for programmatic purposes.
+        Must not be relied upon to always be in the same format.
+    mcu_ver:
+      example: "v1.234"
+      type: string
+      description: |
+        Describes firmware on secondary processor (MCU) of Bond hardware
+        with serial numbers starting with A, B, or C. Later models do
+        not have this field.
+    make:
+      example: "Olibra LLC"
+      type: string
+      description: brand or manufacturer.
+    branding_profile:
+      example: "BondHome"
+      type: string
+      description: |
+        Symbol used for looking up a customized branded experience.
+        This is not nessisarily an appropriate representation of the product's
+        brand name, because this is not nessisarly known at manufacturing time.
+    model:
+      example: "BD-1000"
+      type: string
+      description: |
+        Device model number. Displayed to user in advanced settings.
+
+        Used, along with `brand`, to customize the setup instructions
+        for the device.
+Upgrade:
+  properties:
+    host:
+      example: "s3.amazonaws.com"
+      type: string
+      description: |
+        Fully-Qualified Domain Name or IP address of server from which to download upgrade
+    port:
+      example: "443"
+      type: string
+      description: |
+        HTTPS port number of server.
+        Used only if `sys/version` is missing key `upgrade_http`,
+          or the key is false.
+    http_port:
+      example: "80"
+      type: string
+      description: |
+        HTTP port number of server.
+        Used only if `sys/version` contains true value for `upgrade_http`.
+    path:
+      example: "/bond-updates/breck-mach1-v2.0.bin"
+      type: string
+      description: |
+        Path of HTTPS URL to use to fetch the firmware binary.
+        Must not include any query or fragment.
+        Must start with a forward slash.
+
+        Note that only HTTPS is supported.
+        Other protocols (including unsecured HTTP) are not supported.
+
+#        Note that the Bond does not verify certificates for this download,
+#        so no real security is provided in the downloading of the firmware image.
+#        We do this because under some circumstances the Bond must
+#        download an update from an app which is ultimately untrusted.
+#        However, the upgrade SHA-256 hash is signed,
+#        and will be checked before the firmware is made bootable.
+    info:
+      example: "cc8d372f1b1ada5b99097e46f9d45107487e5f8b000d5ccd943100b3dc27fb55:bond-simulator:v2.0"
+      type: string
+      description: |
+        Firmware info string, consisting of
+        SHA-256 hash of the firmware binary,
+        firmware target,
+        and new firmware version number.
+
+        The hash is checked after firmware is downloaded and before
+        it is written to flash, to ensure integrity and security.
+    sig:
+      example: "PAGliMxpwYYkuG+48JDu6rYfF9V57xXGNy2xf8yXCoo2Gcdk8plHrez2bPWkL8TZ5ptaZBPE9UuQf8wx9nkQswBoX413GHnQhBmyX0n/DihqQCG5rR7o3dZWhDsvke20JSB18D8xjNGHaIsWITyL38UAxvkw6gx5iv1ZXZ1KvafYoXbpk0mqfPJ7e/gV3SOBYXppHkm+3nQWGyxrn+oRg7LT82/JrKc//jkg18GfB0nS0cGfa9b6XFUELjAvY3Yi2cymbErcNZfu5jmsQxIOrGvDjy5foSTO1dK5uK9x+3frbIx6dYHQ3vriHMXPO2q+G1Hszu+dqI+aFS3rEdt8DbXoQ1qn/4eKhVhfJSMox9su7o6mvxA2LPFGbXXY6aauBA+4rMObid1JQ879NR41TckN7tZz/JCPFRCe4pqx+rCdPGnY78brllrFcb9J6bZxpKuo7GZ/der5zPZAev+EMOLVtSVqGzNA8VG+tghtxWWueVHG2R3XacLsF2gzWPjONsdwYmCnAihLGNkaPhrUwRSHUs8/LBzJPYtTjH13fv6ELpylztcMPwM7KoFJRyiuhFW3m2JinIIwqT9N2jwlGN3f3Fn/CJ3jA8fLhyQ3Vu37kowLZrI+8KVAdfxEyrEDHD/HIC2CMnoB6MSkuSTVO3AAAVKjUUurFGPb8NAiIk0="
+      type: string
+      description: |
+        Digital signature of `info` string, signed using Olibra's private key,
+        and base-64 encoded. Note that, as a security precaution,
+        different key-pair is used for each firmware target.
+        The API client does not need to worry about the key-pairs,
+        but only be capable of providing the appropriate `info` and `sig`
+        fields that correspond to a particular firmware binary.
+        This metadata is available in release notes from Olibra.
+
+        The Bond validates this signature before the firmware update is completed.
+    reboot:
+      example: 1
+      type: number
+      description: |
+        If non-zero, requests that the Bond reboot spontaneously upon
+        successful completion of the upgrade installation.
+
+        If zero, the Bond will wait for an explicit reboot via sys/reboot.
+
+        Defaults to zero.
+  required:
+    - host
+    - port
+    - path
+    - info
+    - sig
+
+Progress:
+  properties:
+    progress:
+      example: -1
+      type: number
+      description: |
+        Integer describing status of a firmware upgrade.
+
+          - 1-999 = upgrade progress in 10ths of a percent
+          - 1000 = upgrade complete, but explicit reboot required
+          - -1 = error
+    error_msg:
+      example: "net_connect"
+      type: string
+      description: |
+        Only present when progress is less than zero.
+
+        This string MAY be displayed to the user,
+        and it SHOULD be logged for diagnostic purposes.
+Free:
+  properties:
+    ram_size:
+      example: 512000
+      type: number
+      description: |
+        Size of Bond's RAM, in bytes.
+    ram_free:
+      example: 68024
+      type: number
+      description: |
+        Free RAM, in bytes.
+
+        Note that memory fragmentation impacts usefulness of free RAM.
+    db_total:
+      example: 4000000
+      type: number
+      description: |
+        Size of Bond's flash database, in bytes.
+
+        (This is the total size of the database partition,
+        including all database record overhead.)
+    db_free:
+      example: 80000
+      type: number
+      description: |
+        Amount of free space in Bond database, in bytes.
+
+        Note that this number counts all database records
+        which are marked for deletion as part of free space,
+        even though they are not yet compacted.
+Backup:
+  properties:
+    tag:
+      example: "YYMMDD-HHMMSS"
+      type: string
+      description: |
+        String which uniquely defines the requested backup or restore.
+
+        String is a UTC date-time generated by the client.
+
+        When reading, this is the tag that corresponds to the active
+        `backup` or `restore` operation.
+    type:
+      example: backup
+      type: string
+      description: |
+        - `"backup"`
+        - `"restore"`
+    backup:
+      example: 0
+      type: number
+      readOnly: true
+      description: |
+        - `0`: no backup running
+        - `1`: backup still running
+        - `2`: backup successful
+        - `-1`: backup failure
+    restore:
+      example: -1
+      type: number
+      readOnly: true
+      description: |
+        - `0`: no restore running
+        - `1`: restore still running
+        - `2`: restore successful
+        - `-1`: restore failure
+
+        Note: only one of `backup` and `restore` can be non-zero at once.
+    progress:
+      example: 999
+      type: number
+      readOnly: true
+      description: |
+        Number from 0-1000 representing progress of `backup` or `restore`.
+    error_msg:
+      example: "connection error"
+      type: string
+      readOnly: true
+      description: |
+        Human-readable description of why `backup` or `restore` is `-1`.
+        Absent otherwise.
+    backup_success_ago:
+      example: 3600
+      type: number
+      readOnly: true
+      description: |
+        Number of seconds ago that the last backup completed succesfully.
+
+        Will be absent if no backup has succeeded since Bond boot.
+    restore_success_ago:
+      example: 60
+      type: number
+      readOnly: true
+      description: |
+        Number of seconds ago that the last restore completed succesfully.
+
+        Will be absent if no restore has succeeded since Bond boot.
+Log:
+  properties:
+    base_url:
+      example: "192.168.1.102"
+      type: string
+      description: |
+        (Optional) If not provided, Olibra S3 URL is assumed.
+
+        If provided, `base_url` will be used to construct the HTTP URL
+        used to upload detailed firmware logs.
+    status:
+      example: 2
+      type: number
+      readOnly: true
+      description: |
+        - `0`: no log upload running
+        - `1`: log upload in progress
+        - `2`: log upload success
+        - `-1`: log upload failure
+    progress:
+      example: 999
+      type: number
+      readOnly: true
+      description: |
+        Number from 0-1000 representing progress of operation.
+    error_msg:
+      example: "connection error"
+      type: string
+      readOnly: true
+      description: |
+        Human-readable description of why status is `-1`.
+        Absent otherwise.
+
+Reset:
+  properties:
+    type:
+      example: "factory"
+      type: string
+      description: |
+        - `"factory"`: factory reset (aka "White Reset")
+        - `"setup"`: setup reset (aka "Wi-Fi Reset" or "Green reset")

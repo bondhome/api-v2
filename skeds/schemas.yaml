@@ -1,0 +1,64 @@
+Skeds:
+  properties:
+    action:
+      example: TurnOff
+      required: true
+      type: string
+    argument:
+      example: ''
+      type: any
+    dst:
+      example: -3600
+      type: number
+    id:
+      example: 123
+      readOnly: true
+      type: string
+    interval:
+      example: 3600
+      type: number
+    name:
+      example: Every Day
+      required: true
+      type: string
+    repeat:
+      example: 12
+      type: number
+    start:
+      example: 1234434
+      type: number
+  type: object
+SkedsCollection:
+  additionalProperties:
+    $ref: '#/Skeds'
+  example:
+    '123':
+      action: TurnOn
+      argument: ''
+      dst: -3600
+      id: 123
+      interval: 3600
+      name: Hi
+      repeat: 12
+      start: 1234434
+    '167':
+      action: SetBreeze
+      argument:
+        mean: 0.2
+        var: 0.9
+      dst: -3600
+      id: 167
+      interval: 3600
+      name: Hello
+      repeat: 12
+      start: 1234434
+    '277':
+      action: SetBrightness
+      argument: 75
+      dst: -3600
+      id: 277
+      interval: 3600
+      name: Hi Again
+      repeat: 12
+      start: 1234434
+  type: object

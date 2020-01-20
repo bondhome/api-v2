@@ -1,0 +1,139 @@
+Delete:
+  responses:
+    '204':
+      description: Remove specific user
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Remove specific user
+  tags:
+  - Users
+Get:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/User
+      description: Get specific user
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Get specific user
+  tags:
+  - Users
+GetList:
+  parameters:
+  - example: A
+    in: path
+    name: feature_group
+    schema:
+      type: string
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/UserCollection
+      description: List active users
+      headers:
+        $ref: ../common/headers.yaml#/PaginationHeader
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: List active users
+  tags:
+  - Users
+Patch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          properties:
+            feature_group:
+              default: C
+              example: A
+              type: string
+            password:
+              example: secretpass
+              format: password
+              type: string
+              writeOnly: true
+          type: object
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/User
+      description: Change specific user field
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Change specific user field
+  tags:
+  - Users
+Post:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/User
+  responses:
+    '201':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/User
+      description: User was successfully created
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '409':
+      $ref: ../common/responses.yaml#/Conflict
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Create new user
+  tags:
+  - Users
+GetAuth:
+  parameters:
+    - name: response_type
+      example: code
+      in: path
+      schema:
+        type: string
+    - name: client_id
+      example: 542a7dc16ae348c38ade1be593a65097
+      in: path
+      schema:
+        type: string
+    - name: redirect_uri
+      example: https://api.bondapp.io/redirect
+      in: path
+      schema:
+        type: string
+    - name: state
+      example: 6a1fd11c91db4d9489cb693f57914b4b
+      in: path
+      schema:
+        type: string

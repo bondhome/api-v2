@@ -1,0 +1,42 @@
+BadRequest:
+  content:
+    application/json:
+      schema:
+        $ref: schemas.yaml#/BadRequest
+  description: Bad request
+Conflict:
+  content:
+    application/json:
+      schema:
+        $ref: schemas.yaml#/Conflict
+  description: Conflict
+Forbidden:
+  content:
+    application/json:
+      schema:
+        $ref: schemas.yaml#/Forbidden
+  description: Forbidden
+InternalServerError:
+  content:
+    application/json:
+      schema:
+        $ref: schemas.yaml#/InternalServerError
+  description: Internal Server Error
+NotFound:
+  content:
+    application/json:
+      schema:
+        $ref: schemas.yaml#/NotFound
+  description: Not Found
+Unauthorized:
+  content:
+    application/json:
+      schema:
+        $ref: schemas.yaml#/Unauthorized
+  description: Unauthorized
+Created:
+  content:
+    application/json:
+      schema:
+        $ref: schemas.yaml#/Created
+  description: Resource Created

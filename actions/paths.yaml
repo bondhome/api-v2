@@ -1,0 +1,51 @@
+ActionPath:
+  put:
+    $ref: ../actions/paths.yaml#/Put
+  parameters:
+  - in: path
+    name: action_id
+    required: true
+    schema:
+      type: number
+  - in: path
+    name: device_id
+    required: true
+    schema:
+      type: number
+
+Put:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          example:
+            argument: 4
+  responses:
+    '204':
+      description: Action executed
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Execute a device action
+  description: |
+    The `action_id` is the name of the action from the `actions` list in
+    the response to GET `/devices/{device_id}`.
+
+    This endpoint blocks until confirmation that the Bond has executed
+    the action. Timeout shall be no more than 7 seconds.
+
+    To check the resulting state, the client may query
+    `/devices/{device_id}/state`.
+
+    See the Features section to learn what the various actions mean,
+    and what argument is expected, if any.
+    For example, the action `SetSpeed` takes an integer parameter
+    which is the desired speed number.
+  tags:
+  - Device Actions
+  security:
+    - OAuth: ["oauth2"]

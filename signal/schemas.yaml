@@ -1,0 +1,141 @@
+Signal:
+  type: object
+  properties:
+    freq:
+      example: 434000
+      type: number
+      description: |
+        Frequency in kHz:
+          - `>= 1000` is RF
+          - `< 1000` is IR
+
+        Bond Bridge can only receive IR signals at or near 38 kHz,
+        and will report all IR signals as 38 kHz.
+
+        Bond Bridge currently transmits all IR signals at 38 kHz also.
+    modulation:
+      example: OOK
+      type: string
+      description: |
+        - `OOK` = on-off keying
+        - `GFSK` = gaussian frequency-shift keying
+
+        If not provided, defaults to `OOK`.
+    data:
+      example: "110100110110H"
+      type: string
+      description: |
+        String representation of data bits to be transmitted.
+
+        The maximum length of the data string is 6144 bytes.
+    encoding:
+      example: "cq"
+      type: string
+      description: |
+        Specifies the encoding of the data string.
+
+        In all cases, the duration of each bit is 1/`bps` seconds.
+
+        ### CQ encoding (`"cq"`)
+
+        This is a simple encoding where bits are represented using `0` and `1`,
+          with some abbreviations for sequences of bits.
+
+        Each character represents one or more bits:
+
+          - `0` single zero bit
+          - `1` single one bit
+          - `C` 2^0 (1) zero bits
+          - `D` 2^1 (2) zero bits
+          - `E` 2^2 (4) zero bits
+          - `F` 2^3 (8) zero bits
+          - ...
+          - `Q` 2^14 (16384) zero bits
+          - `c` thru `q` are just like `C` thru `Q`, but for one bits
+          - `A` the three bits 110
+          - `B` the three bits 011
+
+        ### Hex (`"hex"`)
+
+        This is a simple encoding where the data string consists of hex bytes.
+        Each hex byte represents 8 bits of data.
+
+        Hex encoding is currently limited to only work at `40000` bps.
+
+        This is the default encoding for scan results.
+
+    bps:
+      example: 1000
+      type: number
+      description: |
+        Bitrate of `data`. Range is 100 to 40000.
+
+        If not provided, `40000` is assumed.
+    reps:
+      example: 12
+      type: number
+      description: |
+        Number of times that data should be repeated.
+
+        If not provided, `1` is assumed.
+    use_scan:
+      example: true
+      type: boolean
+      writeOnly: true
+      description: |
+        If present and true, the Signal recorded by the most recent scan will
+        be used, with all other fields ignored
+Scan:
+  type: object
+  properties:
+    freq:
+      example: 434000
+      type: number
+      description: |
+        Frequency to scan in kHz.
+
+        If not provided, scan will search all RF frequencies, but not IR.
+
+        Specify `38` to explicitly scan IR.
+    modulation:
+      example: OOK
+      type: string
+      description: |
+        - `OOK` = on-off keying
+        - `GFSK` = gaussian frequency-shift keying
+
+        If not provided, defaults to `OOK`.
+
+        Only applicable to RF.
+
+        (GFSK scanning currently unimplemented.)
+    running:
+      example: false
+      readOnly: true
+      description: |
+        If true, scan is running.
+    total_timeout:
+      example: 30
+      type: number
+      readOnly: true
+      description: |
+        The time from scan start to scan timeout, in
+        seconds.
+    success:
+      example: true
+      readOnly: true
+      description: |
+        If true, a signal was found.
+Rssi:
+  example:
+    format:
+    - freq
+    - rssi
+    results:
+    - - 350000
+      - 80
+    - - 351000
+      - 87
+    - - 352000
+      - 92
+  type: object

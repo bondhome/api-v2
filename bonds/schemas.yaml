@@ -1,0 +1,15 @@
+Bond:
+  properties:
+    id:
+      example: AA00001
+      type: string
+    firmware_version:
+      allowEmptyValue: true
+      example: 1.1.2
+      type: string
+    location:
+      allowEmptyValue: true
+      example: Room
+      type: string
+  required:
+  - id

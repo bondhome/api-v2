@@ -1,0 +1,172 @@
+WifiGet:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Wifi
+      description: Wi-Fi factory test settings
+  summary: Get Wi-Fi factory test settings
+  description: |
+    The `shutdown` field indicates the power state of the Wi-Fi (+BLE) radio:
+       - `0`: normal operation
+       - `1`: low-power shutdown mode
+
+    If the `shutdown` field is not present, assume normal operation.
+  tags:
+  - Debug
+WifiPatch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Wifi
+  responses:
+    '200':
+      description: Wi-Fi factory test settings changed
+  summary: Change Wi-Fi factory test settings
+  description: |
+    Set `shutdown` to `1` or `0` to control Wi-Fi (+BLE) radio power level.
+
+    These settings are not persisted.
+  tags:
+  - Debug
+LedsGet:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Leds
+      description: LED state
+  summary: Get LED state
+  description: |
+    Get status from the BLED driver.
+
+    If `manual` is `0`, `value` reflects the instantaneous value of the LEDs,
+    and may change rapidly and automatically.
+  tags:
+  - Debug
+LedsPatch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Leds
+  responses:
+    '200':
+      description: LED state was changed successfully
+    '400':
+      description: Error parsing request
+    '500':
+      description: Driver error
+  summary: Manually control LEDs
+  description: |
+    Use this endpoint to manually control LEDs, such as during factory test.
+    Be sure to use the `manual` field to prevent `value` from being overridden
+    from automatic LED control.
+
+    If `manual` is `0` or absent, `value` may still be set, but may be overridden
+    at any time.
+  tags:
+  - Debug
+FccGet:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Fcc
+      description: SubGHz Transceiver State
+  summary: Get low-level radio state
+  description: |
+    Use this endpoint only as part of an FCC or factory test program.
+  tags:
+  - Debug
+FccPatch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Fcc
+  responses:
+    '200':
+      description: FCC control accepted
+    '400':
+      description: Error parsing request
+    '500':
+      description: Driver error
+  summary: Manually manipulate radio
+  description: |
+    All these settings require `manual` to be set before they take effect.
+
+    Use this endpoint only as part of an FCC or factory test program.
+
+    NOTE: In production firmware, FCC compliance is ensured via power,
+    frequency, and antenna restrictions on this endpoint.
+    If a setting beyond FCC limits is requested, a `200` will be returned,
+    but upon subsequent GET, the values may either be unchanged or truncated.
+  tags:
+  - Debug
+LiveLogGet:
+  responses:
+    '204':
+      description: LiveLog disabled
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/LiveLog
+      description: LiveLog configuration
+  summary: Get LiveLog configuration
+  description: |
+    Get the current configuration of the LiveLog component.
+  tags:
+  - LiveLog
+LiveLogPut:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/LiveLog
+  responses:
+    '200':
+      description: LiveLog configured
+    '400':
+      description: Error parsing request
+  summary: Configure LiveLog
+  description: |
+    Instructs Bond to start sending UDP packets to specified IP address and port.
+    Every log message is sent in a seperate UDP packet.
+    Depending on log verbosity, this may cause serious performance problems,
+    so use wisely.
+
+    This setting does not persist reboot.
+  tags:
+  - LiveLog
+LiveLogDelete:
+  responses:
+    '204':
+      description: LiveLog disabled
+  summary: Disable LiveLog
+  tags:
+  - LiveLog
+BeauDbGet:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/BeauDb
+      description: Database statistics
+  summary: Get database statistics
+  description: |
+    Get some statistics about the main Bond database such free space available.
+
+    This endpoint exists for each of the partitions on the product which
+    use the Beau database format:
+      - `db` - the main read-write database where devices and settings are stored
+      - `id` - the read-only partition containing Bond ID and certificates
+      - `state` - constains state of each device [Bridges only]
+  tags:
+  - Database

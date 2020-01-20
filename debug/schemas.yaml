@@ -1,0 +1,175 @@
+Wifi:
+  properties:
+    shutdown:
+      example: 1
+      type: number
+Leds:
+  properties:
+    n:
+      example: 5
+      type: number
+      description: |
+        Number of LEDs present.
+      readOnly: true
+    manual:
+      example: 1
+      type: number
+      description: |
+        - `0` : LEDs behave normally (default)
+        - `1` : LED automatic control disabled, will remain fixed as set
+    value:
+      example: "FF000000FF000000FFFFFFFF000000"
+      type: string
+      description: |
+        Concatinated 24-bit RGB hex values for each of the `n` LEDs.
+
+        In the example, the 5 LEDs are set to Red, Green, Blue, White,
+        and Off, respectively.
+Fcc:
+  properties:
+    enabled:
+      example: 0
+      type: number
+      description: |
+        - `0` : Bond radio operates normally; settings on this endpoint are ignored
+        - `1` : Bond in RF test mode; settings here take effect
+    mode:
+      example: 0
+      type: number
+      description: |
+        Controls the RF mode:
+          - `0`: transceiver shutdown
+          - `1`: RX fixed frequency
+          - `2`: RX continuous scan
+          - `3`: TX simulated packet continuously
+          - `4`: TX brief burst
+          - `5`: TX CW
+
+        See enum `fcc_cli_mode_t` in bond-core firmware.
+    modulation:
+      example: 1
+      type: number
+      description: |
+        - `0`: OOK
+        - `1`: GFSK
+
+        See enum `fcc_cli_modulation_t` in bond-core firmware.
+    duty:
+      example: 75
+      type: number
+      description: |
+        Duty cycle of transmission (relevent for OOK and GFSK when in
+        "TX simulated packet" and "TX brief burst" modes.
+    power:
+      example: 127
+      type: number
+      description: |
+        Power level, from 0-127.
+
+        Note: In production-firmware, power-level is restricted per frequency
+        and duty-cycle for compliance.
+    freq:
+      example: 434000
+      type: number
+      description: |
+        Frequency in integer kHz.
+
+        Note: In production-firmware, frequency is restricted to authorized
+        ranges.
+    ant:
+      example: 2
+      type: number
+      description: |
+        Select antenna number (valid values: 1, 5, 2, 3).
+
+        Antenna selection is ephemeral and will be overridden by other settings.
+
+        Note: In production-firmware, this field is read-only.
+    rssi:
+      example: 104
+      type: number
+      readOnly: true
+      description: |
+        RSSI as measured at current frequency, if in an RX mode.
+LiveLog:
+  properties:
+    ip:
+      example: "192.168.1.102"
+      type: string
+    port:
+      example: 1337
+      type: number
+BeauDb:
+  properties:
+    live_records:
+      example: 20
+      type: string
+      description: |
+        Number of "live" records in the database.
+    dead_records:
+      example: 33
+      type: string
+      description: |
+        Number of "dead" records in the database.
+        These are records marked for deletion but which have not yet been
+        erased through compaction.
+    empty_pages:
+      example: 0
+      type: string
+      description: |
+        Number of pages which are entirely empty.
+        This will be large initially, then reduce to 1 (the swap page).
+        This may be 0 for older databases and in case of power loss
+        during compaction, however it should go back to 1 after the next
+        compaction as a new swap page results.
+    total_dead:
+      example: 110824
+      type: string
+      description: |
+        Total amount of memory used by dead records.
+        Dead records are counted as free space.
+    total_free:
+      example: 900421
+      type: string
+      description: |
+        Total free space in database (including dead space), in bytes.
+    max_free:
+      example: 4002
+      type: string
+      description: |
+        Maximum freespace of any page, in bytes,
+        excepting the swap page (a single empty page kept to permit
+        compaction).
+        In current (v2.6) implementation, this is the typical limit on
+        the largest record which can be written to the database.
+    total_head:
+      example: 900421
+      type: string
+      description: |
+        Total free space in database (including dead space), in bytes.
+    min_head:
+      example: 15
+      type: string
+      description: |
+        Minimum amount of headroom of any page, in bytes.
+        This dictates the smallest record which could result in a compaction.
+    compactions:
+      example: 1
+      type: string
+      description: |
+        Number of compactions performed since boot.
+    size:
+      example: 1048576
+      type: string
+      description: |
+        Total size of database, in bytes.
+    page_size:
+      example: 4096
+      type: string
+      description: |
+        Size of each page, in bytes.
+    dirty:
+      example: false
+      type: boolean
+      description: |
+        Indicates that a write failed and database is in an inconsistant state.
