@@ -1,7 +1,12 @@
-# Bond Api (2.0)
+# Bond API V2
 
-Documentation for backend and firmware api.
-You need docker to build/run/bundle the documentation
+Documentation for the Bond V2 API, used by Bond Bridge and Smart by Bond products. This is the _Local API_ used within the home Wi-Fi network.
+
+## Contribuing
+
+We welcome corrections and improvements to the API documentation. Please open a PR!
+
+By submitting a PR, you are agreeing to have your contribution licensed under the same terms as the rest of the docs. See LICENSE file.
 
 ## Build image
 
