@@ -1,6 +1,8 @@
 # Bond API V2
 
-Documentation for the Bond V2 API, used by Bond Bridge and Smart by Bond products. This is the _Local API_ used within the home Wi-Fi network.
+Source code to documentation for the Bond V2 API, used by Bond Bridge and Smart by Bond products. This is the _Local API_ used within the home Wi-Fi network.
+
+To *read* the docs, please go here: http://docs-local.appbond.com/
 
 ## Contribuing
 
