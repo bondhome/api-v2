@@ -22,6 +22,14 @@ description: |
   be able to directly communicate with the Bond over HTTP. Typically this means being
   on the same Wi-Fi network. We are still working on a Cloud API, which will be very similar to the Local API.
 
+  ## Contributing
+
+  We welcome your corrections and improvements to this documentation!
+  You can find the source code for the documentation at the link below. 
+  Feel free to open a PR.
+
+  https://github.com/bondhome/api-v2
+
   ## Security
 
   The Bond Local API uses unencrypted HTTP
