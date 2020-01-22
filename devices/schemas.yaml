@@ -95,17 +95,6 @@ Properties:
       readOnly: true
       example: 30
       type: int
-Bridge:
-  properties:
-    location:
-      example: My Room
-      type: string
-    name:
-      example: My Bridge
-      type: string
-    bluelight:
-      example: 127
-      type: int
 
 RemoteAddr:
   properties:

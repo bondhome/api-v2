@@ -1,4 +1,6 @@
 ---
+/v2/bridge:
+    $ref: ../bridge/paths.yaml
 /v2/devices:
     $ref: ../devices/paths.yaml#/DevicesPath
 /v2/devices/{device_id}:
