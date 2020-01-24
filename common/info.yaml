@@ -338,7 +338,9 @@ description: |
   You can configure your Bond to communicate with a custom MQTT broker through the `api/mqtt`
   endpoint, which is currently in Beta status.
 
-  
+  The MQTT broker to which the Bond is connected is treated as trusted, so token
+  authentication is not necessary. Make sure you use the server_cert fields in
+  api/mqtt to avoid man-in-the-middle attacks.
 
   # Glossary
 
