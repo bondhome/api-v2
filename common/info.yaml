@@ -304,6 +304,42 @@ description: |
   For feature requests and concerns, please contact the Bond Engineering Team
   via the Bond Forums https://forum.bondhome.io/
 
+  # MQTT
+
+  When the Bond connects to its configured MQTT broker, it subscribes to the topic
+  `v2/<Bond ID>/down/#`, where `#` is a wildcard. It publishes messages to
+  `v2/<Bond ID>/up/<subtopic>`, where the subtopic is that indicated in this documentation
+  less the `v2/` prefix.
+
+  A concrete example: requesting devices from the Bond.
+
+  The equivalent to HTTP GET `v2/devices` from a Bond with ID ZZBL12345 is publishing 
+  a message to `v2/ZZBL12345/down/devices` with the payload `{"m": 0}` (since the default
+  for `"m"` (HTTP method) is 0 (`GET`), this payload could also just be `{}`)
+
+  The Bond, if it had a single device with id `12345678`, would then
+  publish to `v2/ZZBL12345/up/devices` with the payload
+  
+    `{"B": "ZZBL12345", "t": "devices", "m": 0, "i": <randomly-generated request ID>,
+    "s": 200, "f": 255, "b" {"_": <devices hash>, "12345678": {"_": <12345678's hash>}}}`
+
+  Breaking down the fields:
+
+    - `B`: the Bond ID
+    - `t`: topic (the path from HTTP URL)
+    - `i`: request ID
+    - `s`: HTTP status code
+    - `m`: HTTP method (0=GET, 1=POST, 2=PUT, 3=DELETE, 4=PATCH)
+    - `f`: flags (Olibra-internal use)
+    - `b`: HTTP response body
+  
+  (Note: the first two fields are redundant, they could be extracted from the MQTT topic)
+
+  You can configure your Bond to communicate with a custom MQTT broker through the `api/mqtt`
+  endpoint, which is currently in Beta status.
+
+  
+
   # Glossary
 
   ## Bond Bridge
