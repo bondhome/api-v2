@@ -1,0 +1,39 @@
+get:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Leds
+      description: LED state
+  summary: Get LED state
+  description: |
+    Get status from the BLED driver.
+
+    If `manual` is `0`, `value` reflects the instantaneous value of the LEDs,
+    and may change rapidly and automatically.
+  tags:
+  - LEDs
+patch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Leds
+  responses:
+    '200':
+      description: LED state was changed successfully
+    '400':
+      description: Error parsing request
+    '500':
+      description: Driver error
+  summary: Manually control LEDs
+  description: |
+    Use this endpoint to manually control LEDs, such as during factory test.
+    Be sure to use the `manual` field to prevent `value` from being overridden
+    from automatic LED control.
+
+    If `manual` is `0` or absent, `value` may still be set, but may be overridden
+    at any time.
+  tags:
+  - LEDs

@@ -51,3 +51,7 @@ x-tagGroups:
   - name: Debug
     tags:
       - Database
+      - LiveLog
+      - LEDs
+      - WiFi
+      - RF Manager
