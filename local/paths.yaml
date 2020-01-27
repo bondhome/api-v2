@@ -32,9 +32,9 @@
 /v2/token:
     $ref: ../token/paths.yaml
 /v2/api/mqtt:
-    $ref: ../api/paths.yaml#/MQTTPath
+    $ref: ../api/mqtt.yaml#/Path
 /v2/api/bpup:
-    $ref: ../api/paths.yaml#/BPUPPath
+    $ref: ../api/bpup.yaml#/Path
 /v2/sys/wifi/scan:
   $ref: ../wifi/paths.yaml#/WifiScanPath
 /v2/sys/wifi/sta:
