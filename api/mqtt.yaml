@@ -112,7 +112,7 @@ Path:
         content:
           application/json:
             schema:
-              $ref: ./mqtt.yaml/#Schema
+              $ref: ./mqtt.yaml#/Schema
       '401':
         $ref: ../common/responses.yaml#/Unauthorized
       '500':
