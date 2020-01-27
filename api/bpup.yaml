@@ -26,7 +26,6 @@ Path:
     summary: Configure BPUP Transport
     description: |
       Configure the Bond's BPUP transport.
-
     tags:
     - BPUP
   get:

@@ -68,6 +68,17 @@ description: |
   Please be sure to always use Bond behind a firewall,
   and do not set up port-forwarding to the Bond Local API,
   to ensure that unsecured communications do not take place over the public internet.
+  
+  ## Firmware Versions
+
+  To get the optimal match between this documentation and your Bond's exposed API,
+  we recommend you update your Bond to the most recent firmware available. In situations
+  where part of this API is only available on Beta firmware, we will try to make this
+  clear. To use such a feature, you'll need to upgrade your firmware with a Beta app.
+  You can sign up to receive Beta apps through one of the links in
+  [this post](https://forum.bondhome.io/t/bond-local-api-public-beta-link/589), and we will
+  typically post about Beta features in the
+  [Beta category of the forums](https://forum.bondhome.io/c/beta/5)
 
   # Getting Started
 
@@ -256,8 +267,6 @@ description: |
 
   # Bond Push UDP Protocol (BPUP)
   
-  NOTE: BPUP is available as of v2.10.2 firmware.
-  
   CAVEAT: BPUP is currently in Beta status. Breaking changes may occur to this API as we collect community feedback.
 
   A common problem in writing drivers to support Bond devices is a need
@@ -305,6 +314,14 @@ description: |
   via the Bond Forums https://forum.bondhome.io/
 
   # MQTT
+  
+  IMPORTANT NOTE: MQTT redirection is implemented, but is currently untested. It may
+  not work at all. If you have a use case for this API, please let us know on 
+  [the forums](https://forum.bondhome.io/) so that we can better prioritize implementing
+  and testing this API.
+
+  You can configure your Bond to communicate with a custom MQTT broker through the `api/mqtt`
+  endpoint.
 
   When the Bond connects to its configured MQTT broker, it subscribes to the topic
   `v2/<Bond ID>/down/#`, where `#` is a wildcard. It publishes messages to
@@ -335,12 +352,9 @@ description: |
   
   (Note: the first two fields are redundant, they could be extracted from the MQTT topic)
 
-  You can configure your Bond to communicate with a custom MQTT broker through the `api/mqtt`
-  endpoint, which is currently in Beta status.
-
   The MQTT broker to which the Bond is connected is treated as trusted, so token
-  authentication is not necessary. Make sure you use the server_cert fields in
-  api/mqtt to avoid man-in-the-middle attacks.
+  authentication is not necessary. Make sure you check the server certificate using
+  the appropriate fields in the `api/mqtt` endpoint to avoid man-in-the-middle attacks.
 
   # Glossary
 
