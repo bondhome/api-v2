@@ -29,9 +29,14 @@ Device:
       type: string
     actions:
       readOnly: true
-      type: object
+      type: array
       example:
-        _: "7fc1e84b"
+        - "TurnOn"
+        - "TurnOff"
+        - "TogglePower"
+        - "SetSpeed"
+        - "IncreaseSpeed"
+        - "DecreaseSpeed"
     properties:
       readOnly: true
       type: object
