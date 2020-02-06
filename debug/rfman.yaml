@@ -6,7 +6,7 @@ get:
           schema:
             $ref: schemas.yaml#/RFMan
       description: RF manager configuration
-  summary: Get LiveLog configuration
+  summary: Get RF Manager configuration
   description: |
       (Bond Bridge only)
       Intended for use in debugging signal generation. All values false by default.
