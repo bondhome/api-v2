@@ -47,7 +47,10 @@ x-tagGroups:
       - Version
       - Reset
       - Reboot
-      - Bluelight
   - name: Debug
     tags:
       - Database
+      - LiveLog
+      - LEDs
+      - WiFi
+      - RF Manager

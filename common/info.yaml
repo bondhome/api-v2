@@ -68,6 +68,17 @@ description: |
   Please be sure to always use Bond behind a firewall,
   and do not set up port-forwarding to the Bond Local API,
   to ensure that unsecured communications do not take place over the public internet.
+  
+  ## Firmware Versions
+
+  To get the optimal match between this documentation and your Bond's exposed API,
+  we recommend you update your Bond to the most recent firmware available. In situations
+  where part of this API is only available on Beta firmware, we will try to make this
+  clear. To use such a feature, you'll need to upgrade your firmware with a Beta app.
+  You can sign up to receive Beta apps through one of the links in
+  [this post](https://forum.bondhome.io/t/bond-local-api-public-beta-link/589), and we will
+  typically post about Beta features in the
+  [Beta category of the forums](https://forum.bondhome.io/c/beta/5)
 
   # Getting Started
 
@@ -256,8 +267,6 @@ description: |
 
   # Bond Push UDP Protocol (BPUP)
   
-  NOTE: BPUP is available as of v2.10.2 firmware.
-  
   CAVEAT: BPUP is currently in Beta status. Breaking changes may occur to this API as we collect community feedback.
 
   A common problem in writing drivers to support Bond devices is a need
@@ -303,6 +312,49 @@ description: |
 
   For feature requests and concerns, please contact the Bond Engineering Team
   via the Bond Forums https://forum.bondhome.io/
+
+  # MQTT
+  
+  IMPORTANT NOTE: MQTT redirection is implemented, but is currently untested. It may
+  not work at all. If you have a use case for this API, please let us know on 
+  [the forums](https://forum.bondhome.io/) so that we can better prioritize implementing
+  and testing this API.
+
+  You can configure your Bond to communicate with a custom MQTT broker through the `api/mqtt`
+  endpoint.
+
+  When the Bond connects to its configured MQTT broker, it subscribes to the topic
+  `v2/<Bond ID>/down/#`, where `#` is a wildcard. It publishes messages to
+  `v2/<Bond ID>/up/<subtopic>`, where the subtopic is that indicated in this documentation
+  less the `v2/` prefix.
+
+  A concrete example: requesting devices from the Bond.
+
+  The equivalent to HTTP GET `v2/devices` from a Bond with ID ZZBL12345 is publishing 
+  a message to `v2/ZZBL12345/down/devices` with the payload `{"m": 0}` (since the default
+  for `"m"` (HTTP method) is 0 (`GET`), this payload could also just be `{}`)
+
+  The Bond, if it had a single device with id `12345678`, would then
+  publish to `v2/ZZBL12345/up/devices` with the payload
+  
+    `{"B": "ZZBL12345", "t": "devices", "m": 0, "i": <randomly-generated request ID>,
+    "s": 200, "f": 255, "b" {"_": <devices hash>, "12345678": {"_": <12345678's hash>}}}`
+
+  Breaking down the fields:
+
+    - `B`: the Bond ID
+    - `t`: subtopic (the path from HTTP URL, without the `v2/` prefix)
+    - `i`: request ID
+    - `s`: HTTP status code
+    - `m`: HTTP method (0=GET, 1=POST, 2=PUT, 3=DELETE, 4=PATCH)
+    - `f`: flags (Olibra-internal use)
+    - `b`: HTTP response body
+  
+  (Note: the first two fields are redundant, they could be extracted from the MQTT topic)
+
+  The MQTT broker to which the Bond is connected is treated as trusted, so token
+  authentication is not necessary. Make sure you check the server certificate using
+  the appropriate fields in the `api/mqtt` endpoint to avoid man-in-the-middle attacks.
 
   # Glossary
 
@@ -736,3 +788,5 @@ description: |
   - **StartDimmer()**: Start dimming. The Bond should time out its transmission after 30 seconds, or when the *Stop* action is called.
   - **StartUpLightDimmer()**: Use this and the *StartDownLightDimmer* instead of *StartDimmer* if your device has two dimmable lights.
   - **StartDownLightDimmer()**: The counterpart to *StartUpLightDimmer*
+  - **StartIncreasingBrightness()**: Similar to StartDimmer, but doesn't cycle and only increases brightness.
+  - **StartDecreasingBrightness()**: Similar to StartDimmer, but doesn't cycle and only decreases brightness.

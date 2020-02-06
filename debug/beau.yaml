@@ -1,0 +1,25 @@
+parameters:
+- in: path
+  name: partition
+  required: true
+  schema:
+    type: string
+get:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/BeauDb
+      description: Database statistics
+  summary: Get database statistics
+  description: |
+    Get some statistics about the main Bond database such as free space available.
+
+    This endpoint exists for each of the partitions on the product which
+    use the Beau database format:
+      - `"db"` - the main read-write database where devices and settings are stored
+      - `"id"` - the read-only partition containing Bond ID and certificates
+      - `"state"` - contains state of each device [Bridges only]
+  tags:
+  - Database

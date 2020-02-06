@@ -29,9 +29,14 @@ Device:
       type: string
     actions:
       readOnly: true
-      type: object
+      type: array
       example:
-        _: "7fc1e84b"
+        - "TurnOn"
+        - "TurnOff"
+        - "TogglePower"
+        - "SetSpeed"
+        - "IncreaseSpeed"
+        - "DecreaseSpeed"
     properties:
       readOnly: true
       type: object
@@ -94,17 +99,6 @@ Properties:
     zero_gap:
       readOnly: true
       example: 30
-      type: int
-Bridge:
-  properties:
-    location:
-      example: My Room
-      type: string
-    name:
-      example: My Bridge
-      type: string
-    bluelight:
-      example: 127
       type: int
 
 RemoteAddr:

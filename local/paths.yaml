@@ -1,4 +1,16 @@
 ---
+/v2/debug/rfman:
+    $ref: ../debug/rfman.yaml
+/v2/debug/leds:
+    $ref: ../debug/leds.yaml
+/v2/debug/livelog:
+    $ref: ../debug/livelog.yaml
+/v2/debug/wifi:
+    $ref: ../debug/wifi.yaml
+/v2/debug/beau/{partition}:
+    $ref: ../debug/beau.yaml
+/v2/bridge:
+    $ref: ../bridge/paths.yaml
 /v2/devices:
     $ref: ../devices/paths.yaml#/DevicesPath
 /v2/devices/{device_id}:
@@ -32,9 +44,9 @@
 /v2/token:
     $ref: ../token/paths.yaml
 /v2/api/mqtt:
-    $ref: ../api/paths.yaml#/MQTTPath
+    $ref: ../api/mqtt.yaml#/Path
 /v2/api/bpup:
-    $ref: ../api/paths.yaml#/BPUPPath
+    $ref: ../api/bpup.yaml#/Path
 /v2/sys/wifi/scan:
   $ref: ../wifi/paths.yaml#/WifiScanPath
 /v2/sys/wifi/sta:
