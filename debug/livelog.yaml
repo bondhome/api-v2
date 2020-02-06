@@ -1,0 +1,43 @@
+get:
+  responses:
+    '204':
+      description: LiveLog disabled
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/LiveLog
+      description: LiveLog configuration
+  summary: Get LiveLog configuration
+  description: |
+    Get the current configuration of the LiveLog component.
+  tags:
+  - LiveLog
+put:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/LiveLog
+  responses:
+    '200':
+      description: LiveLog configured
+    '400':
+      description: Error parsing request
+  summary: Configure LiveLog
+  description: |
+    Instructs Bond to start sending UDP packets to specified IP address and port.
+    Every log message is sent in a seperate UDP packet.
+    Depending on log verbosity, this may cause serious performance problems,
+    so use wisely.
+
+    This setting does not persist reboot.
+  tags:
+  - LiveLog
+delete:
+  responses:
+    '204':
+      description: LiveLog disabled
+  summary: Disable LiveLog
+  tags:
+  - LiveLog

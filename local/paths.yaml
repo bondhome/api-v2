@@ -1,4 +1,14 @@
 ---
+/v2/debug/rfman:
+    $ref: ../debug/rfman.yaml
+/v2/debug/leds:
+    $ref: ../debug/leds.yaml
+/v2/debug/livelog:
+    $ref: ../debug/livelog.yaml
+/v2/debug/wifi:
+    $ref: ../debug/wifi.yaml
+/v2/debug/beau/{partition}:
+    $ref: ../debug/beau.yaml
 /v2/bridge:
     $ref: ../bridge/paths.yaml
 /v2/devices:

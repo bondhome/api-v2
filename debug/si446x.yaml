@@ -1,0 +1,38 @@
+get:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Fcc
+      description: SubGHz Transceiver State
+  summary: Get low-level radio state
+  description: |
+    Use this endpoint only as part of an FCC or factory test program.
+  tags:
+  - Debug
+patch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Fcc
+  responses:
+    '200':
+      description: FCC control accepted
+    '400':
+      description: Error parsing request
+    '500':
+      description: Driver error
+  summary: Manually manipulate radio
+  description: |
+    All these settings require `manual` to be set before they take effect.
+
+    Use this endpoint only as part of an FCC or factory test program.
+
+    NOTE: In production firmware, FCC compliance is ensured via power,
+    frequency, and antenna restrictions on this endpoint.
+    If a setting beyond FCC limits is requested, a `200` will be returned,
+    but upon subsequent GET, the values may either be unchanged or truncated.
+  tags:
+  - Debug
