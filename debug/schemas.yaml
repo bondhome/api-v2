@@ -173,11 +173,3 @@ BeauDb:
       type: boolean
       description: |
         Indicates that a write failed and database is in an inconsistant state.
-RFMan:
-  properties:
-    log_signals:
-      example: false
-      type: boolean
-    silence_tx:
-      example: false
-      type: boolean
