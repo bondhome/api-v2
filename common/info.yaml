@@ -788,3 +788,5 @@ description: |
   - **StartDimmer()**: Start dimming. The Bond should time out its transmission after 30 seconds, or when the *Stop* action is called.
   - **StartUpLightDimmer()**: Use this and the *StartDownLightDimmer* instead of *StartDimmer* if your device has two dimmable lights.
   - **StartDownLightDimmer()**: The counterpart to *StartUpLightDimmer*
+  - **StartIncreasingBrightness()**: Similar to StartDimmer, but doesn't cycle and only increases brightness.
+  - **StartDecreasingBrightness()**: Similar to StartDimmer, but doesn't cycle and only decreases brightness.
