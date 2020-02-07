@@ -1,10 +1,14 @@
 Signal:
+  required:
+    - freq
+    - data
+    - bps
+    - encoding
   type: object
   properties:
     freq:
       example: 434000
       type: number
-      required: true
       description: |
         Frequency in kHz:
           - `>= 1000` is RF
@@ -25,7 +29,6 @@ Signal:
     data:
       example: "110100110110H"
       type: string
-      required: true
       description: |
         String representation of data bits to be transmitted.
 
@@ -33,7 +36,6 @@ Signal:
     encoding:
       example: "cq"
       type: string
-      required: true
       description: |
         Specifies the encoding of the data string.
 
@@ -70,7 +72,6 @@ Signal:
     bps:
       example: 1000
       type: number
-      required: true
       description: |
         Bitrate of `data`. Range is 100 to 40000.
     reps:
