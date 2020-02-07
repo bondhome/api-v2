@@ -23,7 +23,7 @@
     $ref: ../devices/paths.yaml#/ReloadPath
 /v2/devices/{device_id}/properties:
     $ref: ../devices/paths.yaml#/PropertiesPath
-/v2/devices/{device_id}/actions/{action_id}:
+/v2/devices/{device_id}/actions/{action_name}:
     $ref: ../actions/paths.yaml#/ActionPath
 /v2/devices/{device_id}/commands:
     $ref: ../commands/paths.yaml#/CommandsPath

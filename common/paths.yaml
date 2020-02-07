@@ -27,12 +27,12 @@
     required: true
     schema:
       type: number
-/v2/devices/{device_id}/actions/{action_id}:
+/v2/devices/{device_id}/actions/{action_name}:
   put:
     $ref: ../actions/paths.yaml#/Put
   parameters:
   - in: path
-    name: action_id
+    name: action_name
     required: true
     schema:
       type: number
