@@ -1,41 +1,27 @@
-get:
-  responses:
-    '200':
-      content:
-        application/json:
-          schema:
-            $ref: schemas.yaml#/RFMan
-      description: RF manager configuration
-  summary: Get LiveLog configuration
-  description: |
-      (Bond Bridge only)
-      Intended for use in debugging signal generation. All values false by default.
-      
-      `silence_tx` stops the Bond Bridge
-      from transmitting anything. It should otherwise behave normally: the LEDs flash,
-      device state should change, etc.
+Schema:
+  properties:
+    log_signals:
+      example: false
+      type: boolean
+    silence_tx:
+      example: false
+      type: boolean
 
-      `log_signals` causes all signals to be sent to sent to any listeners as they
-      are generated. They are sent on the topic `debug/rfman/signal`, and could be
-      monitored by a BPUP client listening on this topic. This is intended as a testing
-      tool for remote building, to verify whether signals are generated as expected.
-  tags:
-  - RF Manager
-patch:
-  requestBody:
-    content:
-      application/json:
-        schema:
-          $ref: schemas.yaml#/RFMan
-  responses:
-    '200':
-      description: RF Manager configured
-    '400':
-      description: Error parsing request
-  summary: Configure RF Manager
-  description: |
+Path:
+  get:
+    responses:
+      '200':
+        content:
+          application/json:
+            schema:
+              $ref: "#/Schema"
+        description: RF manager configuration
+    summary: Get RF Manager configuration
+    # TODO: this should be shared with the PATCH description, $ref is acting odd though
+    description: |
       (Bond Bridge only)
-      Intended for use in debugging signal generation. All values false by default.
+      Intended for use in debugging signal generation. All values false by default,
+      and changes do not persist past reboot.
       
       `silence_tx` stops the Bond Bridge
       from transmitting anything. It should otherwise behave normally: the LEDs flash,
@@ -45,12 +31,43 @@ patch:
       are generated. They are sent on the topic `debug/rfman/signal`, and could be
       monitored by a BPUP client listening on this topic. This is intended as a testing
       tool, to verify whether signals are generated as expected.
-  tags:
-  - RF Manager
-delete:
-  responses:
-    '204':
-      description: RF Manager settings reset
-  summary: Reset RF Manager settings
-  tags:
-  - RF Manager
+    tags:
+    - RF Manager
+  patch:
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: "#/Schema"
+    responses:
+      '200':
+        description: RF Manager configured
+        content:
+          application/json:
+            schema:
+              $ref: "#/Schema"
+      '400':
+        description: Error parsing request
+    summary: Configure RF Manager
+    description: |
+      (Bond Bridge only)
+      Intended for use in debugging signal generation. All values false by default,
+      and changes do not persist past reboot.
+      
+      `silence_tx` stops the Bond Bridge
+      from transmitting anything. It should otherwise behave normally: the LEDs flash,
+      device state should change, etc.
+
+      `log_signals` causes all signals to be sent to sent to any listeners as they
+      are generated. They are sent on the topic `debug/rfman/signal`, and could be
+      monitored by a BPUP client listening on this topic. This is intended as a testing
+      tool, to verify whether signals are generated as expected.
+    tags:
+    - RF Manager
+  delete:
+    responses:
+      '204':
+        description: RF Manager settings reset
+    summary: Reset RF Manager settings
+    tags:
+    - RF Manager

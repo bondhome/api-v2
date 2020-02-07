@@ -1,6 +1,6 @@
 ---
 /v2/debug/rfman:
-    $ref: ../debug/rfman.yaml
+    $ref: ../debug/rfman.yaml#/Path
 /v2/debug/leds:
     $ref: ../debug/leds.yaml
 /v2/debug/livelog:
