@@ -173,6 +173,10 @@ SignalGet:
   responses:
     '200':
       description: Signal returned
+      content:
+        application/json:
+          schema:
+            $ref: ../signal/schemas.yaml#/Signal
     '401':
       $ref: ../common/responses.yaml#/Unauthorized
     '404':
