@@ -72,6 +72,18 @@
 /v2/devices/{device_id}/commands/{command_id}/tx:
   put:
     $ref: ../commands/paths.yaml#/TxPut
+/v2/devices/{device_id}/skeds:
+  get:
+    $ref: ../skeds/paths.yaml#/GetList
+  post:
+    $ref: ../skeds/paths.yaml#/Post
+/v2/devices/{device_id}/skeds/{sked_id}:
+  get:
+    $ref: ../skeds/paths.yaml#/Get
+  patch:
+    $ref: ../skeds/paths.yaml#/Patch
+  delete:
+    $ref: ../skeds/paths.yaml#/Delete
 /v2/bridge:
   get:
     $ref: ../devices/paths.yaml#/GetBridge
@@ -137,6 +149,13 @@
     $ref: ../wifi/paths.yaml#/WatchdogGet
   patch:
     $ref: ../wifi/paths.yaml#/WatchdogPatch
+/v2/sys/time:
+  get:
+    $ref: ../sys/paths.yaml#/TimeGet
+  patch:
+    $ref: ../sys/paths.yaml#/TimePatch
+  delete:
+    $ref: ../sys/paths.yaml#/TimeDelete
 /v2/sys/upgrade:
   get:
     $ref: ../firmware/paths.yaml#/Get

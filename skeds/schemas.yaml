@@ -1,64 +1,64 @@
-Skeds:
+Sked:
   properties:
+    enabled:
+      example: True
+      description: |
+        If false, schedule will never execute, but will remain in device database.
+
+        Oneshot schedules (with `days_of_week` all False) automatically
+        disable after executing once.
+
+        Defaults to true on PUT and POST.
     action:
-      example: TurnOff
+      example: SetBrightness
       required: true
       type: string
+      description: |
+        Action which will be run on device when schedule executes.
+        If action requires an argument, `argument` field is required.
     argument:
-      example: ''
+      example: 80
       type: any
-    dst:
+      description: |
+        Argument to action, if needed.
+    seconds:
       example: -3600
-      type: number
-    id:
-      example: 123
-      readOnly: true
-      type: string
-    interval:
-      example: 3600
-      type: number
-    name:
-      example: Every Day
+      required: true
+      type: integer
+      description: |
+        Time at which schedule should execute, relative to `mark`,
+        in seconds. Negative numbers indicate "before" the mark,
+        positive numbers indicate "after" the mark.
+    mark:
+      example: sunset
       required: true
       type: string
-    repeat:
-      example: 12
-      type: number
-    start:
-      example: 1234434
-      type: number
+      description: |
+        Event which serves as the benchmark for the daily relative time.
+        Options are:
+           - "midnight": `seconds` is the time in seconds
+             since midnight in the timezone specified by the sys/time endpoint.
+
+           - "sunrise": `seconds` is seconds before or after local sunrise,
+             as calculated using the Grid Locator (see sys/time endpoint).
+
+           - "sunset": like sunrise but when the sun goes down!
+
+        For our beloved customers in the Arctic Circle: please note that
+         there will be periods of days around the solstices that
+         schedules based on sunrise/sunset marks will not execute.
+
   type: object
-SkedsCollection:
-  additionalProperties:
-    $ref: '#/Skeds'
+
+SkedList:
+  type: object
   example:
-    '123':
-      action: TurnOn
-      argument: ''
-      dst: -3600
-      id: 123
-      interval: 3600
-      name: Hi
-      repeat: 12
-      start: 1234434
-    '167':
-      action: SetBreeze
-      argument:
-        mean: 0.2
-        var: 0.9
-      dst: -3600
-      id: 167
-      interval: 3600
-      name: Hello
-      repeat: 12
-      start: 1234434
-    '277':
-      action: SetBrightness
-      argument: 75
-      dst: -3600
-      id: 277
-      interval: 3600
-      name: Hi Again
-      repeat: 12
-      start: 1234434
-  type: object
+    _: "7fc1e84b"
+    3b20f300:
+        _: "9a5e1136"
+    4ad874d2:
+        _: "84819a9f"
+    a94328bc:
+        _: "23141efa"
+    d87d6ef2:
+        _: "2425a8bc"

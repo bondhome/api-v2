@@ -33,6 +33,10 @@
     $ref: ../signal/paths.yaml#/SignalsPath
 /v2/devices/{device_id}/commands/{command_id}/tx:
     $ref: ../signal/paths.yaml#/SignalTxPath
+/v2/devices/{device_id}/skeds:
+    $ref: ../skeds/paths.yaml#/SkedsPath
+/v2/devices/{device_id}/skeds/{skeds_id}:
+    $ref: ../skeds/paths.yaml#/SkedPath
 /v2/signal/tx:
     $ref: ../signal/paths.yaml#/TxPath
 /v2/signal/rssi:
@@ -61,3 +65,5 @@
   $ref: ../wifi/paths.yaml#/WifiResetPath
 /v2/sys/reboot:
   $ref: ../wifi/paths.yaml#/WifiRebootPath
+/v2/sys/time:
+  $ref: ../sys/paths.yaml#/TimePath

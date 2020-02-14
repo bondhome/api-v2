@@ -1,0 +1,64 @@
+TimePath:
+  get:
+    $ref: ../sys/paths.yaml#/TimeGet
+  patch:
+    $ref: ../sys/paths.yaml#/TimePatch
+  delete:
+    $ref: ../sys/paths.yaml#/TimeDelete
+
+TimeGet:
+  responses:
+    '200':
+      description: Time info
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Time
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Get time info
+  description: |
+    Get information about Bond system time, timezone, and grid location.
+  tags:
+  - Time
+TimeDelete:
+  responses:
+    '204':
+      description: Time info reset
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Reset time info to defaults
+  description: |
+    Forget time, timezone, and grid location.
+  tags:
+  - Time
+TimePatch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Time
+  responses:
+    '200':
+      description: Time info updated
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Modify time info
+  description: |
+    Set timezone, grid location, and/or time.
+  tags:
+  - Time
