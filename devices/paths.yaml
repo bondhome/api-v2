@@ -442,8 +442,9 @@ PatchRemoteAddr:
     a new physical remote when user presses the Learn button
     (or holds down the Power/Stop button for 5 seconds).
 
-    Note that on most SBB receivers the learn window is opened automatically once
-    after electrical power is connected. However, on recievers with DIP switches
+    Note that on most SBB receivers, the learn window is automatically opened
+    when electrical power is first connected. This is the typical "auto-learning" function.
+    However, on recievers with DIP switches
     (`addr0_is_dip`), the learn window must be opened manually. This is because
     those receivers follow the conceptually simpler model of "you gotta set the DIP
     switches on the reciever and transmitter to match" without any "magic learning"
