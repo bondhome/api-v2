@@ -134,14 +134,9 @@ GetProperties:
   security:
     - OAuth: ["oauth2"]
   summary: Get device properties
-  tags:
-  - Device Properties
   description: |
-    Get the Bond's properties. Current device properties exposed are as follows:
-
-    - `max_speed`: the greatest argument that can be handled by `SetSpeed`
-    - `trust_state`: Whether or not the Bond should trust its toggleable state belief.
-        `true` or `false`, and only present on devices with a "Toggle" command.
+    See the Features section above for other properties which may be available
+    on your devices.
 
     A quick description of `trust_state` by example follows:
 
@@ -157,6 +152,8 @@ GetProperties:
     to `true` is mostly useful if the user would like to control their device
     remotely with complete confidence that what the Bond reports is the device's
     actual state.
+  tags:
+  - Device Properties
 
 PatchProperties:
   requestBody:
@@ -177,25 +174,7 @@ PatchProperties:
     - OAuth: ["oauth2"]
   summary: Update properties
   description: |
-    Update the Bond's properties. Currently, the only PATCHable property is
-    `trust_state`. This is the confidence the Bond has that this device's state
-    belief is accurate, and is only present if a "Toggle" command is present
-    (for `power`, `light`, `direction`, etc.), and is `false` by default.
-
-    A quick description of `trust_state` by example follows:
-
-    The scenario: the Bond has a "ToggleLight" command, and the Bond believes
-    the light to be on. The user requests the action "LightOn". If the Bond trusts
-    its state, it will *do nothing*, as the light is already on, and sending a
-    toggle command would turn it off. If, however, the Bond does not trust its
-    state, it will send the toggle, and believe that now it knows the true state
-    of the physical device.
-
-    `trust_state` set to `false` is mostly useful if the user intends to use a
-    physical remote together with the Bond and is the default, `trust state` set
-    to `true` is mostly useful if the user would like to control their device
-    remotely with complete confidence that what the Bond reports is the device's
-    actual state.
+    See the documentation of the individual properties for whether they can be PATCHed.
 
   tags:
   - Device Properties

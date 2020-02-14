@@ -443,9 +443,35 @@ description: |
   Some device Features have a "Property" which parameterizes the devices
   capabilities. For example, multi-speed ceiling fans supporting the Speed
   feature will always have a `max_speed` property which gives the maximum
-  speed which the `speed` state varible may take.
+  speed which the `speed` state variable may take.
 
-  Properties are read-only.
+  Some properties are read-only, others are PATCH-able.
+
+  ### Feature Toggles
+
+  Properties starting with `feature_` are called _feature toggles_,
+  and always default to true.  When a feature toggle is set to false, 
+  the corresponding feature is disabled along with all dependent features,
+  leaving only the top-level feature toggle.
+
+  For example, on a device with Light, UpDownLight, Brightness,
+  and UpDownLightBrightness features, setting `feature_light` to false
+  will cause all properties, state variables, and actions
+  for all four of these features to be removed from the API,
+  including the feature toggles `feature_brightness` and `feature_up_down_light`.
+  Only `feature_light` will remain.
+
+  The intended use of feature toggles is in the Bond Home application's
+  device settings screen, wherein the currently visible feature toggles
+  should correspond exactly to toggle switches. Furthermore, the client
+  need not have any feature-specific code for this: the order
+  of feature toggles in the properties JSON object may be used as the 
+  UI display order, and the display names may be programmatically derived
+  from the property names, e.g. `feature_up_down_light` displayed as
+  "Up Down Light".
+
+  Feature toggles are only available for some features, 
+  and are currently only available for Smart by Bond devices.
 
   # Features
 
@@ -521,7 +547,7 @@ description: |
 
   ### Properties
 
-   - **max_speed**: (integer) highest speed available
+   - **max_speed**: (integer, read-only) highest speed available
 
   ### State Variables
 
@@ -599,9 +625,10 @@ description: |
 
   See the UpDownLight feature for the behavior of devices with dual lights.
 
+
   ### Properties
 
-  (none)
+   - **feature_light**: (boolean, PATCH-able) true = Light feature enabled (default), false = Light feature disabled
 
   ### State Variables
 
@@ -626,9 +653,11 @@ description: |
   For example, saying "Alexa, Turn on the Light" corresponds to the TurnLightOn
   action, which will have a reasonable result for devices with UpDownLight.
 
+  UpDownLight depends on Light feature.
+
   ### Properties
 
-  (none)
+   - **feature_up_down_light**: (boolean, PATCH-able) true = Up Down Light feature enabled (default), false = Up Down Light feature disabled, both physical light circuits will operate as one Light.
 
   ### State Variables
 
@@ -664,7 +693,7 @@ description: |
 
   ### Properties
 
-  (none)
+   - **feature_brightness**: (boolean, PATCH-able) true = Brightness feature enabled (default), false = Brightness feature disabled. When PATCH-ing to false, brightness is set to 100 prior to disabling the feature.
 
   ### State Variables
 

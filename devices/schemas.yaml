@@ -75,30 +75,49 @@ State:
     power: 0
     speed: 2
     timer: 3599
+
 Properties:
   properties:
-    max_speed:
-      readOnly: true
-      example: 3
-      type: int
     trust_state:
       example: false
       type: boolean
+      description: |
+        Whether or not the Bond should trust its toggleable state belief.
+        This is the confidence the Bond has that this device's state
+        belief is accurate, and is only present if a "Toggle" command is present
+        (for `power`, `light`, `direction`, etc.), and is `false` by default.
+        (Bridge-only)
     addr:
       readOnly: true
       example: "10101"
       type: string
+      description: (Bridge-only)
     freq:
       readOnly: true
       example: 434300
       type: int
+      description: (Bridge-only)
     bps:
       readOnly: true
       example: 3000
       type: int
+      description: (Bridge-only)
     zero_gap:
       readOnly: true
       example: 30
+      type: int
+      description: (Bridge-only)
+
+Bridge:
+  properties:
+    location:
+      example: My Room
+      type: string
+    name:
+      example: My Bridge
+      type: string
+    bluelight:
+      example: 127
       type: int
 
 RemoteAddr:
