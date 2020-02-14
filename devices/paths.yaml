@@ -99,10 +99,10 @@ PutReload:
     renaming, icon changes, and deleting commands.
 
     The device's `state` and `properties` are preserved, in order to avoid a loss of control.
-    
-    This endpoint may be called after a template device definition has been updated 
+
+    This endpoint may be called after a template device definition has been updated
     to cause newly-defined or modified commands to be exported to the device panel.
-    
+
     This endpoint is only available for a device with a `template` string.
 
 
@@ -403,6 +403,13 @@ GetRemoteAddr:
     [SBB-only]
     Provides the current SBB remote address and information about the learn window.
     The SBB unit will only honor commands received with a matching address.
+
+    NOTE: If `addr0_is_dip` is present and true, then the first address (addr0)
+    corresponds to physical "DIP" switches on the receiver.
+    The client _may_ take this into account by seperately listing this "DIP"
+    setting from the rest of the addresses which may be set via the API.
+    Note that the special address `0xdead` indicates that the DIP setting
+    is being ignored (after it has been explicitely deleted via the API).
   tags:
   - Device Remote Address
 
@@ -435,6 +442,15 @@ PatchRemoteAddr:
     a new physical remote when user presses the Learn button
     (or holds down the Power/Stop button for 5 seconds).
 
+    Note that on most SBB receivers, the learn window is automatically opened
+    when electrical power is first connected. This is the typical "auto-learning" function.
+    However, on recievers with DIP switches
+    (`addr0_is_dip`), the learn window must be opened manually. This is because
+    those receivers follow the conceptually simpler model of "you gotta set the DIP
+    switches on the reciever and transmitter to match" without any "magic learning"
+    occuring---at least until you use the Manage Remotes feature of the Bond Home app
+    or this endpoint directly.
+
     Note that to add a new remote address, the `addr` field should be PATCHed
     with a single string, not an array. The provided address will be appended
     to the array of addresses, with the oldest address being overwritten if
@@ -446,7 +462,7 @@ PatchRemoteAddr:
     unwanted remotes---by re-learning the same remote 5 times---which the
     installers are used to doing with similar receivers.
 
-    This is useful especially where there are multiple SBB devices
+    This endpoint is useful especially where there are multiple SBB devices
     on the same mains circuit.
   tags:
   - Device Remote Address
@@ -471,9 +487,20 @@ DeleteRemoteAddr:
     [SBB-only]
     If no `addr` is provided, then:
       Restores factory default Device Remote Address and closes learn window.
+      If the receiver has DIP switches (`addr0_is_dip`) then the default address
+      will be determined by the position of those DIP switches.
 
     However, if `addr` is provided, then:
       Removes just the specified address from the list.
+      If the receiver has DIP switches (`addr0_is_dip`)
+      and the address being deleted is the first one (addr0)
+      then that address will be changed to `0xdead`.
+      This is useful if a receiver is installed with DIP switches
+      indicating an address which is being used by a neighbor.
+      To avoid interference, the user can delete addr0 via the app.
+      NOTE: Any change to the DIP switches on the reciever will
+      cause the addr0 to change to reflect that new DIP setting.
+
 
 
   tags:
