@@ -704,6 +704,10 @@ description: |
   - **SetBrightness(brightness)**: Set the brightness of the light to specified percentage. Value of 0 is ignored, use TurnLightOff instead.
   - **IncreaseBrightness(amount)**: Increase brightness of light by specified percentage. If light is off, it will be turned on at (0 + amount).
   - **DecreaseBrightness(amount)**: Decrease light brightness by specified percentage. If attempting to decrease brightness below 1%, light will remain at 1%. Use TurnLightOff to turn off the light. If the light is off, the light will remain off but the remembered brightness will be decreased.
+  - **CycleBrightness(amount)**: Cycle brightness up/down. Implicitely turns on light.
+    NOTE: This action is for the sake of remote controls with a hold-to-dim button.
+    Please do not use in integrations because it tends to be a frustrating experience.
+    SetBrightness is strongly preferred for its predicatability.
 
   NOTE: The brightness level is remembered on TurnLightOff and restored on TurnLightOn.
 
@@ -770,6 +774,12 @@ description: |
     - **DecreaeColorTemp(int)**:
       Increase color temp a specified number of degrees K.
       Implicitely turns on Light.
+    - **CycleColorTemp(int)**:
+      Change color temperature in cyclical fashion, similar to CycleBrightness.
+      Implicitely turns on Light.
+      NOTE: This exists for the sake of remote controls,
+      it is generally not useful for integrations,
+      please use SetColorTemp instead.
 
   ## Flame
 
