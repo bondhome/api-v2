@@ -25,7 +25,7 @@ description: |
   ## Contributing
 
   We welcome your corrections and improvements to this documentation!
-  You can find the source code for the documentation at the link below. 
+  You can find the source code for the documentation at the link below.
   Feel free to open a PR.
 
   https://github.com/bondhome/api-v2
@@ -68,7 +68,7 @@ description: |
   Please be sure to always use Bond behind a firewall,
   and do not set up port-forwarding to the Bond Local API,
   to ensure that unsecured communications do not take place over the public internet.
-  
+
   ## Firmware Versions
 
   To get the optimal match between this documentation and your Bond's exposed API,
@@ -153,7 +153,7 @@ description: |
 
   Note that no token is required for the version endpoint,
   but other endpoints will require token-based authentication.
-  
+
   The Bond Home app has the Bond's token in the Bond's "Settings" screen. Tapping it will copy it to your clipboard.
   If `curl` is more convenient for you, please refer to the instructions below.
 
@@ -266,7 +266,7 @@ description: |
   please contact the Bond Engineering Team via the Bond Forums https://forum.bondhome.io/
 
   # Bond Push UDP Protocol (BPUP)
-  
+
   CAVEAT: BPUP is currently in Beta status. Breaking changes may occur to this API as we collect community feedback.
 
   A common problem in writing drivers to support Bond devices is a need
@@ -314,9 +314,9 @@ description: |
   via the Bond Forums https://forum.bondhome.io/
 
   # MQTT
-  
+
   IMPORTANT NOTE: MQTT redirection is implemented, but is currently untested. It may
-  not work at all. If you have a use case for this API, please let us know on 
+  not work at all. If you have a use case for this API, please let us know on
   [the forums](https://forum.bondhome.io/) so that we can better prioritize implementing
   and testing this API.
 
@@ -330,13 +330,13 @@ description: |
 
   A concrete example: requesting devices from the Bond.
 
-  The equivalent to HTTP GET `v2/devices` from a Bond with ID ZZBL12345 is publishing 
+  The equivalent to HTTP GET `v2/devices` from a Bond with ID ZZBL12345 is publishing
   a message to `v2/ZZBL12345/down/devices` with the payload `{"m": 0}` (since the default
   for `"m"` (HTTP method) is 0 (`GET`), this payload could also just be `{}`)
 
   The Bond, if it had a single device with id `12345678`, would then
   publish to `v2/ZZBL12345/up/devices` with the payload
-  
+
     `{"B": "ZZBL12345", "t": "devices", "m": 0, "i": <randomly-generated request ID>,
     "s": 200, "f": 255, "b" {"_": <devices hash>, "12345678": {"_": <12345678's hash>}}}`
 
@@ -349,7 +349,7 @@ description: |
     - `m`: HTTP method (0=GET, 1=POST, 2=PUT, 3=DELETE, 4=PATCH)
     - `f`: flags (Olibra-internal use)
     - `b`: HTTP response body
-  
+
   (Note: the first two fields are redundant, they could be extracted from the MQTT topic)
 
   The MQTT broker to which the Bond is connected is treated as trusted, so token
@@ -450,7 +450,7 @@ description: |
   ### Feature Toggles
 
   Properties starting with `feature_` are called _feature toggles_,
-  and always default to true.  When a feature toggle is set to false, 
+  and always default to true.  When a feature toggle is set to false,
   the corresponding feature is disabled along with all dependent features,
   leaving only the top-level feature toggle.
 
@@ -465,12 +465,12 @@ description: |
   device settings screen, wherein the currently visible feature toggles
   should correspond exactly to toggle switches. Furthermore, the client
   need not have any feature-specific code for this: the order
-  of feature toggles in the properties JSON object may be used as the 
+  of feature toggles in the properties JSON object may be used as the
   UI display order, and the display names may be programmatically derived
   from the property names, e.g. `feature_up_down_light` displayed as
   "Up Down Light".
 
-  Feature toggles are only available for some features, 
+  Feature toggles are only available for some features,
   and are currently only available for Smart by Bond devices.
 
   # Features
@@ -740,6 +740,36 @@ description: |
   NOTE: IncreaseBrightness and DecreaseBrightness operate on whichever
    of the up and down lights are enabled, but will never enable or disable
    one or the other light.
+
+  ## ColorTemp
+
+  The ColorTemp feature is used to control the correlated color temperature (CCT)
+  of a light.
+
+  The ColorTemp feature requires the Light feature,
+  and it usually exists alongside the Brightness feature.
+  There are currently no products with ColorTemp and UpDownLight.
+
+  ### Properties
+
+    - **max_color_temp**: (integer) maximum color tempeature in Kelvin
+    - **min_color_temp**: (integer) minimum color tempeature in Kelvin
+
+  ### State Variables
+
+    - **color_temp**: (integer) color temperature in Kelvin
+
+  ### Actions
+
+    - **SetColorTemp(int)**:
+      Set color temp.
+      Implicitely turns on Light.
+    - **IncreaseColorTemp(int)**:
+      Increase color temp a specified number of degrees K.
+      Implicitely turns on Light.
+    - **DecreaeColorTemp(int)**:
+      Increase color temp a specified number of degrees K.
+      Implicitely turns on Light.
 
   ## Flame
 
