@@ -750,9 +750,11 @@ description: |
   The ColorTemp feature is used to control the correlated color temperature (CCT)
   of a light.
 
-  The ColorTemp feature requires the Light feature,
-  and it usually exists alongside the Brightness feature.
-  There are currently no products with ColorTemp and UpDownLight.
+  The ColorTemp feature requires the Light and Brightness features!
+  And there are currently no products with ColorTemp and UpDownLight.
+  In other words, all CCT-adjustable products have exactly one dimmable light,
+  and if the Brightness option is disabled via feature toggles,
+  the ColorTemp feature will also be disabled.
 
   ### Properties
 
