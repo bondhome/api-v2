@@ -773,7 +773,7 @@ description: |
     - **IncreaseColorTemp(int)**:
       Increase color temp a specified number of degrees K.
       Implicitely turns on Light.
-    - **DecreaeColorTemp(int)**:
+    - **DecreaseColorTemp(int)**:
       Increase color temp a specified number of degrees K.
       Implicitely turns on Light.
     - **CycleColorTemp(int)**:
