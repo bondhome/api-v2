@@ -763,7 +763,10 @@ description: |
 
   ### State Variables
 
-    - **color_temp**: (integer) color temperature in Kelvin
+    - **color_temp**: (integer) color temperature in Kelvin.
+      NOTE: On SBB, color_temp is persisted with 8-bit resolution,
+      so there may be a slight difference in color_temp after power cycle.
+      The difference should be imperceptable (i.e., < 100K).
 
   ### Actions
 
