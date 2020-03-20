@@ -704,7 +704,7 @@ description: |
   - **SetBrightness(brightness)**: Set the brightness of the light to specified percentage. Value of 0 is ignored, use TurnLightOff instead.
   - **IncreaseBrightness(amount)**: Increase brightness of light by specified percentage. If light is off, it will be turned on at (0 + amount).
   - **DecreaseBrightness(amount)**: Decrease light brightness by specified percentage. If attempting to decrease brightness below 1%, light will remain at 1%. Use TurnLightOff to turn off the light. If the light is off, the light will remain off but the remembered brightness will be decreased.
-  - **CycleBrightness(amount)**: Cycle brightness up/down. Implicitely turns on light.
+  - **CycleBrightness(amount)**: Cycle brightness up/down. Implicitly turns on light.
     NOTE: This action is for the sake of remote controls with a hold-to-dim button.
     Please do not use in integrations because it tends to be a frustrating experience.
     SetBrightness is strongly preferred for its predicatability.
@@ -775,16 +775,16 @@ description: |
   ### Actions
 
     - **SetColorTemp(int)**:
-      Set color temp.
-      Implicitely turns on Light.
+      Set color temperature.
+      Implicitly turns on Light.
     - **IncreaseColorTemp(int)**:
-      Increase color temp a specified number of degrees K.
+      Increase color temperature a specified number of degrees K.
     - **DecreaseColorTemp(int)**:
-      Increase color temp a specified number of degrees K.
-      Implicitely turns on Light.
+      Increase color temperature a specified number of degrees K.
+      Implicitly turns on Light.
     - **CycleColorTemp(int)**:
       Change color temperature in cyclical fashion, similar to CycleBrightness.
-      Implicitely turns on Light.
+      Implicitly turns on Light.
       NOTE: This exists for the sake of remote controls,
       it is generally not useful for integrations,
       please use SetColorTemp instead.
