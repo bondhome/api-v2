@@ -707,7 +707,7 @@ description: |
   - **CycleBrightness(amount)**: Cycle brightness up/down. Implicitly turns on light.
     NOTE: This action is for the sake of remote controls with a hold-to-dim button.
     Please do not use in integrations because it tends to be a frustrating experience.
-    SetBrightness is strongly preferred for its predicatability.
+    SetBrightness is strongly preferred for its predictability.
 
   NOTE: The brightness level is remembered on TurnLightOff and restored on TurnLightOn.
 
