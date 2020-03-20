@@ -756,6 +756,12 @@ description: |
   and if the Brightness option is disabled via feature toggles,
   the ColorTemp feature will also be disabled.
 
+  Note that the color temperature is works in 100K steps,
+  rounding down. So please use only multiple of 100K when working with
+  color temperature. Using non-multiples of 100K will have surprising results.
+  For example, IncreaseColorTemp(99) will cause no increase,
+  while DecreaseColorTemp(1) will cause a 100K decrease if not already at minimum.
+
   ### Properties
 
     - **max_color_temp**: (integer) maximum color tempeature in Kelvin
@@ -764,9 +770,7 @@ description: |
   ### State Variables
 
     - **color_temp**: (integer) color temperature in Kelvin.
-      NOTE: On SBB, color_temp is persisted with 8-bit resolution,
-      so there may be a slight difference in color_temp after power cycle.
-      The difference should be imperceptable (i.e., < 100K).
+      Resolution: 100K, rounding down.
 
   ### Actions
 
@@ -775,7 +779,6 @@ description: |
       Implicitely turns on Light.
     - **IncreaseColorTemp(int)**:
       Increase color temp a specified number of degrees K.
-      Implicitely turns on Light.
     - **DecreaseColorTemp(int)**:
       Increase color temp a specified number of degrees K.
       Implicitely turns on Light.
