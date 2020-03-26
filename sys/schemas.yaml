@@ -23,7 +23,7 @@ Time:
       description: |
         Timezone string, as per tz_database.
 
-        Empty string is the default meaning timezone unset.
+        `null` if unset.
 
         The current list of supported timezones is given at
         https://bond-updates.s3.amazonaws.com/tz_meta.json
@@ -38,6 +38,6 @@ Time:
 
         Regex: `([A-R]{2}[0-9]{2}[a-r]{2})?`
 
-        Empty string is the default meaning grid unset.
+        `null` if unset.
 
         See: https://en.wikipedia.org/wiki/Maidenhead_Locator_System
