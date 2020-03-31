@@ -29,6 +29,22 @@ Sked:
         Time at which schedule should execute, relative to `mark`,
         in seconds. Negative numbers indicate "before" the mark,
         positive numbers indicate "after" the mark.
+    days_of_week:
+      example: [false, true, true, true, true, true, false]
+      required: false
+      type: array
+      description: |
+        Days of week on which the schedule should execute.
+
+        First element is for Sunday, last element is for Saturday.
+
+        The example value is for a schedules that executes only on weekdays.
+
+        Special case: if array is all `false`, the sked will run exactly once
+        and will then disable itself (enabled=false). This is rendered on UIs as
+        a "Run Once" option.
+
+        Default: run every day, that is, array of 7 trues
     mark:
       example: sunset
       required: true
