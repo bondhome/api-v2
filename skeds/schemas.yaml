@@ -52,22 +52,22 @@ Sked:
       description: |
         Event which serves as the benchmark for the daily relative time.
         Options are:
-           - "midnight": `seconds` is the time in seconds
+           - `midnight`: `seconds` is the time in seconds
              since midnight in the timezone specified by the sys/time endpoint.
 
-           - "sunrise": `seconds` is seconds before or after local sunrise,
+           - `sunrise`: `seconds` is seconds before or after local sunrise,
              as calculated using the Grid Locator (see sys/time endpoint).
 
-           - "sunset": like sunrise but when the sun goes down!
+           - `sunset`: like sunrise but when the sun goes down!
 
-           - "dawn": `seconds` is seconds before or after local civil dawn:
+           - `dawn`: `seconds` is seconds before or after local civil dawn:
              that is, when it gets light outside before sunrise.
              This is when sun is 6 degrees below the horizon.
 
-           - "dusk": like dawn, but for civil dusk: when it actually gets dark 
+           - `dusk`: like dawn, but for civil dusk: when it actually gets dark 
              some time after sunset, when the sun has descending 6 degrees below the horizon.
 
-        For our beloved customers near or within the Arctic Circle: please note that
+        **For our beloved customers near or within the Arctic Circle:** please note that
          there will be periods of days around the solstices that
          schedules based on the solar marks will not execute.
 
