@@ -47,6 +47,14 @@ Post:
   summary: Create new Device Schedule
   description: |
     Creates a Device Schedule under a specific Device.
+
+    If the timezone or location settings in `sys/time` are not set,
+    a 400 error may result depending on what `mark` is requested.
+    Specifically, the following requests will result in an 400 error:
+
+       - POSTed `mark` is `midnight` but `sys/time.tz` is `null`
+       - POSTed `mark` is `dawn`, `dusk`, `sunrise`, or `sunset`, but `sys/time.grid` is `null`
+
   tags:
   - Device Schedules
 

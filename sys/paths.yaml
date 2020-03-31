@@ -38,6 +38,8 @@ TimeDelete:
   summary: Reset time info to defaults
   description: |
     Forget time, timezone, and grid location.
+
+    As a consequence, all skeds will be immediately disabled (enabled=false).
   tags:
   - Time
 TimePatch:
@@ -60,5 +62,11 @@ TimePatch:
   summary: Modify time info
   description: |
     Set timezone, grid location, and/or time.
+
+    If `tz` is set to `null`, all skeds based on a local time (mark=midnight) will
+    be disabled.
+
+    Likewise, if `grid` is set to `null`, all skeds based on solar marks will be
+    disabled.
   tags:
   - Time
