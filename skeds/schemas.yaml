@@ -44,9 +44,16 @@ Sked:
 
            - "sunset": like sunrise but when the sun goes down!
 
-        For our beloved customers in the Arctic Circle: please note that
+           - "dawn": `seconds` is seconds before or after local civil dawn:
+             that is, when it gets light outside before sunrise.
+             This is when sun is 6 degrees below the horizon.
+
+           - "dusk": like dawn, but for civil dusk: when it actually gets dark 
+             some time after sunset, when the sun has descending 6 degrees below the horizon.
+
+        For our beloved customers near or within the Arctic Circle: please note that
          there will be periods of days around the solstices that
-         schedules based on sunrise/sunset marks will not execute.
+         schedules based on the solar marks will not execute.
 
   type: object
 
