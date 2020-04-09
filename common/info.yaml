@@ -707,6 +707,35 @@ description: |
 
   NOTE: The brightness level is remembered on TurnLightOff and restored on TurnLightOn.
 
+  ## LowEndTrim
+
+  The LowEndTrim feature allows a remapping of the brightness levels
+  to increase the minimum physical brightness sent to the lights.
+  This is useful with landscape lighting dimmers where the installer has
+  a choice of luminaires which may have different minimum duty-cycle requirements.
+
+  When a value of X% brightness is requested via the API (or, of course, via the app),
+  the value will be remapped to Y% before being sent to the lights,
+  accoring to the formula:
+
+      Y = (X - 1)*(100 - low_end_trim)/99 + low_end_trim
+
+  In plain English: `low_end_trim` sets the minimum brightness of the lights.
+
+  ### Properties
+
+   - **low_end_trim**: (integer) percentage value of minimum physical brightness
+   to send to lights. Set to 1% for full brightness range.
+   PATCH to `null` to restore factory default.
+
+  ### State Variables
+
+   (none)
+
+  ### Actions
+
+   (none)
+
 
   ## UpDownBrightness
 
