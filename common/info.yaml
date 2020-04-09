@@ -722,6 +722,8 @@ description: |
 
   In plain English: `low_end_trim` sets the minimum brightness of the lights.
 
+  Availability: Currently on SBB low-voltage dimmers only.
+
   ### Properties
 
    - **low_end_trim**: (integer) percentage value of minimum physical brightness
