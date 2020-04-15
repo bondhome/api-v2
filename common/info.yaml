@@ -728,6 +728,7 @@ description: |
 
    - **low_end_trim**: (integer) percentage value of minimum physical brightness
    to send to lights. Set to 1% for full brightness range.
+   Allowed range: 1 to 90, inclusive.
    PATCH to `null` to restore factory default.
 
   ### State Variables
