@@ -27,6 +27,14 @@ Device:
     location:
       example: Kitchen
       type: string
+   features:
+      readOnly: true
+      type: array
+      example:
+        - "Power"
+        - "Speed"
+      description: |
+        List of which Features (see list in introduction) are available on this device.
     actions:
       readOnly: true
       type: array
