@@ -304,6 +304,7 @@ description: |
     - `s`: HTTP status code
     - `m`: HTTP method (0=GET, 1=POST, 2=PUT, 3=DELETE, 4=PATCH)
     - `f`: flags (Olibra-internal use)
+    - `x`: source transport (transport from which the request was received. Can be: "http", "mqtt", "bond" (gratuitous reply), "cli" (serial terminal), with other values reserved for future use) [Since v2.12.1]
     - `b`: HTTP response body
 
   There's also some client-specific error messages,
