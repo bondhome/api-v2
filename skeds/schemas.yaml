@@ -1,4 +1,5 @@
 Sked:
+  type: object
   properties:
     enabled:
       example: True
@@ -11,7 +12,6 @@ Sked:
         Defaults to true on PUT and POST.
     action:
       example: SetBrightness
-      required: true
       type: string
       description: |
         Action which will be run on device when schedule executes.
@@ -23,7 +23,6 @@ Sked:
         Argument to action, if needed.
     seconds:
       example: -3600
-      required: true
       type: integer
       description: |
         Time at which schedule should execute, relative to `mark`,
@@ -31,7 +30,6 @@ Sked:
         positive numbers indicate "after" the mark.
     days_of_week:
       example: [false, true, true, true, true, true, false]
-      required: false
       type: array
       description: |
         Days of week on which the schedule should execute.
@@ -47,7 +45,6 @@ Sked:
         Default: run every day, that is, array of 7 trues
     mark:
       example: sunset
-      required: true
       type: string
       description: |
         Event which serves as the benchmark for the daily relative time.
@@ -64,14 +61,17 @@ Sked:
              that is, when it gets light outside before sunrise.
              This is when sun is 6 degrees below the horizon.
 
-           - `dusk`: like dawn, but for civil dusk: when it actually gets dark 
+           - `dusk`: like dawn, but for civil dusk: when it actually gets dark
              some time after sunset, when the sun has descending 6 degrees below the horizon.
 
         **For our beloved customers near or within the Arctic Circle:** please note that
          there will be periods of days around the solstices that
          schedules based on the solar marks will not execute.
-
-  type: object
+  required:
+    - action
+    - seconds
+    - mark
+    - days_of_week
 
 SkedList:
   type: object

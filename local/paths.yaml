@@ -35,7 +35,7 @@
     $ref: ../signal/paths.yaml#/SignalTxPath
 /v2/devices/{device_id}/skeds:
     $ref: ../skeds/paths.yaml#/SkedsPath
-/v2/devices/{device_id}/skeds/{skeds_id}:
+/v2/devices/{device_id}/skeds/{sked_id}:
     $ref: ../skeds/paths.yaml#/SkedPath
 /v2/signal/tx:
     $ref: ../signal/paths.yaml#/TxPath
