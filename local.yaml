@@ -24,6 +24,9 @@ x-tagGroups:
       - Device Commands
       - Device Command Signal
       - Device Command Transmit
+  - name: Schedules
+    tags:
+      - Device Schedules
   - name: Bridge
     tags:
       - Bridge
@@ -47,6 +50,7 @@ x-tagGroups:
       - Version
       - Reset
       - Reboot
+      - Time
   - name: Debug
     tags:
       - Database

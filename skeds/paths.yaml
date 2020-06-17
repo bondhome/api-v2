@@ -1,0 +1,140 @@
+SkedsPath:
+  parameters:
+  - in: path
+    name: device_id
+    required: true
+    schema:
+      type: string
+  get:
+    $ref: ../skeds/paths.yaml#/GetList
+  post:
+    $ref: ../skeds/paths.yaml#/Post
+
+SkedPath:
+  parameters:
+  - in: path
+    name: device_id
+    required: true
+    schema:
+      type: string
+  - in: path
+    name: sked_id
+    required: true
+    schema:
+      type: string
+  get:
+    $ref: ../skeds/paths.yaml#/Get
+  patch:
+    $ref: ../skeds/paths.yaml#/Patch
+  delete:
+    $ref: ../skeds/paths.yaml#/Delete
+
+Post:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Sked
+  responses:
+    '201':
+      $ref: ../common/responses.yaml#/Created
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Create new Device Schedule
+  description: |
+    Creates a Device Schedule under a specific Device.
+
+    If the timezone or location settings in `sys/time` are not set,
+    a 400 error may result depending on what `mark` is requested.
+    Specifically, the following requests will result in an 400 error:
+
+       - POSTed `mark` is `midnight` but `sys/time.tz` is `null`
+       - POSTed `mark` is `dawn`, `dusk`, `sunrise`, or `sunset`, but `sys/time.grid` is `null`
+
+  tags:
+  - Device Schedules
+
+Patch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Sked
+  responses:
+    '200':
+      description: Device Schedule modified
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Modify an existing Device Schedule
+  description: |
+    Modifies any fields of an existing Device Schedule.
+  tags:
+  - Device Schedules
+
+GetList:
+  description: |
+    Returns a list of sked_ids and the corresponding sked hashes.
+    Please see the "Hash Tree" documentation for an explanation of hashes.
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/SkedList
+      description: Device Schedule list returned
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Get list of Device Schedules
+  tags:
+  - Device Schedules
+
+Get:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Sked
+      description: Device Schedule object returned
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Get specific Device Schedule
+  description: |
+    Get information about a Device Schedule.
+  tags:
+  - Device Schedules
+
+Delete:
+  responses:
+    '204':
+      description: Device Schedule deleted
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Delete a Device Schedule
+  description: |
+    Deletes specified Device Schedule.
+    Naturally, the Device Schedule will be canceled.
+  tags:
+  - Device Schedules

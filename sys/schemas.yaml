@@ -1,0 +1,43 @@
+Time:
+  type: object
+  properties:
+    unix_time:
+      example: 1581708795
+      type: number
+      description: |
+        Absolute time, in seconds since the UNIX epoch.
+
+        Starts at zero at first boot for most products (with no backup battery).
+        Automatically set via NTP (unless NTP has been disabled or
+        the NTP server is unreachable), at which time `time_set` is set.
+    time_set:
+      example: true
+      type: bool
+      description: |
+        If false, then time has not (yet) been set or determined via NTP.
+
+        Device Schedules do not run unless `time_set` is true.
+    tz:
+      example: Americas/Sao_Paolo
+      type: string
+      description: |
+        Timezone string, as per tz_database.
+
+        `null` if unset.
+
+        The current list of supported timezones is given at
+        https://bond-updates.s3.amazonaws.com/tz_meta.json
+    grid:
+      example: FN30aw
+      type: string
+      description: |
+        Approximate geolocation of Bond unit,
+        expressed as a 6-character Maidenhead Grid Locator.
+        This information is used to calculate the sunrise and sunset
+        times for Device Schedules.
+
+        Regex: `([A-R]{2}[0-9]{2}[a-r]{2})?`
+
+        `null` if unset.
+
+        See: https://en.wikipedia.org/wiki/Maidenhead_Locator_System
