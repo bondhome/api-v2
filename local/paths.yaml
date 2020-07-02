@@ -57,6 +57,8 @@
   $ref: ../wifi/paths.yaml#/WifiStaPath
 /v2/sys/wifi/watchdog:
   $ref: ../wifi/paths.yaml#/WifiWatchDogPath
+/v2/sys/leds:
+  $ref: ../sys/leds/path.yaml
 /v2/sys/upgrade:
   $ref: ../wifi/paths.yaml#/WifiUpgradePath
 /v2/sys/version:

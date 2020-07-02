@@ -8,12 +8,12 @@ get:
       description: LED state
   summary: Get LED state
   description: |
-    Get status from the BLED driver.
+    Get status from the LED driver.
 
     If `manual` is `0`, `value` reflects the instantaneous value of the LEDs,
     and may change rapidly and automatically.
   tags:
-  - LEDs
+  - Manual LED Control
 patch:
   requestBody:
     content:
@@ -36,4 +36,4 @@ patch:
     If `manual` is `0` or absent, `value` may still be set, but may be overridden
     at any time.
   tags:
-  - LEDs
+  - Manual LED Control

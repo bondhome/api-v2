@@ -47,6 +47,7 @@ x-tagGroups:
       - Wi-Fi Station
       - Wi-Fi Watchdog
       - Upgrade
+      - LEDs
       - Version
       - Reset
       - Reboot
@@ -55,6 +56,6 @@ x-tagGroups:
     tags:
       - Database
       - LiveLog
-      - LEDs
+      - Manual LED Control
       - WiFi
       - RF Manager

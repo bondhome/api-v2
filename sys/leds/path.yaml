@@ -1,0 +1,61 @@
+
+get:
+  responses:
+    '200':
+      description: LED info
+      content:
+        application/json:
+          schema:
+            $ref: schema.yaml
+    '401':
+      $ref: ../../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../../common/responses.yaml#/InternalServerError
+  summary: Get LED
+  description: |
+    Get information about the Bond's LEDs.
+
+    `bluelight` is the amount of blue light emitted from the Bond when it's idle.
+    At `0` the light is off, and at `255` the light is at its maximum brightness.
+  tags:
+  - LEDs
+patch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schema.yaml
+  responses:
+    '200':
+      description: LEDs updated
+    '400':
+      $ref: ../../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../../common/responses.yaml#/InternalServerError
+  summary: Modify LEDs
+  description: |
+   `bluelight` is the amount of blue light emitted from the Bond when it's idle:
+    at `0` the light is off, and at `255` the light is at its maximum brightness.
+  tags:
+  - LEDs
+delete:
+  responses:
+    '204':
+      description: LED config reset
+    '401':
+      $ref: ../../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../../common/responses.yaml#/InternalServerError
+  summary: Reset LED config to default
+  description: |
+    `bluelight` will be restored to its default value, `127`
+  tags:
+  - LEDs

@@ -6,6 +6,3 @@ Bridge:
     name:
       example: My Bridge
       type: string
-    bluelight:
-      example: 127
-      type: int

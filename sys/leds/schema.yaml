@@ -1,0 +1,4 @@
+properties:
+  bluelight:
+    example: 127
+    type: int

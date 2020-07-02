@@ -16,10 +16,9 @@ get:
     - OAuth: ["oauth2"]
   summary: Get Bridge info
   description: |
-    Information specific to Bond bridges: `name` and `location` are simply
-    the name and location of the bridge. `bluelight` is the amount of blue
-    light emitted from the Bond when it's idle: at `0` the light is off,
-    and at `255` the light is at its maximum brightness.
+    Information specific to Bonds with multiple devices.
+    `name` and `location` are that of the 'bridging' device, which can be a Bond Bridge
+    or a Smart-by-Bond product that has multiple independantly-controlled devices.
   tags:
   - Bridge
 
@@ -53,7 +52,7 @@ patch:
   - BasicAuth: []
   summary: Change Bridge info
   description: |
-    `bluelight` can vary from 0-255
+    `name` and `location` will each be truncated if they exceed 64 characters
   tags:
   - Bridge
 
@@ -71,9 +70,6 @@ delete:
   - BasicAuth: []
   summary: Reset Bridge info
   description: |
-    After deletion, default values will be restored, as follows:
-    `"My Room"` for location,
-    `"My Bridge"` for name,
-    `255` for bluelight.
+    After deletion, product-specific default values will be restored.
   tags:
   - Bridge
