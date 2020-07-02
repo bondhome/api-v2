@@ -12,12 +12,13 @@ get:
   description: |
     Request token for accessing Bond over local network.
 
-    If `locked` is true, reply will contain neither the token nor account_code.
+    If `locked` is true, reply will contain neither `token` nor `account_code`.
 
     Typical use case for this endpoint is:
 
        - request GET, finding that the endpoint is locked
-       - perform PATCH with `"locked": 0`, correct `pin`, and desired `account_code`
+       - perform PATCH with `"locked": 0`, the correct `pin`,
+         and your `account_code` (if you want to take ownership of the Bond)
        - request GET again to get `token`
        - perform PATCH with `"locked": 1`
 
