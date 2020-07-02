@@ -12,12 +12,13 @@ get:
   description: |
     Request token for accessing Bond over local network.
 
-    If `locked` is true, reply will contain neither the token nor account_code.
+    If `locked` is true, reply will contain neither `token` nor `account_code`.
 
     Typical use case for this endpoint is:
 
        - request GET, finding that the endpoint is locked
-       - perform PATCH with `"locked": 0`, correct `pin`, and desired `account_code`
+       - perform PATCH with `"locked": 0`, the correct `pin`,
+         and your `account_code` (if you want to take ownership of the Bond)
        - request GET again to get `token`
        - perform PATCH with `"locked": 1`
 
@@ -53,13 +54,17 @@ patch:
       $ref: ../common/responses.yaml#/Unauthorized
     '500':
       $ref: ../common/responses.yaml#/InternalServerError
-  summary: Add Bond to an Account
+  summary: Add Bond to an Account (or Unlock Token)
   description: |
-    Saves provided `account_code` on Bond.
+    If locked, provide `pin` (located on the product label) to unlock this endpoint.
+    If `pin` is not provided or incorrect, a 401 will be returned.
 
-    If locked, then `pin` must be provided.
+    If an `account_code` is provided, saves it to the Bond. When the Bond communicates
+    with the backend, the Bond will be added to the account associated with
+    `account_code`. You can find your `account_code` on the user screen in the mobile
+    app.
 
-    If `pin` is required but not provided or incorrect,
-    a 401 will be returned.
+    You can also use this endpoint to simply find out your Bond's locked `token`
+    by providing a `pin`
   tags:
   - Token
