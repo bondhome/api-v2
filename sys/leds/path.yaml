@@ -13,7 +13,7 @@ get:
       $ref: ../../common/responses.yaml#/NotFound
     '500':
       $ref: ../../common/responses.yaml#/InternalServerError
-  summary: Get LED
+  summary: Get LED config
   description: |
     Get information about the Bond's LEDs.
 
@@ -29,7 +29,7 @@ patch:
           $ref: schema.yaml
   responses:
     '200':
-      description: LEDs updated
+      description: LED config updated
     '400':
       $ref: ../../common/responses.yaml#/BadRequest
     '401':
@@ -38,7 +38,7 @@ patch:
       $ref: ../../common/responses.yaml#/NotFound
     '500':
       $ref: ../../common/responses.yaml#/InternalServerError
-  summary: Modify LEDs
+  summary: Modify LED config
   description: |
    `bluelight` is the amount of blue light emitted from the Bond when it's idle:
     at `0` the light is off, and at `255` the light is at its maximum brightness.
@@ -54,7 +54,7 @@ delete:
       $ref: ../../common/responses.yaml#/NotFound
     '500':
       $ref: ../../common/responses.yaml#/InternalServerError
-  summary: Reset LED config to default
+  summary: Reset LED config
   description: |
     `bluelight` will be restored to its default value, `127`
   tags:
