@@ -67,3 +67,5 @@
   $ref: ../wifi/paths.yaml#/WifiRebootPath
 /v2/sys/time:
   $ref: ../sys/paths.yaml#/TimePath
+/v2/sys/power:
+  $ref: ../sys/paths.yaml#/PowerPath
