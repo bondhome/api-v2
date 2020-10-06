@@ -1,3 +1,18 @@
+Power:
+  type: object
+  properties:
+    poe_active:
+      example: true
+      type: bool
+      description: |
+        True if the unit is being supplied PoE.
+    usb_active:
+      example: false
+      type: bool
+      description: |
+        True if the unit is being supplied USB.
+
+        NOTE: multiple supplies may be simultaneously active.
 Time:
   type: object
   properties:

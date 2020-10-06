@@ -156,6 +156,9 @@
     $ref: ../sys/paths.yaml#/TimePatch
   delete:
     $ref: ../sys/paths.yaml#/TimeDelete
+/v2/sys/power:
+  get:
+    $ref: ../sys/paths.yaml#/PowerGet
 /v2/sys/upgrade:
   get:
     $ref: ../firmware/paths.yaml#/Get

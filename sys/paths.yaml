@@ -1,3 +1,27 @@
+PowerPath:
+  get:
+    $ref: ../sys/paths.yaml#/PowerGet
+PowerGet:
+  responses:
+    '200':
+      description: Power Supply info
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Power
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Get power supply info
+  description: |
+    Get information about Power Supply status (which supply is active).
+
+    Sent gratuitously upon change to active supplies.
+  tags:
+  - Power
 TimePath:
   get:
     $ref: ../sys/paths.yaml#/TimeGet
@@ -5,7 +29,6 @@ TimePath:
     $ref: ../sys/paths.yaml#/TimePatch
   delete:
     $ref: ../sys/paths.yaml#/TimeDelete
-
 TimeGet:
   responses:
     '200':

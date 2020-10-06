@@ -51,6 +51,7 @@ x-tagGroups:
       - Reset
       - Reboot
       - Time
+      - Power
   - name: Debug
     tags:
       - Database
