@@ -3,6 +3,13 @@ Device:
     name:
       example: My Fan
       type: string
+    profile:
+      example: ZEBRA_BLIND
+      type: string
+      description: |
+        Olibra-internal profile identifier for branding customer experience.
+        Does not effect functionality in any way.
+        [Bridge only]
     type:
       description: |
         - `CF` : Ceiling Fan
