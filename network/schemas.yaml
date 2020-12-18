@@ -10,6 +10,8 @@ Watchdog:
         If enabled, Bond will reboot if not connected to Bond Cloud
         within first 10 minutes of boot, or if disconnected for 3 minutes.
 
+        Watchdog does not run if Bond is in Wi-Fi Setup mode.
+
         NOTE: Any communication with the Bond over the HTTP transport
         will reset the timer as if the Bond were connected to the cloud.
     rwdg_timer_ms:

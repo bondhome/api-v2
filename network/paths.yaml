@@ -1,18 +1,18 @@
 WifiScanPath:
   get:
-    $ref: ../wifi/paths.yaml#/ScanGet
+    $ref: ../network/paths.yaml#/ScanGet
 WifiStaPath:
   get:
-    $ref: ../wifi/paths.yaml#/StaGet
+    $ref: ../network/paths.yaml#/StaGet
   put:
-    $ref: ../wifi/paths.yaml#/StaPut
+    $ref: ../network/paths.yaml#/StaPut
   delete:
-    $ref: ../wifi/paths.yaml#/StaDelete
+    $ref: ../network/paths.yaml#/StaDelete
 WifiWatchDogPath:
   get:
-    $ref: ../wifi/paths.yaml#/WatchdogGet
+    $ref: ../network/paths.yaml#/WatchdogGet
   patch:
-    $ref: ../wifi/paths.yaml#/WatchdogPatch
+    $ref: ../network/paths.yaml#/WatchdogPatch
 WifiUpgradePath:
   get:
     $ref: ../firmware/paths.yaml#/Get
@@ -188,16 +188,16 @@ WatchdogGet:
         application/json:
           schema:
             $ref: schemas.yaml#/Watchdog
-      description: Wi-Fi Watchdog settings
+      description: Network Watchdog settings
     '401':
       $ref: ../common/responses.yaml#/Unauthorized
     '500':
       $ref: ../common/responses.yaml#/InternalServerError
   security:
   - BasicAuth: []
-  summary: Check Wi-Fi Watchdog configuration
+  summary: Check Network Watchdog configuration
   tags:
-  - Wi-Fi Watchdog
+  - Network Watchdog
 WatchdogPatch:
   requestBody:
     content:
@@ -206,14 +206,14 @@ WatchdogPatch:
           $ref: schemas.yaml#/Watchdog
   responses:
     '200':
-      description: Wi-Fi Watchdog config updated
+      description: Network Watchdog config updated
     '401':
       $ref: ../common/responses.yaml#/Unauthorized
     '500':
       $ref: ../common/responses.yaml#/InternalServerError
   security:
   - BasicAuth: []
-  summary: Configure Wi-Fi Watchdog
+  summary: Configure Network Watchdog
   description: |
     Configure the Wi-Fi watchdog, which runs whenever the Wi-Fi station (`sta`)
     is configured.
@@ -221,4 +221,4 @@ WatchdogPatch:
     This watchdog feature is useful on some Wi-Fi networks where the Bond
     may lose its connection after some period of time.
   tags:
-  - Wi-Fi Watchdog
+  - Network Watchdog

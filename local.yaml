@@ -41,11 +41,13 @@ x-tagGroups:
       - Token
       - MQTT
       - BPUP
-  - name: System
+  - name: Network
     tags:
       - Wi-Fi Scan
       - Wi-Fi Station
-      - Wi-Fi Watchdog
+      - Network Watchdog
+  - name: System
+    tags:
       - Upgrade
       - Version
       - Reset

@@ -136,19 +136,19 @@
     $ref: ../users/paths.yaml#/Patch
 /v2/sys/wifi/sta:
   get:
-    $ref: ../wifi/paths.yaml#/StaGet
+    $ref: ../network/paths.yaml#/StaGet
   put:
-    $ref: ../wifi/paths.yaml#/StaPut
+    $ref: ../network/paths.yaml#/StaPut
   delete:
-    $ref: ../wifi/paths.yaml#/StaDelete
+    $ref: ../network/paths.yaml#/StaDelete
 /v2/sys/wifi/scan:
   get:
-    $ref: ../wifi/paths.yaml#/ScanGet
-/v2/sys/wifi/watchdog:
+    $ref: ../network/paths.yaml#/ScanGet
+/v2/sys/watchdog:
   get:
-    $ref: ../wifi/paths.yaml#/WatchdogGet
+    $ref: ../network/paths.yaml#/WatchdogGet
   patch:
-    $ref: ../wifi/paths.yaml#/WatchdogPatch
+    $ref: ../network/paths.yaml#/WatchdogPatch
 /v2/sys/time:
   get:
     $ref: ../sys/paths.yaml#/TimeGet
