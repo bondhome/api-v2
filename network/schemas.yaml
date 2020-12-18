@@ -118,7 +118,6 @@ Eth:
     dns:
       example: '8.8.8.8'
       type: string
-      decription:
     dns_alt_set:
       readOnly: true
       example: true

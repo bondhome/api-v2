@@ -44,10 +44,10 @@ EthGet:
           schema:
             $ref: schemas.yaml#/Eth
       description: Current Etherent settings
+    '404':
+      description: Ethernet unsupported on this product.
     '401':
       $ref: ../common/responses.yaml#/Unauthorized
-    '404':
-      description: Ethernet not available on this product.
   security:
   - BasicAuth: []
   summary: Get current Ethernet settings
@@ -88,7 +88,7 @@ EthPatch:
       content:
         application/json:
           schema:
-            $ref: schemas.yaml#/Sta
+            $ref: schemas.yaml#/Eth
       description: Ethernet settings updated
     '401':
       $ref: ../common/responses.yaml#/Unauthorized
