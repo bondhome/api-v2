@@ -1,11 +1,18 @@
+EthPath:
+  get:
+    $ref: ../network/paths.yaml#/EthGet
+  patch:
+    $ref: ../network/paths.yaml#/EthPatch
+  delete:
+    $ref: ../network/paths.yaml#/EthDelete
 WifiScanPath:
   get:
     $ref: ../network/paths.yaml#/ScanGet
 WifiStaPath:
   get:
     $ref: ../network/paths.yaml#/StaGet
-  put:
-    $ref: ../network/paths.yaml#/StaPut
+  patch:
+    $ref: ../network/paths.yaml#/StaPatch
   delete:
     $ref: ../network/paths.yaml#/StaDelete
 WifiWatchDogPath:
@@ -29,7 +36,90 @@ WifiResetPath:
 WifiRebootPath:
   put:
     $ref: ../firmware/paths.yaml#/RebootPut
+EthGet:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Eth
+      description: Current Etherent settings
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      description: Ethernet not available on this product.
+  security:
+  - BasicAuth: []
+  summary: Get current Ethernet settings
+  description: |
+    Note that there are seperate DNS settings for the Ethernet and Wi-Fi
+    interfaces.
+  tags:
+  - Ethernet
+EthDelete:
+  responses:
+    '200':
+      description: Ethernet settings reset to defaults
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Reset Ethernet Settings to Default
+  description: |
+    Bond will clear settings for Ethernet, defaulting to DHCP,
+    DHCP-provided DNS (with fallback to hard-coded DNS servers),
+    and Ethernet being preferred over Wi-Fi if both are available.
 
+    This will NOT disable the Ethernet port. If the attached network
+    supports DHCP and has an internet connection, the Bond will continue
+    to function on Ethernet.
+  tags:
+  - Ethernet
+EthPatch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Eth
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Sta
+      description: Ethernet settings updated
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Customize Ethernet settings
+  description: |
+    For compatibility reasons, the PATCH endpoint can also be accessed
+    using the PUT method.
+
+    Customize the Ethernet interface.
+
+    The Bond immediately saves the settings in non-volatile storage,
+    and therefore the settings will persist even after power cycle.
+
+    If `ip`, `gw`, and `netmask` are all present, the Bond will attempt to use
+    the three values to configure its Ethernet interface's IP address, default gateway,
+    and netmask, respectively. If any of these fields are present, all three must
+    be present.
+
+    For DNS, Bond always tries default DNS servers first. However, our chosen
+    DNS servers are blocked on some networks, so Bond will fall back to DNS
+    servers provided by DHCP or specified by `dns` and `dns_alt`. If `dns` or
+    `dns_alt` are provided, Bond will ignore any DNS servers proposed
+    by DHCP. This behavior was decided upon after many customer service interactions
+    which revealed an epidemic of bad ISP DNS servers which prevent what we
+    originally though was reasonable: respecting the DHCP-provided servers by default.
+  tags:
+  - Wi-Fi Station
 StaGet:
   responses:
     '200':
@@ -48,13 +138,7 @@ StaGet:
   description: |
     Get the name (base64-encoded in `ssid`) of the Wi-Fi network to which the Bond is currently connected.
 
-    The `status` field gives an indication of whether the Wi-Fi settings
-    have been successful:
-      - -2 = authentication failure
-      - -1 = network not found
-      - 0 = attempting to connect
-      - 1 = connected, but no IP address (yet)
-      - 2 = connected with IP address assigned
+    A numerical `status` field is also provided (see details below).
 
     The BSSID of the network's access point is provided, hex-encoded in `bssid`.
     If `bssid_set` is present and `true`, then the Bond has been configured to
@@ -89,7 +173,7 @@ StaDelete:
     It will be necessary to use PUT again to reconfigure Wi-Fi.
   tags:
   - Wi-Fi Station
-StaPut:
+StaPatch:
   requestBody:
     content:
       application/json:
@@ -110,6 +194,9 @@ StaPut:
   - BasicAuth: []
   summary: Connect to a Wi-Fi network
   description: |
+    For compatibility reasons, the PATCH endpoint can also be accessed
+    using the PUT method.
+
     Instruct the Bond to connect to the network specified.
 
     The Bond immediately saves the settings in non-volatile storage,
@@ -124,8 +211,13 @@ StaPut:
     and netmask, respectively. If any of these fields are present, all three must
     be present.
 
-    If `dns` or `dns_alt` are present, the Bond will use them in place of its
-    default main DNS and fallback DNS, respectively.
+    For DNS, Bond always tries default DNS servers first. However, our chosen
+    DNS servers are blocked on some networks, so Bond will fall back to DNS
+    servers provided by DHCP or specified by `dns` and `dns_alt`. If `dns` or
+    `dns_alt` are provided, Bond will ignore any DNS servers proposed
+    by DHCP. This behavior was decided upon after many customer service interactions
+    which revealed an epidemic of bad ISP DNS servers which prevent what we
+    originally though was reasonable: respecting the DHCP-provided servers by default.
 
     If `bssid` is present, the Bond will only connect to an access point with the supplied,
     hex-encoded BSSID.

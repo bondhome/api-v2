@@ -55,6 +55,8 @@
   $ref: ../network/paths.yaml#/WifiScanPath
 /v2/sys/wifi/sta:
   $ref: ../network/paths.yaml#/WifiStaPath
+/v2/sys/eth:
+  $ref: ../network/paths.yaml#/EthPath
 /v2/sys/watchdog:
   $ref: ../network/paths.yaml#/WifiWatchDogPath
 /v2/sys/upgrade:

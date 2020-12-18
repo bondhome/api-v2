@@ -45,6 +45,7 @@ x-tagGroups:
     tags:
       - Wi-Fi Scan
       - Wi-Fi Station
+      - Ethernet
       - Network Watchdog
   - name: System
     tags:
