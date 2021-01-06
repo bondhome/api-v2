@@ -307,7 +307,7 @@ WatchdogPatch:
   - BasicAuth: []
   summary: Configure Network Watchdog
   description: |
-    Configure the Wi-Fi watchdog, which runs whenever the Wi-Fi station (`sta`)
+    Configure the network watchdog, which runs whenever the Wi-Fi station (`sta`)
     is configured.
 
     This watchdog feature is useful on some Wi-Fi networks where the Bond
