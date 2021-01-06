@@ -310,7 +310,7 @@ WatchdogPatch:
     Configure the network watchdog, which runs whenever the Wi-Fi station (`sta`)
     is configured.
 
-    This watchdog feature is useful on some Wi-Fi networks where the Bond
+    This watchdog feature is useful on some networks where the Bond
     may lose its connection after some period of time.
   tags:
   - Network Watchdog
