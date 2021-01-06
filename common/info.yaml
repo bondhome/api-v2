@@ -220,7 +220,7 @@ description: |
             - commands
             - state
         - sys
-          - wifi
+          - network
 
   Clearly, if the entire tree were expanded on a request of the root,
   then the resulting request may be very large! This large response body
