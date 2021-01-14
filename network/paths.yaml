@@ -99,17 +99,12 @@ EthPatch:
   summary: Customize Ethernet settings
   description: |
     For compatibility reasons, the PATCH endpoint can also be accessed
-    using the PUT method.
+    using the deprecated PUT method.
 
     Customize the Ethernet interface.
 
     The Bond immediately saves the settings in non-volatile storage,
     and therefore the settings will persist even after power cycle.
-
-    If `ip`, `gw`, and `netmask` are all present, the Bond will attempt to use
-    the three values to configure its Ethernet interface's IP address, default gateway,
-    and netmask, respectively. If any of these fields are present, all three must
-    be present.
 
     For DNS, Bond always tries default DNS servers first. However, our chosen
     DNS servers are blocked on some networks, so Bond will fall back to DNS
@@ -119,7 +114,7 @@ EthPatch:
     which revealed an epidemic of bad ISP DNS servers which prevent what we
     originally though was reasonable: respecting the DHCP-provided servers by default.
   tags:
-  - Wi-Fi Station
+  - Ethernet
 StaGet:
   responses:
     '200':
@@ -205,11 +200,6 @@ StaPatch:
     The network name must be specified in `ssid` (base64-encoded).
     A `password` (again base64-encoded) is required unless it is an unsecured (open) network.
     The required security type (WEP/WPA/WPA2) is automatically determined by the Bond.
-
-    If `ip`, `gw`, and `netmask` are all present, the Bond will attempt to use
-    the three values to configure its STA interface's IP address, default gateway,
-    and netmask, respectively. If any of these fields are present, all three must
-    be present.
 
     For DNS, Bond always tries default DNS servers first. However, our chosen
     DNS servers are blocked on some networks, so Bond will fall back to DNS
@@ -307,10 +297,10 @@ WatchdogPatch:
   - BasicAuth: []
   summary: Configure Network Watchdog
   description: |
-    Configure the network watchdog, which runs whenever the Wi-Fi station (`sta`)
+    Configure the Wi-Fi watchdog, which runs whenever the Wi-Fi station (`sta`)
     is configured.
 
-    This watchdog feature is useful on some networks where the Bond
+    This watchdog feature is useful on some Wi-Fi networks where the Bond
     may lose its connection after some period of time.
   tags:
   - Network Watchdog

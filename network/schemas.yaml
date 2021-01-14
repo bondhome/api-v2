@@ -52,9 +52,13 @@ Sta:
       type: string
       readOnly: true
     static_ip_set:
-      readOnly: true
       example: false
       type: boolean
+      description: |
+        [changed in v2.16.2]
+        If true on write, the ip, gw, netmask fields are required.
+        If false on write, the ip, gw, netmask fields will be ignored
+         and DHCP configured.
     ip:
       example: '192.168.1.42'
       type: string
@@ -65,16 +69,16 @@ Sta:
       example: '255.255.255.0'
       type: string
     dns_set:
-      readOnly: true
       example: true
       type: boolean
+      description: |
+        [changed in v2.16.2]
+        If true on write, the dns and dns_alt fields are required.
+        If false on write, the dns and dns_alt fields will be ignored
+          and the default dns behavior will take effect.
     dns:
       example: '8.8.8.8'
       type: string
-    dns_alt_set:
-      readOnly: true
-      example: true
-      type: boolean
     dns_alt:
       example: '8.8.4.4'
       type: string
@@ -99,9 +103,13 @@ Eth:
       type: string
       readOnly: true
     static_ip_set:
-      readOnly: true
       example: false
       type: boolean
+      description: |
+        [changed in v2.16.2]
+        If true on write, the ip, gw, netmask fields are required.
+        If false on write, the ip, gw, netmask fields will be ignored
+         and DHCP configured.
     ip:
       example: '192.168.1.42'
       type: string
@@ -112,16 +120,16 @@ Eth:
       example: '255.255.255.0'
       type: string
     dns_set:
-      readOnly: true
       example: true
       type: boolean
+      description: |
+        [changed in v2.16.2]
+        If true on write, the dns and dns_alt fields are required.
+        If false on write, the dns and dns_alt fields will be ignored
+          and the default dns behavior will take effect.
     dns:
       example: '8.8.8.8'
       type: string
-    dns_alt_set:
-      readOnly: true
-      example: true
-      type: boolean
     dns_alt:
       example: '8.8.4.4'
       type: string
@@ -129,6 +137,8 @@ Eth:
       example: true
       type: boolean
       description: |
+        [not yet implemented]
+
         If true (default), Bond will select Ethernet whenever Ethernet link
         is available, even if Wi-Fi is associated to a network.
 
