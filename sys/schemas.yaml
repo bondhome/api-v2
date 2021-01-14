@@ -33,7 +33,7 @@ Time:
 
         Device Schedules do not run unless `time_set` is true.
     tz:
-      example: Americas/Sao_Paolo
+      example: America/Sao_Paolo
       type: string
       description: |
         Timezone string, as per tz_database.
