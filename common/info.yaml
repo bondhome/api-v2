@@ -783,27 +783,24 @@ description: |
   The ColorTemp feature is used to control the correlated color temperature (CCT)
   of a light.
 
-  The ColorTemp feature requires the Light and Brightness features!
-  And there are currently no products with ColorTemp and UpDownLight.
+  The ColorTemp feature requires the Light and Brightness features,
+  and there are currently no products with both ColorTemp and UpDownLight.
   In other words, all CCT-adjustable products have exactly one dimmable light,
   and if the Brightness option is disabled via feature toggles,
   the ColorTemp feature will also be disabled.
 
-  Note that the color temperature is works in 100K steps,
-  rounding down. So please use only multiple of 100K when working with
-  color temperature. Using non-multiples of 100K will have surprising results.
-  For example, IncreaseColorTemp(99) will cause no increase,
-  while DecreaseColorTemp(1) will cause a 100K decrease if not already at minimum.
+  Note that the color temperature is works in 100 Kelvin (K) steps.
+  Attempts to set non-multiples of 100 K will result in undefined rounding behavior.
 
   ### Properties
 
-    - **max_color_temp**: (integer) maximum color tempeature in Kelvin
-    - **min_color_temp**: (integer) minimum color tempeature in Kelvin
+    - **max_color_temp**: (integer) maximum color temperature in Kelvin
+    - **min_color_temp**: (integer) minimum color temperature in Kelvin
 
   ### State Variables
 
     - **color_temp**: (integer) color temperature in Kelvin.
-      Resolution: 100K, rounding down.
+      Resolution: 100 K
 
   ### Actions
 
@@ -821,6 +818,10 @@ description: |
       NOTE: This exists for the sake of remote controls,
       it is generally not useful for integrations,
       please use SetColorTemp instead.
+    - **CycleColorTempPreset()**:
+      Jump to next preset CCT value from an internal list of presets.
+      Number and value of presets undefined and may vary by model.
+      Useful for very basic integrations where you have just a single push button.
 
   ## Flame
 
