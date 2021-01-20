@@ -1,0 +1,95 @@
+PowerPath:
+  get:
+    $ref: ../sys/paths.yaml#/PowerGet
+PowerGet:
+  responses:
+    '200':
+      description: Power Supply info
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Power
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Get power supply info
+  description: |
+    Get information about Power Supply status (which supply is active).
+
+    Sent gratuitously upon change to active supplies.
+  tags:
+  - Power
+TimePath:
+  get:
+    $ref: ../sys/paths.yaml#/TimeGet
+  patch:
+    $ref: ../sys/paths.yaml#/TimePatch
+  delete:
+    $ref: ../sys/paths.yaml#/TimeDelete
+TimeGet:
+  responses:
+    '200':
+      description: Time info
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Time
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Get time info
+  description: |
+    Get information about Bond system time, timezone, and grid location.
+  tags:
+  - Time
+TimeDelete:
+  responses:
+    '204':
+      description: Time info reset
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Reset time info to defaults
+  description: |
+    Forget time, timezone, and grid location.
+
+    As a consequence, all skeds will be immediately disabled (enabled=false).
+  tags:
+  - Time
+TimePatch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Time
+  responses:
+    '200':
+      description: Time info updated
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Modify time info
+  description: |
+    Set timezone, grid location, and/or time.
+
+    If `tz` is set to `null`, all skeds based on a local time (mark=midnight) will
+    be disabled.
+
+    Likewise, if `grid` is set to `null`, all skeds based on solar marks will be
+    disabled.
+  tags:
+  - Time

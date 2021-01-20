@@ -10,6 +10,8 @@ Watchdog:
         If enabled, Bond will reboot if not connected to Bond Cloud
         within first 10 minutes of boot, or if disconnected for 3 minutes.
 
+        Watchdog does not run if Bond is in Wi-Fi Setup mode.
+
         NOTE: Any communication with the Bond over the HTTP transport
         will reset the timer as if the Bond were connected to the cloud.
     rwdg_timer_ms:
@@ -26,6 +28,15 @@ Sta:
     status:
       example: 2
       type: number
+      description: |
+        Indication of whether the Wi-Fi settings have been successful:
+          - -3 = disabled because Ethernet is selected
+          - -2 = authentication failure
+          - -1 = network not found
+          - 0 = attempting to connect
+          - 1 = connected, but no IP address yet
+          - 2 = connected with IP address assigned
+          - 3 = connected to cloud (MQTT)
     ssid:
       example: bGlua3N5cw==
       type: string
@@ -72,6 +83,59 @@ Sta:
       format: password
       type: string
       writeOnly: true
+Eth:
+  properties:
+    status:
+      example: 2
+      type: number
+      description: |
+          - -3 = disabled because Wi-Fi is configured and preferred
+          - 0 = no link
+          - 1 = link, but no IP address yet
+          - 2 = link and IP address assigned
+          - 3 = connected to cloud (MQTT)
+    mac:
+      example: '30aea48fa8e8'
+      type: string
+      readOnly: true
+    static_ip_set:
+      readOnly: true
+      example: false
+      type: boolean
+    ip:
+      example: '192.168.1.42'
+      type: string
+    gw:
+      example: '192.168.1.1'
+      type: string
+    netmask:
+      example: '255.255.255.0'
+      type: string
+    dns_set:
+      readOnly: true
+      example: true
+      type: boolean
+    dns:
+      example: '8.8.8.8'
+      type: string
+    dns_alt_set:
+      readOnly: true
+      example: true
+      type: boolean
+    dns_alt:
+      example: '8.8.4.4'
+      type: string
+    preferred:
+      example: true
+      type: boolean
+      description: |
+        If true (default), Bond will select Ethernet whenever Ethernet link
+        is available, even if Wi-Fi is associated to a network.
+
+        If false, Bond will not use Ethernet if Wi-Fi is associated.
+
+        Regardless of this setting, if Wi-Fi is not associated, Bond will
+        try to use Ethernet.
 Scan:
   example:
     hidden_requires_bssid: true

@@ -24,6 +24,9 @@ x-tagGroups:
       - Device Commands
       - Device Command Signal
       - Device Command Transmit
+  - name: Schedules
+    tags:
+      - Device Schedules
   - name: Bridge
     tags:
       - Bridge
@@ -38,15 +41,20 @@ x-tagGroups:
       - Token
       - MQTT
       - BPUP
-  - name: System
+  - name: Network
     tags:
       - Wi-Fi Scan
       - Wi-Fi Station
-      - Wi-Fi Watchdog
+      - Ethernet
+      - Network Watchdog
+  - name: System
+    tags:
       - Upgrade
       - Version
       - Reset
       - Reboot
+      - Time
+      - Power
   - name: Debug
     tags:
       - Database

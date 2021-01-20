@@ -220,7 +220,7 @@ description: |
             - commands
             - state
         - sys
-          - wifi
+          - network
 
   Clearly, if the entire tree were expanded on a request of the root,
   then the resulting request may be very large! This large response body
@@ -304,6 +304,7 @@ description: |
     - `s`: HTTP status code
     - `m`: HTTP method (0=GET, 1=POST, 2=PUT, 3=DELETE, 4=PATCH)
     - `f`: flags (Olibra-internal use)
+    - `x`: source transport (transport from which the request was received. Can be: "http", "mqtt", "bond" (gratuitous reply), "cli" (serial terminal), with other values reserved for future use) [Since v2.12.1]
     - `b`: HTTP response body
 
   There's also some client-specific error messages,
@@ -710,6 +711,38 @@ description: |
     SetBrightness is strongly preferred for its predictability.
 
   NOTE: The brightness level is remembered on TurnLightOff and restored on TurnLightOn.
+
+  ## LowEndTrim
+
+  The LowEndTrim feature allows a remapping of the brightness levels
+  to increase the minimum physical brightness sent to the lights.
+  This is useful with landscape lighting dimmers where the installer has
+  a choice of luminaires which may have different minimum duty-cycle requirements.
+
+  When a value of X% brightness is requested via the API (or, of course, via the app),
+  the value will be remapped to Y% before being sent to the lights,
+  accoring to the formula:
+
+      Y = (X - 1)*(100 - low_end_trim)/99 + low_end_trim
+
+  In plain English: `low_end_trim` sets the minimum brightness of the lights.
+
+  Availability: Currently on SBB low-voltage dimmers only.
+
+  ### Properties
+
+   - **low_end_trim**: (integer) percentage value of minimum physical brightness
+   to send to lights. Set to 1% for full brightness range.
+   Allowed range: 1 to 90, inclusive.
+   PATCH to `null` to restore factory default.
+
+  ### State Variables
+
+   (none)
+
+  ### Actions
+
+   (none)
 
 
   ## UpDownBrightness

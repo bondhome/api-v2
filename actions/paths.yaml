@@ -22,8 +22,16 @@ Put:
           example:
             argument: 4
   responses:
+    '200':
+      description: Action executed [since v2.12.4]
+      content:
+        application/json:
+          schema:
+            type: object
+            example:
+              argument: 4
     '204':
-      description: Action executed
+      description: Action executed [prior to v2.12.4]
     '400':
       $ref: ../common/responses.yaml#/BadRequest
     '401':

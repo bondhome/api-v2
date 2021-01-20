@@ -33,6 +33,10 @@
     $ref: ../signal/paths.yaml#/SignalsPath
 /v2/devices/{device_id}/commands/{command_id}/tx:
     $ref: ../signal/paths.yaml#/SignalTxPath
+/v2/devices/{device_id}/skeds:
+    $ref: ../skeds/paths.yaml#/SkedsPath
+/v2/devices/{device_id}/skeds/{sked_id}:
+    $ref: ../skeds/paths.yaml#/SkedPath
 /v2/signal/tx:
     $ref: ../signal/paths.yaml#/TxPath
 /v2/signal/rssi:
@@ -48,16 +52,22 @@
 /v2/api/bpup:
     $ref: ../api/bpup.yaml#/Path
 /v2/sys/wifi/scan:
-  $ref: ../wifi/paths.yaml#/WifiScanPath
+  $ref: ../network/paths.yaml#/WifiScanPath
 /v2/sys/wifi/sta:
-  $ref: ../wifi/paths.yaml#/WifiStaPath
-/v2/sys/wifi/watchdog:
-  $ref: ../wifi/paths.yaml#/WifiWatchDogPath
+  $ref: ../network/paths.yaml#/WifiStaPath
+/v2/sys/eth:
+  $ref: ../network/paths.yaml#/EthPath
+/v2/sys/watchdog:
+  $ref: ../network/paths.yaml#/WifiWatchDogPath
 /v2/sys/upgrade:
-  $ref: ../wifi/paths.yaml#/WifiUpgradePath
+  $ref: ../network/paths.yaml#/WifiUpgradePath
 /v2/sys/version:
-  $ref: ../wifi/paths.yaml#/WifiVersionPath
+  $ref: ../network/paths.yaml#/WifiVersionPath
 /v2/sys/reset:
-  $ref: ../wifi/paths.yaml#/WifiResetPath
+  $ref: ../network/paths.yaml#/WifiResetPath
 /v2/sys/reboot:
-  $ref: ../wifi/paths.yaml#/WifiRebootPath
+  $ref: ../network/paths.yaml#/WifiRebootPath
+/v2/sys/time:
+  $ref: ../sys/paths.yaml#/TimePath
+/v2/sys/power:
+  $ref: ../sys/paths.yaml#/PowerPath
