@@ -806,12 +806,13 @@ description: |
 
     - **SetColorTemp(int)**:
       Set color temperature.
-      Implicitly turns on Light.
+      Implicitly turns Light on.
     - **IncreaseColorTemp(int)**:
       Increase color temperature a specified number of degrees K.
+      Implicitly turn Light on.
     - **DecreaseColorTemp(int)**:
       Increase color temperature a specified number of degrees K.
-      Implicitly turns on Light.
+      Implicitly turns Light on.
     - **CycleColorTemp(int)**:
       Change color temperature in cyclical fashion, similar to CycleBrightness.
       Implicitly turns on Light.
