@@ -1,0 +1,62 @@
+get:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Locale
+      description: Get Locale info
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+    - OAuth: ["oauth2"]
+  summary: Get Locale info
+  tags:
+  - Locale
+
+patch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+            $ref: schemas.yaml#/Locale
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Locale
+      description: Change Locale info
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Change Locale info
+  tags:
+  - Locale
+
+delete:
+  responses:
+    '204':
+      description: Reset Locale info
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Reset Locale info
+  description: |
+    After deletion, default values will be restored.
+  tags:
+  - Locale

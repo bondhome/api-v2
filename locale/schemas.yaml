@@ -1,0 +1,12 @@
+Locale:
+  properties:
+    compliance_region:
+      example: au
+      type: string
+      description: |
+        Region for radio frequency compliance.
+        This option must be set by the client (Bond Home app) during setup.
+        String is a two-digit country code (ISO 3166-1 alpha-2).
+        Supported options:
+          - us: USA, Canada, Mexico
+          - au: Australia [v2.15]
