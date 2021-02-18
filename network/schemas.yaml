@@ -133,19 +133,6 @@ Eth:
     dns_alt:
       example: '8.8.4.4'
       type: string
-    preferred:
-      example: true
-      type: boolean
-      description: |
-        [not yet implemented]
-
-        If true (default), Bond will select Ethernet whenever Ethernet link
-        is available, even if Wi-Fi is associated to a network.
-
-        If false, Bond will not use Ethernet if Wi-Fi is associated.
-
-        Regardless of this setting, if Wi-Fi is not associated, Bond will
-        try to use Ethernet.
 Scan:
   example:
     hidden_requires_bssid: true
