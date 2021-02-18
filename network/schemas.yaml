@@ -30,7 +30,6 @@ Sta:
       type: number
       description: |
         Indication of whether the Wi-Fi settings have been successful:
-          - -3 = disabled because Ethernet is selected
           - -2 = authentication failure
           - -1 = network not found
           - 0 = attempting to connect
@@ -93,7 +92,6 @@ Eth:
       example: 2
       type: number
       description: |
-          - -3 = disabled because Wi-Fi is configured and preferred
           - 0 = no link
           - 1 = link, but no IP address yet
           - 2 = link and IP address assigned
