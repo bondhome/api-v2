@@ -123,8 +123,6 @@ StaGet:
           schema:
             $ref: schemas.yaml#/Sta
       description: Current Wi-Fi settings
-    '204':
-      description: Not connected to Wi-Fi
     '401':
       $ref: ../common/responses.yaml#/Unauthorized
   security:
@@ -153,8 +151,11 @@ StaGet:
   - Wi-Fi Station
 StaDelete:
   responses:
-    '204':
-      description: Disconnect from Wi-Fi network
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Sta
     '401':
       $ref: ../common/responses.yaml#/Unauthorized
     '500':

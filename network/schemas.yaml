@@ -30,6 +30,7 @@ Sta:
       type: number
       description: |
         Indication of whether the Wi-Fi settings have been successful:
+          - -4 = Wi-Fi not configured
           - -2 = authentication failure
           - -1 = network not found
           - 0 = attempting to connect
