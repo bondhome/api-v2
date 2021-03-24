@@ -1,6 +1,6 @@
 ---
 title: Bond API
-version: "v2.10.8"
+version: "v2.18.2"
 x-logo:
   url: https://s3.amazonaws.com/docs-cloud.appbond.com/bond.png
 description: |
@@ -127,6 +127,17 @@ description: |
 
   In both cases, you will see a list of Bonds on your Wi-Fi network
   and their IP addresses.
+
+  [Added in v2.18.2]
+  If you want to check for firmware version and discoverability of the Bond
+  without connecting to it, you may look into the text properties of the
+  _bond._tcp mDNS service:
+
+      dns-sd -Z _bond._tcp .
+
+  You should see a line like this in the reply:
+
+    ZPEA77090._bond._tcp TXT "v=v2.18.0-2-gf4ddfba8-dirty-merck-discoverability" "d=0"
 
   ## Check Bond Version
 
@@ -294,11 +305,13 @@ description: |
   The Bond will send to all active clients Update datagrams consisting of
   a JSON object terminated by a newline character. Here's an example Update datagram:
 
-      {"B":"ZZBL12345","t":"devices/aabbccdd/state","i":"00112233bbeeeeff","s":200,"m":0,"f":255,"b":{"_":"ab9284ef","power":1,"speed":2}}\n
+      {"B":"ZZBL12345","d":0,"v":"v2.18.2","t":"devices/aabbccdd/state","i":"00112233bbeeeeff","s":200,"m":0,"f":255,"b":{"_":"ab9284ef","power":1,"speed":2}}\n
 
   Breaking down the fields:
 
     - `B`: the Bond ID
+    - `d`: discoverability (0=not discoverable, 1=setup mode, 2=sos mode) [new in v2.18.2]
+    - `v`: firmware version [new in v2.18.2]
     - `t`: topic (the path from HTTP URL)
     - `i`: request ID
     - `s`: HTTP status code
@@ -338,12 +351,14 @@ description: |
   The Bond, if it had a single device with id `12345678`, would then
   publish to `v2/ZZBL12345/up/devices` with the payload
 
-    `{"B": "ZZBL12345", "t": "devices", "m": 0, "i": <randomly-generated request ID>,
+    `{"B": "ZZBL12345", "d": 2, "v": "v2.18.2", "t": "devices", "m": 0, "i": <randomly-generated request ID>,
     "s": 200, "f": 255, "b" {"_": <devices hash>, "12345678": {"_": <12345678's hash>}}}`
 
   Breaking down the fields:
 
     - `B`: the Bond ID
+    - `d`: discoverability (0=not discoverable, 1=setup mode, 2=sos mode) [new in v2.18.2]
+    - `v`: firmware version [new in v2.18.2]
     - `t`: subtopic (the path from HTTP URL, without the `v2/` prefix)
     - `i`: request ID
     - `s`: HTTP status code
@@ -356,6 +371,33 @@ description: |
   The MQTT broker to which the Bond is connected is treated as trusted, so token
   authentication is not necessary. Make sure you check the server certificate using
   the appropriate fields in the `api/mqtt` endpoint to avoid man-in-the-middle attacks.
+
+  # Discoverability
+
+  Bonds may be discovered via either mDNS or BPUP.
+  A Bond on the network will reply to queries regardless of its discoverability.
+  However, clients (especially the Bond Home app) need to know if the device
+  should be shown in the list of devices available for setup, or whether it is
+  functioning normally and should be ignored. (This is a usability rather than
+  a security consideration.)
+
+  To this end, we have added [in v2.18.2] a discoverability flag in the mDNS,
+  BPUP, and even MQTT replies, with the following possible values:
+
+    - 0 = not discoverable: Bond is on an account and functioning normally.
+      Should not appear in any list of Bonds ready to set up.
+
+    - 1 = setup mode: Bond is not on an account. This is either a new unit,
+      or a unit that has had a GREEN or WHITE reset performed. The unit's
+      light ring will be either Solid Green (ready on Ethernet)
+      or Flashing Green (ready on Wi-Fi).
+
+    - 2 = SOS mode: the Bond is on an account, however there is either a cloud
+      connection problem, or for Smart by Bond devices where the user has held
+      down the Power button to re-enable discoverability.
+      In this case, the light ring (if present) will indicate an error,
+      and the Config AP will be opened.
+      SOS mode is automatically exited if the cloud connection is restored.
 
   # Glossary
 
