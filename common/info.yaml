@@ -881,12 +881,12 @@ description: |
   ### Actions
 
   - **SetFlame(flame)**: Set flame and turn on. If flame>100, 100 is assumed. If the fireplace is off, implicitly turn on the power. Setting flame to zero or a negative value is ignored.
-  - **IncreaseFlame(flames)**: Increase flame level of fireplace by specified number of *flames*. If the fireplace is off, implicitly turn on the power.
-  - **DecreaseFlame(flames)**: Decrease flame level by specified number of *flames*. If attempting to decrease fireplace flame below `1`, the fireplace will remain at fflame 1. That is, power will not be implicitly turned off. If the power is already off, DecreaseFlame is ignored.
+  - **IncreaseFlame(flame)**: Increase flame level of fireplace by specified number of *flames*. If the fireplace is off, implicitly turn on the power.
+  - **DecreaseFlame(flame)**: Decrease flame level by specified number of *flames*. If attempting to decrease fireplace flame below `1`, the fireplace will remain at fflame 1. That is, power will not be implicitly turned off. If the power is already off, DecreaseFlame is ignored.
 
   ## Open
 
-  The open feature is used to describe a device that can be opened and closed.
+  The Open feature is used to describe a device that can be opened and closed.
   Common use cases are motorized shades and garage doors.
 
   ### Properties
@@ -907,6 +907,46 @@ description: |
 
   If your remote has a discrete stopping command, consider using the **Hold()** action
   to stop the motion of the device.
+
+  ## Position
+
+  The Position feature is used to describe a device that can be opened
+  to a specific position as a percentage.
+  The common use case is motorized shades.
+
+  The Position feature requires the Open feature.
+
+  ### Properties
+
+   - **course_time**: (integer) specifies the amount of time, in milliseconds,
+     required for the device to fully open or close. Depending on the device
+     template, this property may or may not be present. Defaults to -1,
+     meaning unconfigured.
+
+  ### State Variables
+
+   - **position**: (integer) value from 0 to 100: 0 = open, 100 = closed.
+
+  ### Actions
+
+  - **SetPosition(position)**: Set device to specified position percentage.
+  - **IncreasePosition(amount)**: Close the device by the specified percentage
+   of the full range.
+  - **DecreasePosition(amount)**: Open the device by the specified percentage
+   of the full range.
+
+  ### Notes
+
+  [March 2021] At this time, the Position feature is available only for
+  certain Motorized Shades on the Bond Bridge Pro.
+
+  The feature may be
+  enabled or disabled via the feature toggle property `feature_position`,
+  analogous to the other feature toggles.
+  However, if `course_time` is present, it will need to also be set to a
+  non-negative value before the actions and state variables will be exposed,
+  so as to avoid integrations from showing a slider interface without
+  the Bridge having the capability of setting position.
 
   ## FpFan
 
