@@ -878,7 +878,8 @@ description: |
 
    - **course_time**: (integer) specifies the amount of time, in milliseconds,
      required for the device to fully open or close. Depending on the device
-     template, this property may or may not be present.
+     template, this property may or may not be present. Defaults to -1,
+     meaning unconfigured.
 
   ### State Variables
 
@@ -894,10 +895,16 @@ description: |
 
   ### Notes
 
-  [March 2021] At this time, the Position feature is available for
-  certain Motorized Shades on the Bond Bridge Pro. The feature may be
+  [March 2021] At this time, the Position feature is available only for
+  certain Motorized Shades on the Bond Bridge Pro.
+
+  The feature may be
   enabled or disabled via the feature toggle property `feature_position`,
   analogous to the other feature toggles.
+  However, if `course_time` is present, it will need to also be set to a
+  non-negative value before the actions and state variables will be exposed,
+  so as to avoid integrations from showing a slider interface without
+  the Bridge having the capability of setting position.
 
   ## FpFan
 
