@@ -165,15 +165,10 @@ BackupPut:
   summary: Start a Backup or Restore
   description: |
     Start a backup or restore operation,
-    using the provided `tag` to reference the copy of the Bond database
-    stored in the Bond Cloud.
 
     NOTE: A backup will send the entire contents of the Bond database to
-    Olibra servers, including plaintext Wi-Fi passwords and information
-    that has been marked for deletion
-    but not yet overwritten in the Bond's flash memory.
-    Therefore, the user should be given an appropriate privacy warning
-    before beginning a backup.
+    the specified server, excluding the network settings.
+    Wi-Fi passwords are never sent.
 
     NOTE: A restore will overwrite all user-configurable data on the Bond,
     including the Bond's name, location, devices, commands, and network settings.
