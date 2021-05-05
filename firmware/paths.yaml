@@ -135,6 +135,8 @@ FreeGet:
   - Free
 BackupGet:
   responses:
+    '204':
+      description: No recent Backup/Restore.
     '200':
       content:
         application/json:
@@ -145,6 +147,12 @@ BackupGet:
   description: |
     Shows whether a backup or a restore is running,
     including progress indication, and error messages.
+    After operation completes, the `backup` or `restore`
+    field is set to `2` (or `-1` in case of error)
+    and the other fields remain accessible
+    for the client to confirm operation completion.
+    Client should DELETE the endpoint after confirming to return
+    endpoint to empty (204 status).
 
     Note that only one operation can run at once.
   tags:
@@ -166,15 +174,15 @@ BackupPut:
   description: |
     Start a backup or restore operation,
 
-    NOTE: A backup will send the entire contents of the Bond database to
-    the specified server, excluding the network settings.
-    Wi-Fi passwords are never sent.
+    NOTE: A backup will send all devices and associated data
+    (commands, properties, state, skeds) the specified server.
+    Settings not associated with a particular device
+    (such as network settings, bridge name and location) are not included.
 
-    NOTE: A restore will overwrite all user-configurable data on the Bond,
-    including the Bond's name, location, devices, commands, and network settings.
-    The old settings will be unrecoverable if a backup had not been already performed.
-    Therefore, a user should be given an appropriate warning before starting
-    a restore operation.
+    NOTE: A restore will update devices in an additive fashion.
+    For each device (and command or sked), if a device already exists
+    with the same key, then it is updated. If no such device exists,
+    then it will be created.
   tags:
   - Backup
 BackupDelete:
@@ -187,7 +195,7 @@ BackupDelete:
       $ref: ../common/responses.yaml#/InternalServerError
   summary: Cancel Backup or Restore
   description: |
-    Cancel a failed operation, or clear the success status.
+    Cancel a failed operation, or clear the success/error status.
   tags:
   - Backup
 LogGet:
