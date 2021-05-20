@@ -948,6 +948,84 @@ description: |
   so as to avoid integrations from showing a slider interface without
   the Bridge having the capability of setting position.
 
+  ## Tilt
+
+  The Tilt feature is used to describe a device that can control its
+  position in a sloping way.
+  The common use case is motorized shades.
+
+  The Tilt feature requires the Open feature.
+
+  ### Properties
+
+   (none)
+
+  ### State Variables
+
+   (none)
+
+  ### Actions
+
+  - **TiltClose()**: Close the device by tilting in one preset step.
+  - **TiltOpen()**: Open the device by tilting in one preset step.
+
+  ### Notes
+
+  [May 2021] At this time, the Tilt feature is available only for
+  certain Motorized Shades on the Bond Bridge and Bond Bridge Pro.
+
+  The feature may be
+  enabled or disabled via the feature toggle property `feature_tilt`,
+  analogous to the other feature toggles.
+
+
+  ## Tilt Position
+
+  The Tilt Position feature is used to describe a device that can control its
+  position in a sloping way to specific positions as a percentage.
+  The common use case is motorized shades.
+
+  The Tilt feature requires the Open feature.
+
+  ### Properties
+
+   - **tilt_course_time**: (integer) specifies the amount of time, in
+     milliseconds, required for the device to fully open or close in slopping
+     way. Depending on the device template, this property may or may not be
+     present. Defaults to -1, meaning unconfigured.
+
+  ### State Variables
+
+   - **tilt_position**: (integer) value from -100 to +100: 0 = open,
+     [1, 100] = closed in the default direction, [-100, -1] = closed in the
+     alternative direction
+
+  ### Actions
+
+  - **SeTiltPosition(tilt_position)**: Set device tilt position to
+  specified percentage.
+  - **TiltClose(amount)**: Close the device by tilting for the specified
+   percentage of the full range in the default direction.
+  - **TiltOpen(amount)**: Open the deviceby tilting for the specified
+   percentage of the full range in the default direction.
+  - **TiltAltClose(amount)**: Close the device by tilting for the specified
+   percentage of the full range in the alternative direction.
+  - **TiltAltOpen(amount)**: Open the deviceby tilting for the specified
+   percentage of the full range in the alternative direction.
+
+  ### Notes
+
+  [May 2021] At this time, the Tilt Position feature is available only for
+  certain Motorized Shades on the Bond Bridge Pro.
+
+  The feature may be
+  enabled or disabled via the feature toggle property `feature_tilt_position`,
+  analogous to the other feature toggles.
+  However, if `tilt_course_time` is present, it will need to also be set to a
+  non-negative value before the actions and state variables will be exposed,
+  so as to avoid integrations from showing a slider interface without
+  the Bridge having the capability of setting tilt position.
+
   ## FpFan
 
   The FpFan feature controls a fireplace fan. The FpFan feature is independent
