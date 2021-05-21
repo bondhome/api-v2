@@ -10,6 +10,19 @@ We welcome corrections and improvements to the API documentation. Please open a 
 
 By submitting a PR, you are agreeing to have your contribution licensed under the same terms as the rest of the docs. See LICENSE file.
 
+## Prerequisite
+
+To be able to build and run this project, you need to have Docker and Node.js installed.
+If you don't know if you have Docker and Node.js or don't know their versions, check it using
+```
+docker -v
+node -v
+```
+
+* Docker can be installed from [their webiste](https://www.docker.com/products/docker-desktop).
+* Node.js can be installed from [their website](https://nodejs.org/en/download/) or updated using `n` ([see instructions](https://nodejs.org/en/download/package-manager/#n))
+  * The minimum Node.js required version is 14.
+
 ## Build image
 
 ```
