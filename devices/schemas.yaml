@@ -152,7 +152,7 @@ RemoteAddr:
         Milliseconds remaining before learn window closes.
     learn_window_open:
       example: true
-      type: bool
+      type: boolean
       description: |
         Whether new address can be learned via RF.
         True iff learn_window_remaining_ms is nonzero.
@@ -166,7 +166,7 @@ RemoteAddr:
         even if the learned address is the same.
     addr0_is_dip:
       example: True
-      type: bool
+      type: boolean
       description: |
         If present and true, indicates that the receiver has DIP switches
         which may be adjusted to set the zeroth address.

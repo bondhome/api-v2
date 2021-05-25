@@ -3,6 +3,7 @@ Sked:
   properties:
     enabled:
       example: True
+      type: boolean
       description: |
         If false, schedule will never execute, but will remain in device database.
 
