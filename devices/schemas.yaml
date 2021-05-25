@@ -95,17 +95,17 @@ Properties:
     freq:
       readOnly: true
       example: 434300
-      type: int
+      type: integer
       description: (Bridge-only)
     bps:
       readOnly: true
       example: 3000
-      type: int
+      type: integer
       description: (Bridge-only)
     zero_gap:
       readOnly: true
       example: 30
-      type: int
+      type: integer
       description: (Bridge-only)
 
 Bridge:
@@ -130,7 +130,7 @@ RemoteAddr:
         may be patched only with a single address string to be added.
     addr_slots:
       example: 5
-      type: int
+      type: integer
       readOnly: true
       description: |
         Maximum number of addresses which can be learned by this device.
@@ -140,13 +140,13 @@ RemoteAddr:
         transmitter is shipped with a random address).
     learn_window_ms:
       example: 60000
-      type: int
+      type: integer
       readOnly: true
       description: |
         Duration of learn window (milliseconds).
     learn_window_remaining_ms:
       example: 1100
-      type: int
+      type: integer
       readOnly: true
       description: |
         Milliseconds remaining before learn window closes.
@@ -158,7 +158,7 @@ RemoteAddr:
         True iff learn_window_remaining_ms is nonzero.
     learn_count:
       example: 0
-      type: int
+      type: integer
       readOnly: true
       description: |
         Number of times a new address has been learned on this boot.

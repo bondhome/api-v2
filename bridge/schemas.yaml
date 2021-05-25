@@ -8,7 +8,7 @@ Bridge:
       type: string
     bluelight:
       example: 127
-      type: int
+      type: integer
       description: |
         Amount of blue light emitted from the Bond when it's idle: at `0` the light is off,
         and at `255` the light is at its maximum brightness.
