@@ -19,7 +19,6 @@ Sked:
         If action requires an argument, `argument` field is required.
     argument:
       example: 80
-      type: any
       description: |
         Argument to action, if needed.
     seconds:

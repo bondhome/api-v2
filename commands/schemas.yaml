@@ -13,7 +13,6 @@ Command:
         Action which should be triggered when button is pressed.
     argument:
       example: 3
-      type: value
       description: |
         Argument of `action`. If absent, no argument will be used.
         May be any JSON value, not only an object.
