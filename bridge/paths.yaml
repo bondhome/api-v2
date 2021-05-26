@@ -23,14 +23,7 @@ patch:
     content:
       application/json:
         schema:
-          properties:
-            location:
-              example: My Room
-              type: string
-            name:
-              example: My Bridge
-              type: string
-          type: object
+          $ref: schemas.yaml#/BridgePatch
   responses:
     '200':
       content:
