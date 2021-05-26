@@ -124,7 +124,7 @@ RemoteAddr:
   properties:
     addr:
       example: ["dead", "0f2a", "0002", "0003"]
-      type: string
+      type: array
       description: |
         Learned remote address(es) in hexadecimal,
         may be patched only with a single address string to be added.

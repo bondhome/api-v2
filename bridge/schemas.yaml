@@ -15,6 +15,7 @@ Bridge:
     frequencies:
       readOnly: true
       example: [[38, 38], [433050, 434079]]
+      type: array
       description: |
         List of intervals (inclusive) of supported frequencies,
         in kHz. Values less than 1000 refer to IR rather than RF.
