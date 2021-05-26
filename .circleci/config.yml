@@ -63,11 +63,15 @@ workflows:
           requires:
             - test
       - deploy:
+          context:
+            - aws
           requires:
-            - build 
+            - build
       - deploy_master:
+          context:
+            - aws
           requires:
-            - build 
+            - build
           filters:
             branches:
               only:
