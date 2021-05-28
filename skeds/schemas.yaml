@@ -31,6 +31,8 @@ Sked:
     days_of_week:
       example: [false, true, true, true, true, true, false]
       type: array
+      items:
+        type: boolean
       description: |
         Days of week on which the schedule should execute.
 
