@@ -35,6 +35,7 @@ Time:
     tz:
       example: America/Sao_Paolo
       type: string
+      nullable: true
       description: |
         Timezone string, as per tz_database.
 
@@ -45,6 +46,7 @@ Time:
     grid:
       example: FN30aw
       type: string
+      nullable: true
       description: |
         Approximate geolocation of Bond unit,
         expressed as a 6-character Maidenhead Grid Locator.
