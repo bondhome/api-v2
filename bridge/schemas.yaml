@@ -26,19 +26,3 @@ Bridge:
         Clients should prevent users from selecting frequencies outside
         this range to avoid 400 errors on transmit and scan endpoints.
         [added in v2.15]
-
-BridgePatch:
-  type: object
-  properties:
-    location:
-      example: My Room
-      type: string
-    name:
-      example: My Bridge
-      type: string
-    bluelight:
-      example: 127
-      type: integer
-      description: |
-        Amount of blue light emitted from the Bond when it's idle: at `0` the light is off,
-        and at `255` the light is at its maximum brightness.

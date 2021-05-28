@@ -23,7 +23,7 @@ patch:
     content:
       application/json:
         schema:
-          $ref: schemas.yaml#/BridgePatch
+          $ref: schemas.yaml#/Bridge
   responses:
     '200':
       content:
