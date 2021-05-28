@@ -30,7 +30,7 @@ Sta:
       type: number
       description: |
         Indication of whether the Wi-Fi settings have been successful:
-          - -4 = wi-fi not set
+          - -4 = Wi-Fi not configured
           - -3 = disabled because Ethernet is selected
           - -2 = authentication failure
           - -1 = network not found
@@ -110,7 +110,6 @@ Eth:
       example: 2
       type: number
       description: |
-          - -3 = disabled because Wi-Fi is configured and preferred
           - 0 = no link
           - 1 = link, but no IP address yet
           - 2 = link and IP address assigned
@@ -150,19 +149,6 @@ Eth:
     dns_alt:
       example: '8.8.4.4'
       type: string
-    preferred:
-      example: true
-      type: boolean
-      description: |
-        [not yet implemented]
-
-        If true (default), Bond will select Ethernet whenever Ethernet link
-        is available, even if Wi-Fi is associated to a network.
-
-        If false, Bond will not use Ethernet if Wi-Fi is associated.
-
-        Regardless of this setting, if Wi-Fi is not associated, Bond will
-        try to use Ethernet.
 Scan:
   example:
     hidden_requires_bssid: true
