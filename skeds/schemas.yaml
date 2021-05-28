@@ -3,6 +3,7 @@ Sked:
   properties:
     enabled:
       example: True
+      type: boolean
       description: |
         If false, schedule will never execute, but will remain in device database.
 
@@ -18,7 +19,6 @@ Sked:
         If action requires an argument, `argument` field is required.
     argument:
       example: 80
-      type: any
       description: |
         Argument to action, if needed.
     seconds:
@@ -31,6 +31,8 @@ Sked:
     days_of_week:
       example: [false, true, true, true, true, true, false]
       type: array
+      items:
+        type: boolean
       description: |
         Days of week on which the schedule should execute.
 
