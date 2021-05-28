@@ -151,11 +151,8 @@ StaGet:
   - Wi-Fi Station
 StaDelete:
   responses:
-    '200':
-      content:
-        application/json:
-          schema:
-            $ref: schemas.yaml#/Sta
+    '204':
+      description: Wi-Fi network disconnected
     '401':
       $ref: ../common/responses.yaml#/Unauthorized
     '500':

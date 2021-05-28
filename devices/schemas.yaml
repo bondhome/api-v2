@@ -95,17 +95,17 @@ Properties:
     freq:
       readOnly: true
       example: 434300
-      type: int
+      type: integer
       description: (Bridge-only)
     bps:
       readOnly: true
       example: 3000
-      type: int
+      type: integer
       description: (Bridge-only)
     zero_gap:
       readOnly: true
       example: 30
-      type: int
+      type: integer
       description: (Bridge-only)
 
 Bridge:
@@ -124,13 +124,15 @@ RemoteAddr:
   properties:
     addr:
       example: ["dead", "0f2a", "0002", "0003"]
-      type: string
+      type: array
+      items:
+        type: string
       description: |
         Learned remote address(es) in hexadecimal,
         may be patched only with a single address string to be added.
     addr_slots:
       example: 5
-      type: int
+      type: integer
       readOnly: true
       description: |
         Maximum number of addresses which can be learned by this device.
@@ -140,25 +142,25 @@ RemoteAddr:
         transmitter is shipped with a random address).
     learn_window_ms:
       example: 60000
-      type: int
+      type: integer
       readOnly: true
       description: |
         Duration of learn window (milliseconds).
     learn_window_remaining_ms:
       example: 1100
-      type: int
+      type: integer
       readOnly: true
       description: |
         Milliseconds remaining before learn window closes.
     learn_window_open:
       example: true
-      type: bool
+      type: boolean
       description: |
         Whether new address can be learned via RF.
         True iff learn_window_remaining_ms is nonzero.
     learn_count:
       example: 0
-      type: int
+      type: integer
       readOnly: true
       description: |
         Number of times a new address has been learned on this boot.
@@ -166,7 +168,7 @@ RemoteAddr:
         even if the learned address is the same.
     addr0_is_dip:
       example: True
-      type: bool
+      type: boolean
       description: |
         If present and true, indicates that the receiver has DIP switches
         which may be adjusted to set the zeroth address.

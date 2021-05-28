@@ -3,12 +3,12 @@ Power:
   properties:
     poe_active:
       example: true
-      type: bool
+      type: boolean
       description: |
         True if the unit is being supplied PoE.
     usb_active:
       example: false
-      type: bool
+      type: boolean
       description: |
         True if the unit is being supplied USB.
 
@@ -27,7 +27,7 @@ Time:
         the NTP server is unreachable), at which time `time_set` is set.
     time_set:
       example: true
-      type: bool
+      type: boolean
       description: |
         If false, then time has not (yet) been set or determined via NTP.
 
@@ -35,6 +35,7 @@ Time:
     tz:
       example: America/Sao_Paolo
       type: string
+      nullable: true
       description: |
         Timezone string, as per tz_database.
 
@@ -45,6 +46,7 @@ Time:
     grid:
       example: FN30aw
       type: string
+      nullable: true
       description: |
         Approximate geolocation of Bond unit,
         expressed as a 6-character Maidenhead Grid Locator.
