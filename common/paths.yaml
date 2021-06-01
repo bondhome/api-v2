@@ -172,7 +172,7 @@
 /v2/sys/free:
   get:
     $ref: ../firmware/paths.yaml#/FreeGet
-/v2/sys/snapshot:
+/v2/sys/backup:
   get:
     $ref: ../firmware/paths.yaml#/BackupGet
   put:
