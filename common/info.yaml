@@ -952,7 +952,7 @@ description: |
 
   The Tilt feature is used to describe a device that can control its
   position in a sloping way.
-  The common use case is motorized shades.
+  The common use case is motorized blinds.
 
   The Tilt feature requires the Open feature.
 
@@ -972,7 +972,7 @@ description: |
   ### Notes
 
   [May 2021] At this time, the Tilt feature is available only for
-  certain Motorized Shades on the Bond Bridge and Bond Bridge Pro.
+  certain Motorized Blinds on the Bond Bridge and Bond Bridge Pro.
 
   The feature may be
   enabled or disabled via the feature toggle property `feature_tilt`,
@@ -983,7 +983,7 @@ description: |
 
   The Tilt Position feature is used to describe a device that can control its
   position in a sloping way to specific positions as a percentage.
-  The common use case is motorized shades.
+  The common use case is motorized blinds.
 
   The Tilt feature requires the Open feature.
 
@@ -1016,7 +1016,7 @@ description: |
   ### Notes
 
   [May 2021] At this time, the Tilt Position feature is available only for
-  certain Motorized Shades on the Bond Bridge Pro.
+  certain Motorized Blinds on the Bond Bridge Pro.
 
   The feature may be
   enabled or disabled via the feature toggle property `feature_tilt_position`,
