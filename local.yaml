@@ -51,6 +51,7 @@ x-tagGroups:
     tags:
       - Upgrade
       - Version
+      - Backup
       - Reset
       - Reboot
       - Time
