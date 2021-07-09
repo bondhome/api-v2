@@ -45,7 +45,7 @@
     $ref: ../groups/paths.yaml#/GroupPath
 /v2/groups/{group_id}/state:
     $ref: ../groups/paths.yaml#/StatePath
-/v2/groups/{groups_id}/properties:
+/v2/groups/{group_id}/properties:
     $ref: ../groups/paths.yaml#/PropertiesPath
 /v2/groups/{group_id}/actions/{action_name}:
     $ref: ../actions/group-paths.yaml#/ActionPath

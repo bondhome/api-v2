@@ -50,7 +50,7 @@ GroupPath:
     $ref: ../groups/paths.yaml#/Get
   parameters:
     - in: path
-      name: Group_id
+      name: group_id
       required: true
       schema:
         type: number
@@ -64,7 +64,7 @@ StatePath:
     $ref: ../groups/paths.yaml#/GetState
   parameters:
   - in: path
-    name: Group_id
+    name: group_id
     required: true
     schema:
       type: number
@@ -76,7 +76,7 @@ PropertiesPath:
     $ref: ../groups/paths.yaml#/PatchProperties
   parameters:
   - in: path
-    name: Group_id
+    name: group_id
     required: true
     schema:
       type: number
