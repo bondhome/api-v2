@@ -24,9 +24,16 @@ x-tagGroups:
       - Device Commands
       - Device Command Signal
       - Device Command Transmit
+  - name: Groups
+    tags:
+      - Groups
+      - Group State
+      - Group Properties
+      - Group Actions
   - name: Schedules
     tags:
       - Device Schedules
+      - Group Schedules
   - name: Bridge
     tags:
       - Bridge
