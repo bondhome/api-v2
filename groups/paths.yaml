@@ -229,9 +229,8 @@ Patch:
   - BasicAuth: []
   summary: Add Device to Group or Change Group field
   description: |
-    If `devices` argument is provided, it specifies a Device to add to
-    the Group. Only one Device can be added at once. Nonetheless, `devices`
-    must be an array with that one element.
+    If `devices` argument is provided, it specifies one or more Devices to add to
+    the Group.
   tags:
   - Groups
 Delete:
@@ -254,9 +253,8 @@ Delete:
   - BasicAuth: []
   summary: Remove Device from Group or Delete Group
   description: |
-    If `devices` argument is provided, it specifies a Device to remove from
-    the Group. Only one Device can be removed at once. Nonetheless, `devices`
-    must be an array with that one element.
+    If `devices` argument is provided, it specifies one or more Device to remove from
+    the Group.
 
     If `devices` argument is not provided, then the entire Group is deleted.
   tags:
