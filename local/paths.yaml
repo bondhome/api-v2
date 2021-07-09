@@ -39,6 +39,20 @@
     $ref: ../skeds/paths.yaml#/SkedsPath
 /v2/devices/{device_id}/skeds/{sked_id}:
     $ref: ../skeds/paths.yaml#/SkedPath
+/v2/groups:
+    $ref: ../groups/paths.yaml#/GroupsPath
+/v2/groups/{group_id}:
+    $ref: ../groups/paths.yaml#/GroupPath
+/v2/groups/{group_id}/state:
+    $ref: ../groups/paths.yaml#/StatePath
+/v2/groups/{groups_id}/properties:
+    $ref: ../groups/paths.yaml#/PropertiesPath
+/v2/groups/{group_id}/actions/{action_name}:
+    $ref: ../actions/group-paths.yaml#/ActionPath
+/v2/groups/{group_id}/skeds:
+    $ref: ../skeds/group-paths.yaml#/SkedsPath
+/v2/groups/{group_id}/skeds/{sked_id}:
+    $ref: ../skeds/group-paths.yaml#/SkedPath
 /v2/signal/tx:
     $ref: ../signal/paths.yaml#/TxPath
 /v2/signal/rssi:
