@@ -27,6 +27,7 @@ x-tagGroups:
   - name: Groups
     tags:
       - Groups
+      - Group Devices
       - Group State
       - Group Properties
       - Group Actions

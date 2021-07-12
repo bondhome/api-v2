@@ -4,8 +4,12 @@ Group:
       example: Kitchen Shades
       type: string
     devices:
+      readOnly: true
       description: |
         List of member Device IDs.
+
+        This field is read-only. Use the Group Devices endpoint's PUT/DELETE
+        methods to add/remove Devides from the Group.
       type: array
       example:
         - "aabbccdd"
@@ -56,13 +60,6 @@ Group:
         _: "ad9bcde4"
   required:
   - name
-
-GroupDeletion:
-  properties:
-    devices:
-      type: array
-      example:
-        - "aabbccdd"
 
 GroupList:
   type: object
