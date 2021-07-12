@@ -43,6 +43,8 @@
     $ref: ../groups/paths.yaml#/GroupsPath
 /v2/groups/{group_id}:
     $ref: ../groups/paths.yaml#/GroupPath
+/v2/groups/{group_id}/devices/{device_id}:
+    $ref: ../groups/paths.yaml#/DevicePath
 /v2/groups/{group_id}/state:
     $ref: ../groups/paths.yaml#/StatePath
 /v2/groups/{group_id}/properties:
