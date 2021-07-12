@@ -260,6 +260,12 @@ Delete:
   - Groups
 
 DevicesPost:
+  parameters:
+  - in: path
+    name: group_id
+    required: true
+    schema:
+      type: string
   requestBody:
     content:
       application/json:
@@ -291,6 +297,17 @@ DevicesPost:
   - Group Devices
 
 DeviceDelete:
+  parameters:
+  - in: path
+    name: group_id
+    required: true
+    schema:
+      type: string
+  - in: path
+    name: device_id
+    required: true
+    schema:
+      type: string
   responses:
     '204':
       description: Remove Device from Group
