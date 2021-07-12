@@ -59,9 +59,11 @@ GroupPath:
   delete:
     $ref: ../groups/paths.yaml#/Delete
 
+DevicesPath:
+  post:
+    $ref: ../groups/paths.yaml#/DevicesPost
+
 DevicePath:
-  put:
-    $ref: ../groups/paths.yaml#/DevicePut
   delete:
     $ref: ../groups/paths.yaml#/DeviceDelete
 
@@ -257,7 +259,17 @@ Delete:
   tags:
   - Groups
 
-DevicePut:
+DevicesPost:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          properties:
+            device:
+              example: "aabbccdd"
+              type: string
+              description: |
+                ID of Device to add
   responses:
     '204':
       description: Add Device to Group
@@ -271,7 +283,7 @@ DevicePut:
   - BasicAuth: []
   summary: Add Device to Group
   description: |
-    Device with the ID specified in the URL is added to the Group.
+    Device with the specified ID is added to the Group.
 
     A gratuitous update of the corresponding Group endpoint will occur
     to update clients as to the new devices, actions, state, and properties.
