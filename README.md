@@ -73,7 +73,7 @@ make test
 
 ## Read documentation
 
-Open browser at [localhost:8000](http://localhost:8000).
+Open browser at [localhost:8080](http://localhost:8080).
 
 ## Specification
 
