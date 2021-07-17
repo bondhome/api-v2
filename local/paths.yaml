@@ -73,3 +73,10 @@
   $ref: ../sys/paths.yaml#/TimePath
 /v2/sys/power:
   $ref: ../sys/paths.yaml#/PowerPath
+/v2/sys/backup:
+  get:
+    $ref: ../firmware/paths.yaml#/BackupGet
+  put:
+    $ref: ../firmware/paths.yaml#/BackupPut
+  delete:
+    $ref: ../firmware/paths.yaml#/BackupDelete

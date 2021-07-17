@@ -258,7 +258,7 @@ Backup:
 
         Format:
 
-          /<bond-id>_<fw-ver>_<timestamp>_<random>.bsnap
+          `/<bond-id>_<fw-ver>_<timestamp>_<random>.bsnap`
 
         Timestamp is as provided by client.
     dev_ids:
