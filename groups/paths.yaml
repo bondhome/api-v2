@@ -59,6 +59,14 @@ GroupPath:
   delete:
     $ref: ../groups/paths.yaml#/Delete
 
+DevicesPath:
+  post:
+    $ref: ../groups/paths.yaml#/DevicesPost
+
+DevicePath:
+  delete:
+    $ref: ../groups/paths.yaml#/DeviceDelete
+
 StatePath:
   get:
     $ref: ../groups/paths.yaml#/GetState
@@ -227,22 +235,16 @@ Patch:
       $ref: ../common/responses.yaml#/InternalServerError
   security:
   - BasicAuth: []
-  summary: Add Device to Group or Change Group field
+  summary: Change Group field
   description: |
-    If `devices` argument is provided, it specifies one or more Devices to add to
-    the Group.
+    To add or remove Devices from the Group,
+    use the Group Devices endpoint's PUT and DELETE methods instead of this one.
   tags:
   - Groups
 Delete:
-  requestBody:
-    content:
-      application/json:
-        schema:
-          $ref: schemas.yaml#/GroupDeletion
-          type: object
   responses:
     '204':
-      description: Remove Group or Device from Group
+      description: Delete Group
     '401':
       $ref: ../common/responses.yaml#/Unauthorized
     '404':
@@ -251,14 +253,80 @@ Delete:
       $ref: ../common/responses.yaml#/InternalServerError
   security:
   - BasicAuth: []
-  summary: Remove Device from Group or Delete Group
+  summary: Delete Group
   description: |
-    If `devices` argument is provided, it specifies one or more Device to remove from
-    the Group.
-
-    If `devices` argument is not provided, then the entire Group is deleted.
+    The entire Group is deleted.
   tags:
   - Groups
+
+DevicesPost:
+  parameters:
+  - in: path
+    name: group_id
+    required: true
+    schema:
+      type: string
+  requestBody:
+    content:
+      application/json:
+        schema:
+          properties:
+            device:
+              example: "aabbccdd"
+              type: string
+              description: |
+                ID of Device to add
+  responses:
+    '204':
+      description: Add Device to Group
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Add Device to Group
+  description: |
+    Device with the specified ID is added to the Group.
+
+    A gratuitous update of the corresponding Group endpoint will occur
+    to update clients as to the new devices, actions, state, and properties.
+  tags:
+  - Group Devices
+
+DeviceDelete:
+  parameters:
+  - in: path
+    name: group_id
+    required: true
+    schema:
+      type: string
+  - in: path
+    name: device_id
+    required: true
+    schema:
+      type: string
+  responses:
+    '204':
+      description: Remove Device from Group
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Remove Device from Group
+  description: |
+    Device with the ID specified in the URL is removed from the Group.
+
+    A gratuitous update of the corresponding Group endpoint will occur
+    to update clients as to the new devices, actions, state, and properties.
+  tags:
+  - Group Devices
 
 GetState:
   responses:
