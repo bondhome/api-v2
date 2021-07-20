@@ -11,6 +11,13 @@ Device:
         - `GX` : Generic device
       example: "CF"
       type: string
+    subtype:
+      description: |
+        The device's subtype does not affects its usage (as the type does),
+        it only affects the aesthetics of the device, like the app's screen UI.
+      example: "AWNING"
+      type: string
+      optional: true
     template:
       description: |
         An internal name describing what sort of protocol the remote represented
