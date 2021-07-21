@@ -47,10 +47,8 @@ Device:
         WARNING: Although currently it is not the case, at some point the same `subtype` string may be re-used with 
         different meanings between different device `types`. To take a hypothetical example, we may have a gas-powered
         fireplace device (`type = FP, subtype = GAS`) but also a gas-powered bidet (`type = BD, subtype = GAS`).
-        
       example: "AWNING"
       type: string
-      optional: true
     template:
       description: |
         An internal name describing what sort of protocol the remote represented
