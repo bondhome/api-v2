@@ -891,7 +891,11 @@ description: |
 
   ### Properties
 
-  (none)
+    - **open_down**: (boolean) indicates to user interfaces (app, integrations, etc)
+      to invert the visual orientation of open and close actions.
+    - **open_signal_invert**: (boolean) invert mapping of actions to signals for
+      open and close, making the open action to trigger the down signal, and the
+      close action to trigger the up signal. This also inverts the slider orientation.
 
   ### State Variables
 
