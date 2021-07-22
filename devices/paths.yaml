@@ -164,6 +164,8 @@ PatchProperties:
   responses:
     '200':
       description: Properties updated
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
     '401':
       $ref: ../common/responses.yaml#/Unauthorized
     '404':
