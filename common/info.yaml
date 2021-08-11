@@ -1,6 +1,6 @@
 ---
 title: Bond API
-version: "v2.22"
+version: "v3.0.0"
 x-logo:
   url: https://s3.amazonaws.com/docs-cloud.appbond.com/bond.png
 description: |
@@ -216,7 +216,7 @@ description: |
 
   ## 64-bit Keys
 
-  As of v2.22 firmware, Bond products have moved to 64-bit keys as resource
+  As of v3.0.0 firmware, Bond products have moved to 64-bit keys as resource
   identifiers, instead of the previous 32-bit keys. So, rather than a device
   being identified by an 8-digit hex string, the ids for newly created devices
   will be 16-digit hex strings.
