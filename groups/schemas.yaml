@@ -8,7 +8,8 @@ Group:
       description: |
         List of member Device IDs.
 
-        This field is read-only. Use the Group Devices endpoint's PUT/DELETE
+        This field is read-only after group creation.
+        Use the Group Devices endpoint's POST/DELETE
         methods to add/remove Devides from the Group.
       type: array
       example:
