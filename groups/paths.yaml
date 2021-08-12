@@ -43,6 +43,12 @@ GroupsPath:
         $ref: ../common/responses.yaml#/InternalServerError
     summary: Create new Group
     description: |
+      For the creation of a Group distributed across multiple Bonds,
+      clients should generate a random 64-bit ID for the Group and provide that
+      same ID in each Group POST request in the `_id` field. If the `_id`
+      field is not provided, a random ID will be assigned as with
+      POST requests to other enumerations.
+
       If `devices` is not provided, an empty Group is created.
       If `devices` is an array of device IDs, then a Group is created
       containing those device IDs. Using the `devices` field requires
