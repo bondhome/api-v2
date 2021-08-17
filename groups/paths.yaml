@@ -252,8 +252,9 @@ Patch:
   - BasicAuth: []
   summary: Change Group field
   description: |
-    To add or remove Devices from the Group,
-    use the Group Devices endpoint's PUT and DELETE methods instead of this one.
+    Note that the `devices` list cannot be PATCHed.
+    To add Devices to the Group, use POST method on the Group Devices enumeration.
+    To remove a Device from the Group, use the DELETE method of the Group Device resource.
   tags:
   - Groups
 Delete:
