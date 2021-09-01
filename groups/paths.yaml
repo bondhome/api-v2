@@ -53,7 +53,7 @@ GroupsPath:
       If `devices` is an array of device IDs, then a Group is created
       containing those device IDs. Using the `devices` field requires
       the client to predetermine what devices are compatible in the sense
-      of having a non-empty Actions ntersection. For this reason, it is
+      of having a non-empty Actions intersection. For this reason, it is
       simpler for the client to make individual Groups Devices POSTs for each
       device to be added to the Group, so that the Bond firmware may provide
       a 400 error in case a device cannot be added due to incompatability.
