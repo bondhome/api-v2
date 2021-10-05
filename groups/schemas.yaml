@@ -4,12 +4,13 @@ Group:
       example: Kitchen Shades
       type: string
     devices:
-      readOnly: true
       description: |
         List of member Device IDs.
 
-        This field is read-only after group creation.
-        Use the Group Devices endpoint's POST/DELETE
+        This field may be set during Group creation,
+        or may be updated using PATCH.
+
+        Alternatively, use the Group Devices endpoint's POST/DELETE
         methods to add/remove Devides from the Group.
       type: array
       example:
