@@ -1,6 +1,6 @@
 ---
 title: Bond API
-version: "v2.18.2"
+version: "v3.0.0"
 x-logo:
   url: https://s3.amazonaws.com/docs-cloud.appbond.com/bond.png
 description: |
@@ -213,6 +213,27 @@ description: |
       curl -H "BOND-Token: f074b61f628018fd" -i http://192.100.0.61/v2/devices/79135791/actions/SetSpeed -X PUT -d "{\"argument\": 3}"
 
   # API Concepts
+
+  ## 64-bit Keys
+
+  As of v3.0.0 firmware, Bond products have moved to 64-bit keys as resource
+  identifiers, instead of the previous 32-bit keys. So, rather than a device
+  being identified by an 8-digit hex string, the ids for newly created devices
+  will be 16-digit hex strings.
+
+  In an effort to minimize distruption to API clients,
+  already created resources (devices, commands, skeds, etc.) will continue
+  to be represented using the same exact string on the API. Additional
+  leading zeros will not be added. So, for example, a device with id `01abcdef`
+  will continue to enumerate as `01abcdef` in v2.22. The Bond API is however
+  libral in what it accepts, removing leading zeros.
+  So any of the following received ids will be
+  understood to point to this device: `1abcdef`, `01abcdef`, `0000000001abcdef`.
+
+  Internally, the Bond API uses this rule:
+
+    If the upper 32-bits of an ID are zero, then send as 8 hex digits (32-bit).
+    Otherwise, send as 16 hex digits (64-bit).
 
   ## Hash Tree
 
