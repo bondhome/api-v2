@@ -19,6 +19,7 @@ x-tagGroups:
       - Device Actions
       - Device Remote Address
       - Device Reload
+      - Power Cycle State
   - name: Commands
     tags:
       - Device Commands

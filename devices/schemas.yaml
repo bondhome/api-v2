@@ -11,12 +11,12 @@ Device:
         - `GX` : Generic device
         - `LT` : Light
         - `BD` : Bidet
-        
+
         This `type` field does not impact the functionality of the device.
         The `type` field should be used by API clients to improve the user experience.
         For example, the Bond Home app uses this field to determine what icon to show
         when browsing a list of Devices on the Bridge.
-        
+
         The `type` field *may* be used by integrations to determine the category of interface to be selected
         when such a selection is mandated by the platform. For example, Google Assistant integration
         requires developers to choose a device type such as Fan or Light.
@@ -27,24 +27,24 @@ Device:
     subtype:
       description: |
         [Added in v2.21]
-        
+
         The subtype field is used to distinguish between categories of devices sublter than the `type` field permits.
-        
+
         Currently, subtype is only used for Motorized Window Coverings and Awnings (`type = MS`), with the following options:
-        
+
          - `ROLLER`: a roller blackout shade which blocks light and provides privacy
          - `SHEER`: a shade which permits light to pass and does not provide privacy
          - `AWNING`: an outdoor patio covering
-         
+
         This field does not impact functionality in any way.
         Furthermore, the `subtype` field must only be used for analytics and aesthetic purposes by the API client.
         New subtypes may be introduced without notice. API clients should always be prepared to fall back to a reasonable
         default based on the device `type`.
-         
+
         The `subtype` field is not limited by the firmware, but rather specified by Bond internally and included
         in Device creation requests from the Bond Home app.
-        
-        WARNING: Although currently it is not the case, at some point the same `subtype` string may be re-used with 
+
+        WARNING: Although currently it is not the case, at some point the same `subtype` string may be re-used with
         different meanings between different device `types`. To take a hypothetical example, we may have a gas-powered
         fireplace device (`type = FP, subtype = GAS`) but also a gas-powered bidet (`type = BD, subtype = GAS`).
       example: "AWNING"
@@ -145,6 +145,22 @@ Properties:
       example: 30
       type: integer
       description: (Bridge-only)
+
+PowerCycleState:
+  properties:
+    enabled:
+      example: false
+      type: boolean
+      description: |
+        If true, device will revert to specified state after power loss.
+        If false, device will maintain previous state across power loss
+        ("Last State" feature).
+    state:
+      example: {"light": 1, "brightness": 100, "power": 0, "speed": 3}
+      type: object
+      description: |
+        State to revert to after power loss.
+        Same schema as for Device state.
 
 Bridge:
   properties:
