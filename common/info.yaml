@@ -939,10 +939,7 @@ description: |
 
   ### Properties
 
-   - **course_time**: (integer) specifies the amount of time, in milliseconds,
-     required for the device to fully open or close. Depending on the device
-     template, this property may or may not be present. Defaults to -1,
-     meaning unconfigured.
+  (none)
 
   ### State Variables
 
@@ -968,6 +965,31 @@ description: |
   non-negative value before the actions and state variables will be exposed,
   so as to avoid integrations from showing a slider interface without
   the Bridge having the capability of setting position.
+
+  ## CourseTime
+
+  The CourseTime feature is used for shades whose RF protocols
+  do not natively support Position. Bond Bridge Pro emulates
+  a Position feature using a custom dead reckoning algorithm.
+  This requires the client to specify the time required for the
+  shade to open or close.
+
+  The CourseTime feature requires the Position feature.
+
+  ### Properties
+
+   - **course_time**: (integer) specifies the amount of time, in milliseconds,
+     required for the device to fully open or close. Depending on the device
+     template, this property may or may not be present. Defaults to -1,
+     meaning unconfigured.
+
+  ### State Variables
+
+  (none)
+
+  ### Actions
+
+  (none)
 
   ## FpFan
 
