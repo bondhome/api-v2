@@ -939,11 +939,15 @@ description: |
 
   ### Properties
 
-  (none)
+   - **open_position**: (bool) (read-only) [added in v2.30.1] if true, then `position`
+     describes the "open percentage".
+     If false or not present, then a "closed percentage" is described.
 
   ### State Variables
 
-   - **position**: (integer) value from 0 to 100: 0 = open, 100 = closed.
+   - **position**: (integer) value from 0 to 100: 0 = closed, 100 = open.
+     (Unless `open_position` is false or absent, in which case
+     0 = open, 100 = closed).
 
   ### Actions
 
@@ -965,6 +969,9 @@ description: |
   non-negative value before the actions and state variables will be exposed,
   so as to avoid integrations from showing a slider interface without
   the Bridge having the capability of setting position.
+
+  [January 2022] In v2.30.1, we made a switch to "open percentage" to
+  align with smart shade UIs in HomeKit, Crestron Home, and others.
 
   ## CourseTime
 
