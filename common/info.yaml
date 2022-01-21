@@ -601,7 +601,7 @@ description: |
   enumeration `groups/{}/skeds`. If a sked is present on an older enumeration
   but absent on a newer one, it will be removed from the old enumeration.
   Similarly, if a sked is present on the *newer* enumeration but absent on the
-  old one, then the Bond Home app with downwards-synchronize by POSTing the
+  old one, then the Bond Home app will downwards-synchronize by POSTing the
   missing sked.
 
   # Bond Push UDP Protocol (BPUP)
