@@ -376,9 +376,9 @@ description: |
   in the group shards.
 
   For example, if the result of querying the `groups/{}` endpoint for the
-  group with ID 1 is:
+  group with ID 2 is:
 
-      ZZBL12345:groups/0000000000000001 = {
+      ZZBL12345:groups/0000000000000002 = {
         "__modified": 1642788966,
         "name": "Great Room Fans",
         "types": ["CF"],
@@ -387,7 +387,7 @@ description: |
         "actions": ["TurnOn", "TurnOff"]
       }
 
-      KSMJWCE12345:groups/0000000000000001 = {
+      KSMJWCE12345:groups/0000000000000002 = {
         "__modified": 1642788968,
         "name": "Great Room Fans",
         "types": ["CF"],
