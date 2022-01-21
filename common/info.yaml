@@ -578,6 +578,8 @@ description: |
       > POST http://TWCTBXX00003/v2/groups/0000000000000001/skeds {"_post_id": "0000000000000007", "action":"SetBrightness", "argument":75, "mark":"sunrise", "seconds":0}
       < 201 OK {"_post_id": "0000000000000007"}
 
+  The last two requests could be parallelized.
+
   ### Sked Modification
 
   Similar to changing the name of a group, the client can modify the sked
