@@ -288,6 +288,22 @@ description: |
   which would return the name and location directly associated with the device,
   as well as hash objects for the child nodes of device: `commands` and `state`.
 
+  ## Local Hash vs Subtree Hash
+
+  The `_` hashes discussed above are designed to allow a client to quickly
+  discover changes to a Bond's state. As we've shown, this requires the hash
+  at a particular endpoint to incorporate not only that endpoint's state but
+  also the state of all the children. However, it is sometimes desireable
+  to have a hash of just the data local to that endpoint, that is, data
+  not contained within a child.
+
+  [As of v3 firmware] we introduce a new `__` (double underscore) field
+  called a "local hash". This is intended to be used by the Bond Cloud
+  and Bond Apps specifically for downwards synchronization as required
+  for the Groups and Scenes features.
+
+  Most integrators can safely ignore the local hashes.
+
   ## Request ID
 
   The purpose of the Request ID is to allow a client to retry a non-idempotent
@@ -296,6 +312,295 @@ description: |
 
   If you need to implement a retry mechanism in your integration,
   please contact the Bond Engineering Team via the Bond Forums https://forum.bondhome.io/
+
+
+  ## Modified Times
+
+  Certain endpoints may track their last modified time in a special
+  `__modified` field. The modified time is an integer representing
+  the time in seconds since the Unix epoch when the endpoint was last modified.
+
+  Currently the endpoints exposing `__modified` are:
+
+      groups/{}
+      groups/{}/skeds
+      groups/{}/skeds/{}
+      scenes/{}
+      scenes/{}/skeds
+      scenes/{}/skeds/{}
+
+  # Groups and Scenes
+
+  The Group, Scene, and related Skeds endpoints are special in that they
+  represent shards of abstract objects possibly distributed across
+  multiple Bond Bridges or Smart by Bond devices. We will here discuss:
+
+   - discovery, control, and feedback (for all API clients)
+   - management (for Bond Home app)
+
+  The following discussion is in terms of Groups but should be understood
+  as also applying to Scenes unless otherwise specified.
+
+  ## Discovery
+
+  To discover the Groups available on a Bond network,
+  the client should first query the `groups/` enumeration
+  to get the group IDs in which each Bond participates.
+  The union of the Group IDs gives the list of Groups on the network.
+
+  For example:
+
+      ZZBL12345:groups = {
+        "0000000000000001":{...},
+        "0000000000000002":{...},
+        "0000000000000003":{...}
+      }
+
+      KSMJWCE12345:groups = {
+        "0000000000000002":{...},
+        "0000000000000004":{...}
+      }
+
+  There are a total of 4 groups on the network:
+
+      "0000000000000001"
+      "0000000000000002"
+      "0000000000000003"
+      "0000000000000004"
+
+  The Bond Bridge (ZZ...) participates in three groups with IDs 1, 2, and 3,
+  while a Smart by Bond fan (K...) participates in groups 2 and 4.
+
+  Next, the client should query each of the group shard endpoints `group/{}`.
+  The list of devices participating in the group is the union of the devices
+  in the group shards.
+
+  For example, if the result of querying the `groups/{}` endpoint for the
+  group with ID 1 is:
+
+      ZZBL12345:groups/0000000000000001 = {
+        "__modified": 1642788966,
+        "name": "Great Room Fans",
+        "types": ["CF"],
+        "locations": ["Great Room"],
+        "devices": ["aabbccdd", "11223344"],
+        "actions": ["TurnOn", "TurnOff"]
+      }
+
+      KSMJWCE12345:groups/0000000000000001 = {
+        "__modified": 1642788968,
+        "name": "Great Room Fans",
+        "types": ["CF"],
+        "locations": ["Great Room"],
+        "devices": ["1"]
+        "actions": ["TurnOn", "TurnOff", "TurnLightOn", "TurnLightOff"]
+      }
+
+  Then the API client concludes that the group named "Great Room Fans"
+  contains three devices:
+
+      ZZBL12345:aabbccdd
+      ZZBL12345:11223344
+      KSMJWCE12345:1
+
+  In the case of a disagreement of the `name` between shards, the client
+  should use the name from the group shard with the most recent
+  modified time (`__modified`).
+
+  The type of the group is indicated by the `types` array,
+  which is typically only of length one. In this case we see it is `CF`
+  for Ceiling Fan.
+
+  ## Control
+
+  ### Determining Available Actions
+
+  The actions available on a group is the intersection of the actions
+  available on the group shards. So, using the example from the previous
+  section, although the group shard on the Smart by Bond fan
+  (serial number K...) supports `TurnLightOn` and `TurnLightOff` actions,
+  the shard on the Bond Bridge does not. So the intersection of the `actions`
+  arrays is just:
+
+      ["TurnOn", "TurnOff"]
+
+  ### Executing a Group Action
+
+  To execute an action on the group, the client should send PUT requests
+  to the actions on each group shard. So, to turn on the Great Room Fans
+  group, the client would send two requests using the same Request ID:
+
+      PUT http://ZZBL12345/v2/groups/0000000000000001/actions/TurnOn
+      PUT http://KSMJWCE12345/v2/groups/0000000000000001/actions/TurnOn
+
+  Preferably these requests should be run concurrently so that the time
+  required to process the first request does not delay the execution of
+  the action on the second shard.
+
+  ### Success, Error, and Timeout
+
+  If all requests complete successfully, then the group action can be considered
+  a success. If any errors or timeouts occur, then an error should be reported
+  to the user.
+
+  ## State Feedback
+
+  Whenever a group changes state, a state update is sent for the group shards
+  and all member devices. Whenever a device state changes, a state update is
+  sent for that devices plus an update for the state of any groups which contain
+  that device.
+
+  Group shards report state under `groups/{}/state`. The schema of this endpoint
+  is similar to that of `devices/{}/state`, except that state variables on a
+  group can take the value `null` when the member devices disagree,
+  as discussed below in the documentation for this endpoint.
+  Although the Bond Bridge will combine the states of the member devices
+  into a single state for the group shard, it is the responsibility of the
+  API client to merge the states of each group shard to obtain an overall
+  state for the group.
+
+  For example, suppose the client receives the following state updates:
+
+      ZZBL12345:groups/0000000000000001/state = {
+        "power": 1,
+      }
+
+      KSMJWCE12345:groups/0000000000000001/state = {
+        "power": 1,
+        "light": 0
+      }
+
+  The client would intersect the state keys to remove any state variables
+  not shared by all shards, and then set the values to either `null` if
+  there is disagreement between shards, or to the common value. In this
+  case the client would conclude the group state to be:
+
+      {"power": 1}
+
+  If now one of the member devices, say the Smart by Bond fan, is turned off,
+  then the client would receive a state update for the device and group:
+
+      KSMJWCE12345:devices/1/state = {
+        "power": 0,
+        "light": 0
+      }
+
+      KSMJWCE12345:groups/0000000000000001/state = {
+        "power": 0,
+        "light": 0
+      }
+
+  The client would now combine the two group shard states to conclude:
+
+      {"power": null}
+
+  That is, that the power state of the group is indeterminate. On a UI
+  with seperate ON/OFF buttons, this would usually be represented by
+  highlighting neither button.
+
+  ## Management
+
+  ### Group Creation
+
+  To create a new group, the client should send requests to each of the
+  participating Bonds with the list of devices to include. Crucially,
+  all shards must have the same group ID so that they will be understood
+  as a single group by other clients. The preferred way to accomplish this
+  is to allow the Bond to generate a random ID for the first shard,
+  and then to specify that ID in the `_post_id` field during the subsequent
+  POST requests to the other Bonds.
+
+  For example, suppose we want to add 3 Smart by Bond lights to a group
+  called "Kitchen Lights". The requests and responses might go like this:
+
+      > POST http://TWCTBXX00001/v2/groups {"name": "Kitchen Lights", "devices": [1]}
+      < 201 OK {"_post_id": "0000000000000001"}
+
+      > POST http://TWCTBXX00002/v2/groups {"_post_id": "0000000000000001", "name": "Kitchen Lights", "devices": [1]}
+      < 201 OK {"_post_id": "0000000000000001"}
+
+      > POST http://TWCTBXX00003/v2/groups {"_post_id": "0000000000000001", "name": "Kitchen Lights", "devices": [1]}
+      < 201 OK {"_post_id": "0000000000000001"}
+
+  The last two requests could be parallelized.
+
+  Alternatively the client could pre-generate the ID and parallelize all three
+  requests. However, the client MUST be sure to use a good random number
+  generator and generate a 64-bit (16-nibble) hex string in lower-case
+  with leading zeros.
+
+  ### Group Deletion
+
+  To delete a group, the client should send a DELETE request to each
+  of the shards. If one of the Bonds is offline, then the group will only
+  be partially deleted. The user must bring that Bond back online in order
+  to finish deleting the group. In the meantime, the group will still exist
+  containing just the devices on the offline Bond.
+
+  ### Removing Device from Group
+
+  Devices may be removed from the Group via DELETE `groups/{}/devices/{}`.
+  When the last device is removed from a group, the shard containing that
+  device will disappear (an implicit deletion).
+
+  ### Changing Group Name
+
+  To change the name of a group, the client should send a PATCH request
+  to each of the shards. The name can be changed as long as there is at least
+  one online Bond participating in the group. If any Bonds are offline,
+  their `group/{}` endpoints will still have the old name. However, this
+  does not pose a problem for API clients because the `name` should be taken
+  from the group shard with the most recent `__modified` field.
+
+  The Bond Home app performs a special downward synchronization whereby
+  out-of-date group shard names are updated with the latest. That is,
+  when Bonds previously offline come back online, they are PATCHed with the
+  name of the most recent shard in the group. Other API clients do not
+  need to perform this downward sync function.
+
+  ## Skeds
+
+  Schedules on groups and scenes need to be installed into each shard,
+  and the Bond Home app performs downward synchronization on the skeds.
+
+  ### Sked Creation
+
+  Similar to group creation, Bond Home app creates the sked on each shard
+  **using the same 64-bit ID** for that sked on each shard. The sked ID
+  must be different than the group ID. Example:
+
+      > POST http://TWCTBXX00001/v2/groups/0000000000000001/skeds {"action":"SetBrightness", "argument":75, "mark":"sunrise", "seconds":0}
+      < 201 OK {"_post_id": "0000000000000007"}
+
+      > POST http://TWCTBXX00002/v2/groups/0000000000000001/skeds {"_post_id": "0000000000000007", "action":"SetBrightness", "argument":75, "mark":"sunrise", "seconds":0}
+      < 201 OK {"_post_id": "0000000000000007"}
+
+      > POST http://TWCTBXX00003/v2/groups/0000000000000001/skeds {"_post_id": "0000000000000007", "action":"SetBrightness", "argument":75, "mark":"sunrise", "seconds":0}
+      < 201 OK {"_post_id": "0000000000000007"}
+
+  ### Sked Modification
+
+  Similar to changing the name of a group, the client can modify the sked
+  settings by broadcasting a PATCH to the sked on each group shards.
+
+  Here, in the event that a Bond is offline, the sked will continue being
+  executed with the outdated parameters until the Bond Home app performs
+  downward synchronization to update that sked.
+
+  ### Sked Deletion
+
+  Deleting a group or scene sked is as simple as sending DELETE to the sked
+  on each shard.
+
+  In the event of one or more Bonds being offline, they will continue to execute
+  the sked until the Bond Home app syncs with them and removes the sked
+  which was supposed to be deleted. The Bond Home app knows that a sked
+  was deleted by checking the `__modified` timestamp on the group shard skeds
+  enumeration `groups/{}/skeds`. If a sked is present on an older enumeration
+  but absent on a newer one, it will be removed from the old enumeration.
+  Similarly, if a sked is present on the *newer* enumeration but absent on the
+  old one, then the Bond Home app with downwards-synchronize by POSTing the
+  missing sked.
 
   # Bond Push UDP Protocol (BPUP)
 
