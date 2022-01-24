@@ -331,9 +331,39 @@ description: |
 
   # Groups and Scenes
 
-  The Group, Scene, and related Skeds endpoints are special in that they
-  represent shards of abstract objects possibly distributed across
-  multiple Bond Bridges or Smart by Bond devices. We will here discuss:
+  Bond Home V3 introduces Groups and Scenes as major new features.
+  In designing these features, we needed to meet several requirements
+  requested by the Bond community:
+
+    1. Groups and Scenes **must work offline**. A loss of internet connection
+       must not interfere with control and feedback, and should not
+       prevent creation and management, when the Bond Home app is on the same
+       local network as the devices in question.
+    2. Smart by Bond devices can be grouped or added to a Scene with **no
+       Bond Bridge required as a hub**.
+    3. Groups and Scenes must be **resiliant to any individual Bond units
+       going offline**. That is, there must not be a central controller
+       as a single point of failure. If only a subset of the Group or Scene
+       devices are online, then they should still execute action requests.
+    4. **Intuitive UI** in the Bond Home app for creating, managing,
+       and controling Groups and Scenes. The user should be blissfully unaware
+       of any lower-level complexities.
+
+  In order to achieve the above, we chose a design where a Group or
+  Scene object is distributed among the participating Bond units.
+  The Group or Scene endpoint data that lives on a single Bond
+  is called a _shard_. Each Bond unit acts as if it were the only
+  participant in the Group or Scene, using only the data in its own shard,
+  with no communication among Bond units.
+
+  The API client is responsible for managing the various shards.
+  The most difficult aspects of this---involving correction of inconsistent
+  data between Bonds---is handled by the Bond Home apps. However, some
+  complexity does remain for integrators who need to send multiple requests
+  to control a Group and must merge the data returned by those requests
+  to present a sensible interface to the control system and ultimately the user.
+
+  We will here discuss:
 
    - discovery, control, and feedback (for all API clients)
    - management (for Bond Home app)
@@ -368,7 +398,7 @@ description: |
       "0000000000000003"
       "0000000000000004"
 
-  The Bond Bridge (ZZ...) participates in three groups with IDs 1, 2, and 3,
+  In this example, the Bond Bridge (ZZ...) participates in three groups with IDs 1, 2, and 3,
   while a Smart by Bond fan (K...) participates in groups 2 and 4.
 
   Next, the client should query each of the group shard endpoints `group/{}`.
@@ -405,7 +435,8 @@ description: |
 
   In the case of a disagreement of the `name` between shards, the client
   should use the name from the group shard with the most recent
-  modified time (`__modified`).
+  modified time (`__modified`). If there is a tie for modified time,
+  the client may choose arbitrarily among the shards.
 
   The type of the group is indicated by the `types` array,
   which is typically only of length one. In this case we see it is `CF`
@@ -428,10 +459,19 @@ description: |
 
   To execute an action on the group, the client should send PUT requests
   to the actions on each group shard. So, to turn on the Great Room Fans
-  group, the client would send two requests using the same Request ID:
+  group, the client would send two requests using the same Group ID:
 
       PUT http://ZZBL12345/v2/groups/0000000000000001/actions/TurnOn
       PUT http://KSMJWCE12345/v2/groups/0000000000000001/actions/TurnOn
+
+  Furthermore, these two requests must be sent with the same Request ID
+  (`Bond-UUID` header). WARNING: Failure to use the same Request ID may result
+  in duplicate transmission. We may add a mechanism in the future where
+  sending the request to just one Bond will be sufficient to control all of
+  them, with the Request ID used to de-duplicate requests.
+  So, for forwards-compatability we need API clients to use the
+  same Request ID today, even though it would work today without specifying
+  the Request ID.
 
   Preferably these requests should be run concurrently so that the time
   required to process the first request does not delay the execution of
