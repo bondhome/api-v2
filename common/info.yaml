@@ -313,6 +313,25 @@ description: |
   If you need to implement a retry mechanism in your integration,
   please contact the Bond Engineering Team via the Bond Forums https://forum.bondhome.io/
 
+  ## Request Flags
+
+  Each request may contain a number of request flags,
+  which can be specified on HTTP via the `Bond-Flags` header
+  (or via the `f` field for BPUP and MQTT transports).
+  These flags are not needed in most integrations,
+  but are used by Bond Home app and some partner integrations
+  to facilitate debugging at scale.
+
+  Flags are:
+
+    - bit 0: (reserved)
+    - bit 1: DOWNSYNC: request is part of downward synchronization
+    - bit 2: UP: request is moving away from Bond
+    - bit 3: DUP: request is retransmitted or cached reply
+    - bit 4: UCAST: (internal use)
+    - bit 5: QUIET: (internal use)
+    - bit 6: BCAST: (internal use)
+    - bit 7: PASSTHRU: (internal use)
 
   ## Modified Times
 
@@ -463,15 +482,6 @@ description: |
 
       PUT http://ZZBL12345/v2/groups/0000000000000001/actions/TurnOn
       PUT http://KSMJWCE12345/v2/groups/0000000000000001/actions/TurnOn
-
-  Furthermore, these two requests must be sent with the same Request ID
-  (`Bond-UUID` header). WARNING: Failure to use the same Request ID may result
-  in duplicate transmission. We may add a mechanism in the future where
-  sending the request to just one Bond will be sufficient to control all of
-  them, with the Request ID used to de-duplicate requests.
-  So, for forwards-compatability we need API clients to use the
-  same Request ID today, even though it would work today without specifying
-  the Request ID.
 
   Preferably these requests should be run concurrently so that the time
   required to process the first request does not delay the execution of
