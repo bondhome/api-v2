@@ -348,6 +348,18 @@ description: |
       scenes/{}/skeds
       scenes/{}/skeds/{}
 
+  The modified times are set using the request time as specified in the
+  `BOND-Unixtime` HTTP header (or `u` flag on BPUP and MQTT).
+  Example:
+
+      BOND-Unixtime: 1643114517
+
+      { ..., "u":"1643114517", ... }
+
+  Clients who may modify any shard endpoints should specify this header
+  on all reqeusts. If this "unixtime" field is not provided, the Bond
+  will use its internal real-time clock, if already set.
+
   # Groups and Scenes
 
   Bond Home V3 introduces Groups and Scenes as major new features.
