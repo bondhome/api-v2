@@ -360,6 +360,12 @@ description: |
   on all reqeusts. If this "unixtime" field is not provided, the Bond
   will use its internal real-time clock, if already set.
 
+  Conversely, if the Bond's internal clock is not yet set, it will use
+  the timestamp specified in this field as the internal time.
+  For this reason, only use the `BOND-Unixtime` header on systems with
+  accurate clocks, such as smart phones. Incorrectly set times may result
+  in shard synchronization issues and skeds running unexpectedly.
+
   # Groups and Scenes
 
   Bond Home V3 introduces Groups and Scenes as major new features.
