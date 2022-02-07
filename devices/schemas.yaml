@@ -177,13 +177,22 @@ Bridge:
 RemoteAddr:
   properties:
     addr:
-      example: ["dead", "0f2a", "0002", "0003"]
+      example: ["dead", "0f2a", "0002", "0003", "SHAXX12345:3:r"]
       type: array
       items:
         type: string
       description: |
-        Learned remote address(es) in hexadecimal,
+        Learned remote address(es),
         may be patched only with a single address string to be added.
+
+        Address strings containing colons (`:`) are Sidekicks, and have
+        the format `<sidekick-serial-number>:<channel-number>:<topology>`,
+        where `topology` may be:
+
+          - `d`: direct -- Sidekick controls device directly, Bridge just updates
+            device state when Sidekick's BondSync signal overheard.
+          - `r`: relay -- Sidekick does NOT control device directly,
+            Bridge sends command to device upon receiving Sidekick's BondSync signal.
     addr_slots:
       example: 5
       type: integer

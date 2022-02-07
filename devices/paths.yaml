@@ -476,7 +476,7 @@ GetRemoteAddr:
         application/json:
           schema:
             $ref: schemas.yaml#/RemoteAddr
-      description: Get SBB Remote Address
+      description: Get Remote Address
     '401':
       $ref: ../common/responses.yaml#/Unauthorized
     '404':
@@ -485,11 +485,16 @@ GetRemoteAddr:
       $ref: ../common/responses.yaml#/InternalServerError
   security:
     - OAuth: ["oauth2"]
-  summary: Get SBB Remote Address and Learn Window
+  summary: Get Remote Address and Learn Window
   description: |
-    [SBB-only]
-    Provides the current SBB remote address and information about the learn window.
-    The SBB unit will only honor commands received with a matching address.
+    [added for SBB in v2, and for Bond Bridge Pro in v3.x]
+
+    Provides the current remote addresses and information about the learn window.
+    The Bond unit will only honor commands received with a matching address.
+
+    This endpoint shall be used for RF remote controls on Smart by Bond
+    and for associating Sidekicks to devices on a Bond Bridge Pro (BD-1750).
+    Sidekick not supported on Bond Bridge (BD-1000).
 
     NOTE: If `addr0_is_dip` is present and true, then the first address (addr0)
     corresponds to physical "DIP" switches on the receiver.
