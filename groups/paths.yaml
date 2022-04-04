@@ -350,8 +350,10 @@ DeviceDelete:
     A gratuitous update of the corresponding Group endpoint will occur
     to update clients as to the new devices, actions, state, and properties.
 
-    When the last device is removed (DELETEd) from a group shard,
-    the group shard will vanish.
+    When the last device is removed from a group shard,
+    the group shard will vanish. This applies whether the removal is explicit
+    or implicit when the device is deleted entirely from the Bridge.
+    
     That is, the group shard will be removed from the groups enumeration.
     The groups enumeration will be sent as a gratuitous GET response.
   tags:
