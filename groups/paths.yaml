@@ -44,14 +44,14 @@ GroupsPath:
     summary: Create new Group
     description: |
       For the creation of a Group distributed across multiple Bonds,
-      clients should generate a random 64-bit ID for the Group and provide that
-      same ID in each Group POST request in the `_id` field. If the `_id`
+      clients should provide a 64-bit ID for the Group and provide that
+      same ID in each Group POST request in the `_id` field. See
+      introductory section "Groups and Scenes" for detail. If the `_id`
       field is not provided, a random ID will be assigned as with
       POST requests to other enumerations.
 
-      If `devices` is not provided, an empty Group is created.
-      If `devices` is an array of device IDs, then a Group is created
-      containing those device IDs. Using the `devices` field requires
+      A Group is created containing the device IDs in the `devices` array.
+      Using the `devices` field requires
       the client to predetermine what devices are compatible in the sense
       of having a non-empty Actions intersection. If even a single device is
       incompatible, then the entire POST will fail with a 400 error.
@@ -60,8 +60,8 @@ GroupsPath:
       device to be added to the Group, so that the Bond firmware may provide
       a 400 error in case a device cannot be added due to incompatability.
 
-      Note that `type` cannot be specified when creating a Group.
-      The `type` field is calculated based on the member Devices.
+      Note that `types` and `locations` fields cannot be specified when
+      creating a Group: these fields are calculated based on the member Devices.
     tags:
     - Groups
 
@@ -257,6 +257,10 @@ Patch:
     The `devices` list may be PATCHed to perform a bulk change to the membership in the group.
     A 400 error is returned if the devices are incompatible.
 
+    If the `devices` list is PATCHed to empty, the group shard will vanish.
+    That is, the group shard will be removed from the groups enumeration.
+    The groups enumeration will be sent as a gratuitous GET response.
+
     To add Devices to the Group, use POST method on the Group Devices enumeration.
     To remove a Device from the Group, use the DELETE method of the Group Device resource.
   tags:
@@ -345,6 +349,13 @@ DeviceDelete:
 
     A gratuitous update of the corresponding Group endpoint will occur
     to update clients as to the new devices, actions, state, and properties.
+
+    When the last device is removed from a group shard,
+    the group shard will vanish. This applies whether the removal is explicit
+    or implicit when the device is deleted entirely from the Bridge.
+    
+    That is, the group shard will be removed from the groups enumeration.
+    The groups enumeration will be sent as a gratuitous GET response.
   tags:
   - Group Devices
 
