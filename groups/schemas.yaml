@@ -33,13 +33,13 @@ Group:
       example:
         - "MS"
       type: array
-    location:
+    locations:
       readOnly: true
       example:
          - Kitchen
       type: array
       description: |
-        Similar to `type`, if all Devices in the Group are in the same Location,
+        Similar to `types`, if all Devices in the Group are in the same Location,
         this field will be an array with a single string. However, when Devices
         from multiple Locations are combined in one Group, this field lists
         each unique Location in arbitrary order.
