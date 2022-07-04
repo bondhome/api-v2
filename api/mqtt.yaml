@@ -50,7 +50,7 @@ Schema:
       description: |
         If true, a custom server CA has been loaded.
         If false, the Bond Cloud CA will be used.
-    enable:
+    enabled:
       example: true
       type: boolean
       description: |
