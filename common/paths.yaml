@@ -144,7 +144,7 @@
 /v2/sys/wifi/scan:
   get:
     $ref: ../network/paths.yaml#/ScanGet
-/v2/sys/watchdog:
+/v2/sys/wifi/watchdog:
   get:
     $ref: ../network/paths.yaml#/WatchdogGet
   patch:
