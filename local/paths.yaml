@@ -73,6 +73,8 @@
     $ref: ../api/mqtt.yaml#/Path
 /v2/api/bpup:
     $ref: ../api/bpup.yaml#/Path
+/v2/api/bhk:
+    $ref: ../api/bhk.yaml#/Path
 /v2/sys/wifi/scan:
   $ref: ../network/paths.yaml#/WifiScanPath
 /v2/sys/wifi/sta:

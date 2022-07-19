@@ -204,6 +204,13 @@
     $ref: ../api/paths.yaml#/BPUPPatch
   delete:
     $ref: ../api/paths.yaml#/BPUPDelete
+/v2/api/bhk:
+  get:
+    $ref: ../api/paths.yaml#/BHKGet
+  patch:
+    $ref: ../api/paths.yaml#/BHKPatch
+  delete:
+    $ref: ../api/paths.yaml#/BHKDelete
 /v2/debug/wifi:
   get:
     $ref: ../debug/paths.yaml#/WifiGet
