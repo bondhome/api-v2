@@ -44,13 +44,8 @@ Path:
     requestBody:
       content:
         application/json:
-          required: true
           schema:
             $ref: ./bhk.yaml#/Schema
-            properties:
-            enabled:
-              example: 1
-              type: number
     responses:
       '200':
         description: Bond HomeKit configuration updated
