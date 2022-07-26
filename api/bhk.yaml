@@ -49,6 +49,8 @@ Path:
     responses:
       '200':
         description: Bond HomeKit configuration updated
+      '400':
+        $ref: ../common/responses.yaml#/BadRequest
       '401':
         $ref: ../common/responses.yaml#/Unauthorized
       '500':
