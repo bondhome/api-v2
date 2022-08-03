@@ -28,7 +28,7 @@ Path:
   get:
     responses:
       '200':
-        description: Bond HomeKit configuration
+        description: Bond HomeKit configuration.
         content:
           application/json:
             schema:
@@ -39,7 +39,7 @@ Path:
         $ref: ../common/responses.yaml#/InternalServerError
     security:
     - BasicAuth: []
-    summary: Get Bond HomeKit configuration
+    summary: Get Bond HomeKit configuration.
     tags:
     - HomeKit
   patch:
@@ -50,7 +50,7 @@ Path:
             $ref: ./bhk.yaml#/Schema
     responses:
       '200':
-        description: Bond HomeKit configuration updated
+        description: Bond HomeKit enabled info updated.
       '400':
         $ref: ../common/responses.yaml#/BadRequest
       '401':
@@ -65,13 +65,17 @@ Path:
   delete:
     responses:
       '204':
-        description: Bond HomeKit configuration reset to default
+        description: |
+          Bond HomeKit info reseted.
+          That means the Bond will delete all info, unpairing if paired and set enabled to default (0).
+          If you have not removed the Bond from your account on Home app, the Bond and its devices
+          will show as not responding. You can remove from the Home app later as usual.
       '401':
         $ref: ../common/responses.yaml#/Unauthorized
       '500':
         $ref: ../common/responses.yaml#/InternalServerError
     security:
     - BasicAuth: []
-    summary: Reset Bond HomeKit configuration to defaults
+    summary: Reset Bond HomeKit configuration, unpairing if paired.
     tags:
     - HomeKit
