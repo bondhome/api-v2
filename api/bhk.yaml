@@ -8,12 +8,14 @@ Schema:
         * 1 - Enabled
         * 2 - Disable
     paired:
-      example: true
+      example: false
       type: boolean
       readOnly: true
       description: |
-        If false (default), Bond is not paired to an account and is discoverable by the HomeKit Protocol.
-        If true, Bond is paired and is not discoverable.
+        When enabled is false (2 and 0 in v3.x.x), paired will always be false.
+        When enabled is true, paired means:
+          - false (default): Bond is not paired to an account and is discoverable by the HomeKit Protocol.
+          - true: Bond is paired and is not discoverable.
     setup_code:
       example: "12341234"
       type: string
