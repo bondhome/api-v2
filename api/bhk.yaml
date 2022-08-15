@@ -1,21 +1,20 @@
 Schema:
   properties:
     enabled:
-      example: 0
-      type: number
+      example: false
+      type: boolean
       description: |
-        * 0 - Default (disabled in v3.x.x)
-        * 1 - Enabled
-        * 2 - Disable
+        - `false`: HomeKit logic and operations will not be executed. All settings remains in device database. (default)
+        - `true`: HomeKit logic and operations will run.
     paired:
       example: false
       type: boolean
       readOnly: true
       description: |
-        When enabled is false (2 and 0 in v3.x.x), paired will always be false.
+        When enabled is false, paired will always be false.
         When enabled is true, paired means:
-          - false (default): Bond is not paired to an account and is discoverable by the HomeKit Protocol.
-          - true: Bond is paired and is not discoverable.
+          - `false`: Bond is not paired to an account and is discoverable by the HomeKit Protocol. (default)
+          - `true`: Bond is paired and is not discoverable.
     setup_code:
       example: "12341234"
       type: string
