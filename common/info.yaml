@@ -768,6 +768,36 @@ description: |
   authentication is not necessary. Make sure you check the server certificate using
   the appropriate fields in the `api/mqtt` endpoint to avoid man-in-the-middle attacks.
 
+  # HomeKit
+
+  [Added in v3.x.x]
+  The HomeKit integration is available on Bond Bridge Pro and support Shade devices.
+  The integration is disabled by default, you can enable it through the `api/bhk`
+  endpoint.
+
+  ## Setup Code
+
+  The Setup Code is generated based on your Bond PIN (your Bond PIN two times).
+  The Bond PIN is located on the product label.
+  The Setup Code is also available on the Bond Home iOS app, in the Bridge Settings
+  screen, under the Advanced Settings section.
+
+  ### Setup Code example
+
+  For Bond PIN "1234", your HomeKit Setup Code is "12341234".
+
+  ## Add a Bridge in the Home app
+
+  Open the Home app on your iPhone/iPad and follow these steps:
+
+  * Tap on "Add Accessory"
+  * Choose the "I Don't Have a Code or Cannot Scan" option
+  * Tap on your Bond Bridge name in the list of Nearby Accessories
+  * Select the "Add Anyway" option for the "Uncertified Accessory" prompt
+  * Enter yours Bond Bridge Setup code and hit Continue
+  * Set the Location and Name for your Bridge
+  * Set the location and Name for your Bridge's devices, if any
+
   # Discoverability
 
   Bonds may be discovered via either mDNS or BPUP.

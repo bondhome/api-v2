@@ -50,6 +50,7 @@ x-tagGroups:
       - Token
       - MQTT
       - BPUP
+      - HomeKit
   - name: Network
     tags:
       - Wi-Fi Scan
