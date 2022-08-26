@@ -138,6 +138,7 @@ KeystreamGet:
         application/json:
           schema:
             $ref: schemas.yaml#/Keystream
+      description: Keystream object
     '204':
       description: No content, only available via BPUP.
     '401':
