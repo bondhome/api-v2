@@ -770,21 +770,32 @@ description: |
 
   # HomeKit
 
-  [Added in v3.x.x]
+  [Added in v3.3.19]
   The HomeKit integration is available on Bond Bridge Pro and support Shade devices.
-  The integration is disabled by default, you can enable it through the `api/bhk`
-  endpoint.
+  The integration is disabled by default in v3.3.19, you can enable/disable it through
+  the iOS app or the `api/bhk` endpoint.
 
   ## Setup Code
 
   The Setup Code is generated based on your Bond PIN (your Bond PIN two times).
   The Bond PIN is located on the product label.
-  The Setup Code is also available on the Bond Home iOS app, in the Bridge Settings
-  screen, under the Advanced Settings section.
+  The Setup Code is also available on the Bond Home iOS app.
 
   ### Setup Code example
 
   For Bond PIN "1234", your HomeKit Setup Code is "12341234".
+
+  ## Bond Home iOS app
+
+  The HomeKit info is available in both the Bond Settings screen and the Manage Integrations screen.
+
+  In the Bond Settings screen, the HomeKit info is presented under the Advanced Settings section.
+
+  In the Manage Integrations screen you should see the HomeKit listed if at least one of your Bonds supports it.
+  The HomeKit cell shows how many Bonds have the HomeKit integration enabled (**not** available) at the moment.
+  Tapping on the cell will take you to the HomeKit List screen, showing the HomeKit info for every Bond that supports it.
+
+  The HomeKit info consists of a toggle switch to enable/disable the feature and shows its Setup Code.
 
   ## Add a Bridge in the Home app
 
