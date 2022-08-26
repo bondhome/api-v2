@@ -1292,6 +1292,109 @@ description: |
       Number and value of presets undefined and may vary by model.
       Useful for very basic integrations where you have just a single push button.
 
+  ## RGB
+
+  The RGB feature is available on full color lighting products.
+
+  The RGB feature requires the Light and Brightness features.
+  The ColorTemp feature is usually not available at the same time as RGB.
+
+  When `color = 1`, the values in `rgb` are active and specify the color
+  of light from the device.
+
+  Whenever `SetBrightness` or other brightness-changing actions are called,
+  `rgb` values are updated to reflect the change. For example, if the 
+  rgb values are (128, 0, 0) with brightness 50, and brightness is increased
+  to 100, then rgb values are updated to (255, 0, 0).
+
+  ### Properties
+
+    (none)
+
+  ### State Variables
+
+    - **color**: (integer) 0=white, 1=color in `rgb` active.
+    - **rgb**: (object) JSON object containing the following keys
+       which describe the apparent color of the light.
+       * `r` - (0--255) apparent red value
+       * `g` - (0--255) apparent green value
+       * `b` - (0--255) apparent blue value
+       * `h` - (0--359) apparent hue (in degrees)
+       * `s` - (0--1000) apparent saturation (in permilles)
+       * `v` - (0--1000) apparent value in HSV colorspace (in permilles)
+
+  ### Actions
+
+    - **SetRGB({r:int, g:int, b:int})**
+      Set color by RGB values.
+      Light is implicitely turned on if off.
+      A subset of the apparent color components may be specified,
+      in which case unspecified values are left unchanged.
+      Example use case is an integration with seperate R, G, and B sliders,
+      which would do SetRGB(r:int) when the red slider is adjusted.
+
+    - **SetRGB({h:int, s:int, v:int})**
+      Set color by HSV values.
+      Light is implicitely turned on if off.
+      A subset of the `h`, `s`, and `v` parameters may be provided,
+      in which case unspecified values are left unchanged.
+      Example use case is a 2-D color picker where only the `h` and `s`
+      parameters would be supplied, leaving brightness unchanged.
+
+      Due to gamut limitations, the higher `v` values are only
+      rechable with low saturation. Attempting to set a higher-than-possible
+      `v` value will result in trucation to the highest possible value.
+
+      Similarly, when reducing saturation with high `v` value, the
+      `v` will be implicitely reduced so that the desired color (saturation+hue)
+      are achieved at the expense of apparent brightness.
+
+    - **CycleRGBPreset()**
+      Change to next color preset.
+      Light is implicitely turned on if off.
+      Differnet devices will specify different sets of color presets.
+      This is intended to be used with tapping action on "Color" button
+      of RGB SBB products' front-panels.
+
+    - **CycleRGB(amount)**
+      Implicitly set maximum saturation and then increase Hue by specified
+      amount, wrapping around. Value (brightness) is unchanged.
+      Light is implicitely turned on if off.
+      This is intended to be used with _holding_ action on "Color" button
+      of RGB SBB products' front-panels.
+
+  ## RGBW
+
+  The RGBW feature is available on products which under-the-hood
+  actually have four-channel LEDs with a seperate white channel.
+
+  The RGBW feature requires the RGB feature.
+
+  We use a mapping between RGB/HSV-space and RGBW-space.
+
+  ### Properties
+
+    (none)
+
+  ### State Variables
+
+    - **rgbw**: (object) JSON object containing the following keys
+       which describe the low-level values of the LED channels.
+       These values are updated whenever the color changes.
+       All are integers in the range 0-255:
+       * `r` - low-level red channel
+       * `g` - low-level green channel
+       * `b` - low-level blue channel
+       * `w` - low-level white channel
+
+  ### Actions
+
+    - **SetRGBW({r:int, g:int, b:int, w:int})**
+      Set low-level values of LED channels.
+      Light is implicitely turned on if off.
+      Note that with SetRGBW, combinations of LED channels can be achieved
+      which are unreachable with SetRGB.
+
   ## Flame
 
   The Flame feature is used by fireplaces to indicate flame level.
