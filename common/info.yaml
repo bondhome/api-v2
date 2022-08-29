@@ -1352,7 +1352,7 @@ description: |
     - **CycleRGBPreset()**
       Change to next color preset.
       Light is implicitely turned on if off.
-      Differnet devices will specify different sets of color presets.
+      Different devices will specify different sets of color presets.
       This is intended to be used with tapping action on "Color" button
       of RGB SBB products' front-panels.
 
