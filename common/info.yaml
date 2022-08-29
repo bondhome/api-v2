@@ -1292,20 +1292,33 @@ description: |
       Number and value of presets undefined and may vary by model.
       Useful for very basic integrations where you have just a single push button.
 
-  ## RGB
+  ## Color
 
-  The RGB feature is available on full color lighting products.
+  The Color feature is available on full color lighting products.
 
-  The RGB feature requires the Light and Brightness features.
-  The ColorTemp feature is usually not available at the same time as RGB.
+  The Color feature requires the Light and Brightness features.
+  The ColorTemp feature is usually not available at the same time as Color.
 
-  When `color = 1`, the values in `rgb` are active and specify the color
-  of light from the device.
+  When `color = 1`, the values in `rgb` and `hsv` 
+  are active and specify the color of light from the device.
 
   Whenever `SetBrightness` or other brightness-changing actions are called,
-  `rgb` values are updated to reflect the change. For example, if the 
+  `rgb` and `hsv` values are updated to reflect the change. For example, if the 
   rgb values are (128, 0, 0) with brightness 50, and brightness is increased
   to 100, then rgb values are updated to (255, 0, 0).
+
+  **Note regarding the value (`v`) component of HSV colorspace:**
+  An RGB (or RGBW) LED has an inherent range of colors which it can produce.
+  This is known as the device's *gamut*. In RGB- (or RGBW-) space the shape
+  of the gamut is a cube (or hypercube). However, when this gamut is transformed
+  into HSV space, it becomes tent-shaped (a cylinder with a cone on top).
+  Intitively, what is going on is that when producing a pure color, 
+  say pure red, the device has only a single physical LED channel to contribute 
+  to the overall physical brightness (value) of the light. The brightest
+  pure colors are along the top of the tent wall (the top circumferance of
+  the cylinder). However, when generating white light, the device can bring 
+  to bare all three (or four) channels and achieve a much higher value.
+  This is the very top of the tent (apex of the cone).
 
   ### Properties
 
@@ -1319,9 +1332,12 @@ description: |
        * `r` - (0--255) apparent red value
        * `g` - (0--255) apparent green value
        * `b` - (0--255) apparent blue value
+    - **hsv**: (object) similar to `rgb` but for the HSV colorspace.
        * `h` - (0--359) apparent hue (in degrees)
        * `s` - (0--1000) apparent saturation (in permilles)
-       * `v` - (0--1000) apparent value in HSV colorspace (in permilles)
+       * `v` - (0--1000) apparent value in HSV colorspace (in permilles).
+               Note that `v` and `brightness` are not the same.
+               Users should typically use `brightness` rather than `v`.
 
   ### Actions
 
@@ -1333,12 +1349,15 @@ description: |
       Example use case is an integration with seperate R, G, and B sliders,
       which would do SetRGB(r:int) when the red slider is adjusted.
 
-    - **SetRGB({h:int, s:int, v:int})**
+    - **SetHSV({h:int, s:int, v:int})**
       Set color by HSV values.
       Light is implicitely turned on if off.
-      A subset of the `h`, `s`, and `v` parameters may be provided,
-      in which case unspecified values are left unchanged.
-      Example use case is a 2-D color picker where only the `h` and `s`
+      A subset of the `h`, `s`, and `v` parameters may be provided.
+      If `h` or `s` are not provided, they will be unchanged.
+      If `v` is not provided but `s` is provided, then `v` will change
+      so that `brightness` is held fixed.
+
+      The recommended use case is a 2-D color picker where only the `h` and `s`
       parameters would be supplied, leaving brightness unchanged.
 
       Due to gamut limitations, the higher `v` values are only
@@ -1349,14 +1368,14 @@ description: |
       `v` will be implicitely reduced so that the desired color (saturation+hue)
       are achieved at the expense of apparent brightness.
 
-    - **CycleRGBPreset()**
+    - **CycleColorPreset()**
       Change to next color preset.
       Light is implicitely turned on if off.
       Different devices will specify different sets of color presets.
       This is intended to be used with tapping action on "Color" button
       of RGB SBB products' front-panels.
 
-    - **CycleRGB(amount)**
+    - **CycleColor(amount)**
       Implicitly set maximum saturation and then increase Hue by specified
       amount, wrapping around. Value (brightness) is unchanged.
       Light is implicitely turned on if off.
