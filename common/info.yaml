@@ -1326,7 +1326,7 @@ description: |
 
     - **SetRGB({r:int, g:int, b:int})**
       Set color by RGB values.
-      Light is implicitely turned on if off.
+      Light is implicitly turned on if off.
       A subset of the apparent color components may be specified,
       in which case unspecified values are left unchanged.
       Example use case is an integration with seperate R, G, and B sliders,
