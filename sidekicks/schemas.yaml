@@ -1,0 +1,97 @@
+Sidekick:
+  type: object
+  properties:
+    _id:
+      example: "SNAXX12345"
+      type: string
+      description: |
+        Provided only on POST request to specify the Sidekick ID.
+    name:
+      example: My Sidekick
+      type: string
+      description: |
+        Name of Sidekick on Bond Home app and suggested name for 
+        control system integrations.
+    location:
+      example: My Room
+      type: string
+      description: |
+        Location of Sidekick.
+    keys:
+      readOnly: true
+      example: 8
+      type: integer
+      description: |
+        Number of keys available on this Sidekick.
+        May change after creation due to user changing keyset.
+    signal:
+      readOnly: true
+      example: 97
+      type: integer
+      description: |
+        Signal quality indication, range 1-100.
+        Note that, to avoid hash thrashing, 
+        changes in this signal indication do not cause
+        an update to the endpoint hashes. Clients wishing to check
+        signal strength must explicitly query this endpoint.
+    battery:
+      readOnly: true
+      example: 80
+      type: integer
+      description: |
+        Sidekick battery remaining, range 1-100.
+        Values may be limited to:
+          - 90: battery OK (Green)
+          - 30: low battery (Yellow) (replace witin ~1 year from when first indicated low)
+          - 10: battery critical (Red) (may fail at any time, or may already be failing)
+    model:
+      readOnly: true
+      example: SKN-386
+      type: string
+      description: |
+        User-facing model number of Sidekick.
+    
+
+Keystream:
+  type: object
+  properties:
+    seq:
+      example: 3210
+      type: integer 
+      description: |
+        Sequence number which increments each time this Sidekick transmits
+        a BondSync signal. Usually not needed by integrations.
+    event:
+      example: TAP
+      type: string
+      description: |
+        Event which occured on the specified key. Possibilities are:
+          - TAP
+          - DOUBLE_TAP
+          - HOLD_START
+          - HOLD
+          - HOLD_END
+    key:
+      example: 3
+      type: integer
+      description: |
+        1-based key number.
+    hold_ms:
+      example: 1760
+      type: integer
+      description: |
+        Length of time for which key has been held, in milliseconds.
+        Only provided for HOLD and HOLD_END events.
+
+SidekickList:
+  type: object
+  example:
+    _: "7fc1e84b"
+    3b20f300:
+        _: "9a5e1136"
+    4ad874d2:
+        _: "84819a9f"
+    a94328bc:
+        _: "23141efa"
+    d87d6ef2:
+        _: "2425a8bc"

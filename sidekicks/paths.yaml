@@ -1,0 +1,156 @@
+SidekicksPath:
+  get:
+    $ref: ../sidekicks/paths.yaml#/GetList
+  post:
+    $ref: ../sidekicks/paths.yaml#/Post
+
+SidekickPath:
+  parameters:
+  - in: path
+    name: sk_id
+    required: true
+    schema:
+      type: string
+  get:
+    $ref: ../sidekicks/paths.yaml#/Get
+  patch:
+    $ref: ../sidekicks/paths.yaml#/Patch
+  delete:
+    $ref: ../sidekicks/paths.yaml#/Delete
+
+KeystreamPath:
+  parameters:
+  - in: path
+    name: sk_id
+    required: true
+    schema:
+      type: string
+  get:
+    $ref: ../sidekicks/paths.yaml#/KeystreamGet
+
+Post:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Sidekick
+  responses:
+    '201':
+      $ref: ../common/responses.yaml#/Created
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Add a Sidekick to Bridge.
+  description: |
+    Adds a Sidekick by ID. The Sidekick ID shall be specified by client
+    in the `_id` field of POST request body. The newly created resource
+    can be found at `sidekicks/{sk_id}` where `sk_id` is the ID provided
+    in `_id`.
+  tags:
+  - Sidekick
+
+Patch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Sidekick
+  responses:
+    '200':
+      description: Sidekick metadata modified
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Modify an existing Sidekick's metadata
+  description: |
+    Modifies metadata of Sidekick.
+  tags:
+  - Sidekick
+
+GetList:
+  description: |
+    Returns a list of Sidekicks.
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/SidekickList
+      description: Sidekick list returned
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Get list of Sidekicks
+  tags:
+  - Sidekicks
+
+Get:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Sidekick
+      description: Sidekick object returned
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Get specific Sidekick
+  description: |
+    Get information about a Sidekick.
+  tags:
+  - Sidekick
+
+Delete:
+  responses:
+    '204':
+      description: Sidekick deleted
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Delete a Sidekick
+  description: |
+    Deletes specified Sidekick.
+  tags:
+  - Sidekick
+
+KeystreamGet:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Keystream
+      description: Keystream object
+    '204':
+      description: No content, only available via BPUP.
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Get key event.
+  description: |
+    This endpoint is pushed whenever a new key event occurs on the 
+    corresponding Sidekick. This is only intended to be used via BPUP
+    and/or MQTT. GET requests via HTTP will only ever return 204 No Content.
+  tags:
+  - Sidekick

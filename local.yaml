@@ -36,6 +36,9 @@ x-tagGroups:
     tags:
       - Device Schedules
       - Group Schedules
+  - name: Sidekick
+    tags:
+      - Sidekick
   - name: Bridge
     tags:
       - Bridge
