@@ -4,7 +4,7 @@ Schema:
       example: false
       type: boolean
       description: |
-        - `false`: HomeKit logic and operations will not be executed. All settings remains in device database. (default in v3.3.19)
+        - `false`: HomeKit logic and operations will not be executed. All settings remains in device database. (default in v3.5.1)
         - `true`: HomeKit logic and operations will run.
     paired:
       example: false

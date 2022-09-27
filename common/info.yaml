@@ -770,9 +770,9 @@ description: |
 
   # HomeKit
 
-  [Added in v3.3.19]
+  [Added in v3.5.1]
   The HomeKit integration is available on Bond Bridge Pro and support Shade devices.
-  The integration is disabled by default in v3.3.19, you can enable/disable it through
+  The integration is disabled by default in v3.5.1, you can enable/disable it through
   the Bond Home iOS app or the `api/bhk` endpoint.
 
   ## Setup Code
