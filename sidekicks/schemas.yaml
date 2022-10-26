@@ -2,6 +2,7 @@ Sidekick:
   type: object
   properties:
     _id:
+      writeOnly: true
       example: "SNAXX12345"
       type: string
       description: |
