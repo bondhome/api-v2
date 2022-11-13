@@ -787,7 +787,7 @@ description: |
 
   ## Bond Home iOS app
 
-  Added in v2.40.2, the HomeKit info is available in both the Bond Settings screen and the Manage Integrations screen.
+  As of iOS app version v2.40.2, the HomeKit info is available in both the Bond Settings screen and the Manage Integrations screen.
 
   In the Bond Settings screen, the HomeKit info is presented under the Advanced Settings section.
 
