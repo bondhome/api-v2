@@ -60,7 +60,7 @@ Patch:
           $ref: schemas.yaml#/Sidekick
   responses:
     '200':
-      description: Sidekick metadata modified
+      description: Sidekick modified
     '400':
       $ref: ../common/responses.yaml#/BadRequest
     '401':
@@ -69,9 +69,80 @@ Patch:
       $ref: ../common/responses.yaml#/NotFound
     '500':
       $ref: ../common/responses.yaml#/InternalServerError
-  summary: Modify an existing Sidekick's metadata
+  summary: Modify an existing Sidekick's metadata and links
   description: |
-    Modifies metadata of Sidekick.
+    Modifies metadata and/or links of a Sidekick.
+    The `chan_link` field has complex PATCH logic allowing adding,
+    modifying, and deleting links. Example·s:
+
+    Please note, in the following examples, we abbreviate. Be sure to add
+    double-quotes around strings for correct JSON, especially the channel
+    and key numbers which must be strings by JSON standard.
+
+    ### Adding a Link
+
+    Assume we start with nothing linked:
+
+    > chan_links:{ 1:[], 2:[], 3:[], 4:[], 5:[] }
+
+    Now let's add a link to channel 4:
+
+    > PATCH {chan_links={4:[{device=abcdef0abcdef0}]}  
+    > &rarr; chan_links : { 1:[], 2:[], 3:[], 4:[{device=abcdef0abcdef0, direct=1}], 5:[] }
+
+    Note how the `direct` field is populated based on the channel technology
+    and the technology of the linked device. This is not modifyable from the API.
+    Users need to manually change channel technology via Sidekick's menu codes
+    if needed.
+
+    And now let's add another link to the same channel:
+
+    > PATCH {chan_links={4:[{}, {device=1122334400000000}]}  
+    > &rarr; chan_links : { 1:[], 2:[], 3:[], 4:[{device=abcdef0abcdef0, direct=1}, {device=1122334400000000, direct=0}], 5:[]}
+
+    Note that we do not need to pass the previous device ID, instead
+    using an empty object as a placeholder for the link in the array
+    which we want to leave alone.
+
+    Multiple new links can be added in a single PATCH by specifying
+    more than one additional element in the array. Links can even 
+    be added for multiple channels, for example:
+
+    > PATCH {chan_links={1:[{device=aaaaaaaa}], 2:[{device=bbbbbbbb}]}}
+    > &rarr; chan_links : { 1:[{device=aaaaaaaa}], 2:[{device=bbbbbbbb}], 3:[], 4:[{device=1234567aabbccdd, direct=1}, {device=1122334400000000, direct=0}], 5:[]}
+
+    ### Deleting Links
+
+    To delete a link, put a `null` in the array location(s) which you want
+     to remove.
+
+    > PATCH {chan_links={4:[null, {}]}}
+    > &rarr; chan_links : { 1:[], 2:[], 3:[], 4:[{device=1122334400000000, direct=0}, {device=1234567aabbccdd, direct=1}], 5:[]}
+
+    Be sure to specify the correct number of array elements. In the above,
+    it would be an error to just patch `[null]`; you must send `[null, {}]`
+    to delete the first element but preserve the second element. To delete 
+    both elements, you could send `[null, null]`.
+
+    You can also delete links from multiple channels at once:
+
+    > PATCH {chan_links={1:[null], 2:[null]}
+    > &rarr; chan_links : { 1:[], 2:[], 3:[], 4:[{device=1122334400000000, direct=0}], 5:[]}
+
+    ### Editing a Link
+
+    You can edit a link to change the device ID:
+
+    > PATCH {chan_links={4:[{device=1234567aabbccdd}, {}]}}  
+    > &rarr; chan_links : { 1:[], 2:[], 3:[], 4:[{device=1234567aabbccdd, direct=1}, {device=1122334400000000, direct=0}], 5:[]}
+
+    Be sure to specify the exact number of elements in the channel array
+    being modified. In the above example, we still need `{}` for the
+    second link as a placeholder.
+
+    It is possible to mix adding, editing, and deleting links in a single
+    PATCH request.
+
   tags:
   - Sidekick
 
