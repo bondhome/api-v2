@@ -224,4 +224,94 @@ KeystreamGet:
     corresponding Sidekick. This is only intended to be used via BPUP
     and/or MQTT. GET requests via HTTP will only ever return 204 No Content.
   tags:
-  - Sidekick
+  - Keystream
+
+LearnPath:
+  get:
+    $ref: ../sidekicks/paths.yaml#/LearnGet
+  patch:
+    $ref: ../sidekicks/paths.yaml#/LearnPatch
+  delete:
+    $ref: ../sidekicks/paths.yaml#/LearnDelete
+  parameters:
+  - in: path
+    name: sk_id
+    required: true
+    schema:
+      type: string
+
+LearnGet:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Learn
+      description: Get Sidekick learn status
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Get Sidekick learn status
+  description: |
+    [BBP-only]
+
+    Provides information about the Sidekick learn window on this Bond.
+
+    When the learn window is open, the Bond will listen for a link intent.
+    Specifically, it listens for a BondSync message of type LINK or 
+    type KEYSTREAM with HOLD event and duration greater than 2 seconds.
+
+    [New in v3.10]
+  tags:
+  - Sidekick Learn
+
+LearnPatch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Learn
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Learn
+      description: Open or close Sidekick learn window
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Open or close Sidekick learn window
+  description: |
+    [BBP-only]
+    Open/close the learn window.
+
+    The learn window is never automatically opened. Must be opened by API.
+  tags:
+  - Sidekick Learn
+
+LearnDelete:
+  responses:
+    '200':
+      description: Learn window closed.
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Learn
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Close learn window.
+  description: |
+    Close the learn window. Identical to PATCH learn_window_open=false.
+  tags:
+  - Sidekick Learn
