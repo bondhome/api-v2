@@ -33,7 +33,7 @@ Sidekick:
         Number of channels available on this Sidekick.
         May change after creation due to user changing mode.
     chan_link:
-      example: {"1":[{"devices":"aabbccdd", "direct": 1}, {"devices":"11223344", "direct": 0}],"2":[],"3":[],"4":[],"5":[]}
+      example: {"1":[{"device":"aabbccdd", "direct": 1}, {"device":"11223344", "direct": 0}],"2":[],"3":[],"4":[],"5":[]}
       type: object
       description: |
         Object describes every link between channels of this Sidekick and the
