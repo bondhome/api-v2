@@ -174,4 +174,15 @@ Learn:
       description: |
         Number of times a new Sidekick has been learned on this boot.
         Useful in UI design to know that the learn process completed,
-        even if the learned address is the same.
+        even if the learned address is the same. Clients should check
+        `new_id` to determine which ID has been learned. This is required
+        in the case where the newly learned Sidekick is already
+        added to this Bond.
+    new_id:
+      example: SHAXX12345
+      type: string 
+      readOnly: true
+      description: |
+        ID of the most recently learned Sidekick,
+        or `null` if no Sidekicks have been learned this boot.
+        This field is updated exactly when `learn_count` is incremented.
