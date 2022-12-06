@@ -20,7 +20,7 @@ Sidekick:
         Location of Sidekick.
     keys:
       readOnly: true
-      example: 8
+      example: 3
       type: integer
       description: |
         Number of keys available on this Sidekick.
@@ -32,12 +32,48 @@ Sidekick:
       description: |
         Number of channels available on this Sidekick.
         May change after creation due to user changing mode.
-    chan_link:
+    chan_links:
       example: {"1":[{"device":"aabbccdd", "direct": 1}, {"device":"11223344", "direct": 0}],"2":[],"3":[],"4":[],"5":[]}
       type: object
       description: |
         Object describes every link between channels of this Sidekick and the
-        devices which they control.
+        devices which they control. (In future will permit specifying `group`
+        instead of `device`.)
+
+        Each channel number maps to an array, each element of which is called
+        a "channel link". Each link has two fields:
+
+          - `device`: device id channel is linked to
+          - `direct`: 
+            - 0 = channel configured for relay
+            - 1 = channel configured for correct direct technology
+            - -1 = channel configured for incorrect direct technology, Bridge will relay signal.
+
+        Note that there are valid circumstances where `direct` field is -1.
+        For example, a channel may be linked to an RTS motor and an ARC motor.
+        The user can only pick a single direct technology, for example RTS.
+        The ARC motor will then be in the -1 case.
+
+    key_links:
+      example: {"1":[], "2":[{"event":"DOUBLE_TAP", "device": "aabbccdd", "action": "SetPosition", "argument": 75}], "3":[]}
+      type: object
+      description: |
+        Object describes every link between key events from this Sidekick and the
+        device, group, and scene actions which they trigger. 
+        (In future will permit specifying `group` or `scene` instead of `device`.)
+
+        Each key number maps to an array, each element of which is called
+        a "key link". Each key link has three or four fields:
+
+          - `event`: which key event to trigger on
+            - `TAP`
+            - `DOUBLE_TAP`
+            - `HOLD_START`
+            - `HOLD`
+            - `HOLD_END`
+          - `device`: which device will act in response to trigger
+          - `action`: action to call on device
+          - `argument`: (optional) argument to above action, such as position percentage
     signal:
       readOnly: true
       example: 97
