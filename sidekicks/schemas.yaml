@@ -74,7 +74,6 @@ Sidekick:
           - `device`: which device will act in response to trigger
           - `action`: action to call on device
           - `argument`: (optional) argument to above action, such as position percentage
-
     signal:
       readOnly: true
       example: 97
