@@ -39,6 +39,8 @@ x-tagGroups:
   - name: Sidekick
     tags:
       - Sidekick
+      - Sidekick Learn
+      - Keystream
   - name: Bridge
     tags:
       - Bridge

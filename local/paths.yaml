@@ -65,6 +65,8 @@
     $ref: ../sidekicks/paths.yaml#/SidekickPath
 /v2/sidekicks/{sk_id}/keystream:
     $ref: ../sidekicks/paths.yaml#/KeystreamPath
+/v2/sidekicks/_learn:
+    $ref: ../sidekicks/paths.yaml#/LearnPath
 /v2/signal/tx:
     $ref: ../signal/paths.yaml#/TxPath
 /v2/signal/rssi:

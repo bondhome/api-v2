@@ -145,3 +145,33 @@ SidekickList:
         _: "23141efa"
     d87d6ef2:
         _: "2425a8bc"
+
+Learn:
+  type: object
+  properties:
+    learn_window_ms:
+      example: 60000
+      type: integer
+      readOnly: true
+      description: |
+        Duration of learn window (milliseconds).
+    learn_window_remaining_ms:
+      example: 1100
+      type: integer
+      readOnly: true
+      description: |
+        Milliseconds remaining before learn window closes.
+    learn_window_open:
+      example: true
+      type: boolean
+      description: |
+        Whether new Sidekick can be learned.
+        True iff learn_window_remaining_ms is nonzero.
+    learn_count:
+      example: 0
+      type: integer
+      readOnly: true
+      description: |
+        Number of times a new Sidekick has been learned on this boot.
+        Useful in UI design to know that the learn process completed,
+        even if the learned address is the same.
