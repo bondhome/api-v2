@@ -93,3 +93,49 @@ TimePatch:
     disabled.
   tags:
   - Time
+PanelPath:
+  get:
+    $ref: ../sys/paths.yaml#/PanelGet
+  patch:
+    $ref: ../sys/paths.yaml#/PanelPatch
+PanelGet:
+  responses:
+    '200':
+      description: Get Panel Info
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Panel
+      properties:
+        keypad_mode:
+  summary: Get panel info
+  description: |
+    Get current panel information. 
+    
+    **NOTE:** The endpoint `sys/panel` is available only for Smart by bond with ID 
+    starting with TW or KW (in-wall switches).
+  tags:
+  - Panel
+PanelPatch:
+  responses:
+    '200':
+      description: Changed Panel Info
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Panel
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Patch panel info
+  description: |
+    Patch panel info, available fields:
+      - `"keypad_mode"`: define in-wall switch mode of operation... 
+        - If `true` device operate as keypad, streaming out bond sync actions that 
+    controls another device. A new sidekick named bondid and same location is implicity 
+    created under sidekicks endpoint. After reboot `devices/1` is no longer available.
+        - If set to `false` implicit delete the sidekick created and behave as a regular switch,
+    no more streaming messages. After reboot the `devicse/1` is available back again
+  tags:
+  - Panel

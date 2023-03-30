@@ -110,3 +110,5 @@
     $ref: ../firmware/paths.yaml#/BackupPut
   delete:
     $ref: ../firmware/paths.yaml#/BackupDelete
+/v2/sys/panel:
+  $ref: ../sys/paths.yaml#/PanelPath
