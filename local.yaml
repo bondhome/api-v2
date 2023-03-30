@@ -72,6 +72,7 @@ x-tagGroups:
       - Time
       - Power
       - Locale
+      - Panel
   - name: Debug
     tags:
       - Database

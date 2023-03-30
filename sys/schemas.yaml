@@ -58,3 +58,11 @@ Time:
         `null` if unset.
 
         See: https://en.wikipedia.org/wiki/Maidenhead_Locator_System
+Panel:
+  type: object
+  properties:
+    keypad_mode:
+      example: true
+      type: boolean
+      decription: |
+        If true set switch to keypad mode.
