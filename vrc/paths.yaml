@@ -1,0 +1,102 @@
+VrcPath:
+  get:
+    $ref: ../vrc/paths.yaml#/Get
+  patch:
+    $ref: ../vrc/paths.yaml#/Patch
+  parameters:
+    - in: path
+      name: device_id
+      required: true
+      schema:
+        type: number
+  description: testing 123
+  tags:
+  - Virtual Remote Control
+
+VrcKeystreamPath:
+  put:
+    $ref: ../vrc/paths.yaml#/PutKey
+  parameters:
+  - in: path
+    name: device_id
+    required: true
+    schema:
+      type: number
+  description: testing 123
+  tags:
+  - Virtual Remote Control
+
+Get:
+  description: |
+    Check enabled status of virtual remote for specified device.
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            required: true
+            $ref: schemas.yaml#/Vrc
+      description: Get Vrc info
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+    - OAuth: ["oauth2"]
+  summary: Get Vrc info
+  tags:
+  - Virtual Remote Control
+
+Patch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          required: true
+          $ref: schemas.yaml#/Vrc
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Vrc
+      description: Enable or disable Vrc
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Enable or disable Vrc
+  tags:
+  - Virtual Remote Control
+
+PutKey:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          required: true
+          $ref: schemas.yaml#/VrcKeystream
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/VrcKeystream
+      description: Send a virtual key event
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Send a virtual key event
+  tags:
+  - Virtual Remote Control

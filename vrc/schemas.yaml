@@ -1,0 +1,48 @@
+Vrc:
+  properties:
+    enabled:
+      example: true
+      type: boolean
+      description: |
+        When enabled, the `vrc/keystream` endpoint becomes available.
+
+        When enabling Vrc for one device, all other device's Vrcs are
+        implicitely disabled.
+
+VrcKeystream:
+  type: object
+  properties:
+    seq:
+      example: 3210
+      type: integer 
+      description: |
+        Sequence number which client should increments for request.
+
+        DESIGN NOTE: Actually it's not clear that we need this. The request ID
+        already serves to prevent duplicate actions.
+    event:
+      example: TAP
+      type: string
+      description: |
+        Event which occured on the specified key. Possibilities are:
+          - TAP
+          - DOUBLE_TAP (unsupported)
+          - HOLD_START
+          - HOLD
+          - HOLD_END
+    key:
+      example: [1, 3]
+      type: array
+      description: |
+        list of 1-based key numbers. Must be non-empty.
+        
+        In the case of a single key, an integer may be sent instead of an array.
+    hold_ms:
+      example: 1760
+      type: integer
+      description: |
+        Length of time for which key(s) has been held, in milliseconds.
+        Only provided for HOLD and HOLD_END events.
+        
+        For multiple keys, this is the time since the last change
+        of keys pressed.

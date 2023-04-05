@@ -41,6 +41,10 @@
     $ref: ../skeds/paths.yaml#/SkedsPath
 /v2/devices/{device_id}/skeds/{sked_id}:
     $ref: ../skeds/paths.yaml#/SkedPath
+/v2/devices/{device_id}/vrc:
+    $ref: ../vrc/paths.yaml#/VrcPath
+/v2/devices/{device_id}/vrc/keystream:
+    $ref: ../vrc/paths.yaml#/VrcKeystreamPath
 /v2/groups:
     $ref: ../groups/paths.yaml#/GroupsPath
 /v2/groups/{group_id}:
