@@ -21,15 +21,22 @@ VrcKeystream:
         DESIGN NOTE: Actually it's not clear that we need this. The request ID
         already serves to prevent duplicate actions.
     event:
-      example: TAP
+      example: HOLD
       type: string
       description: |
         Event which occured on the specified key. Possibilities are:
-          - TAP
+          - TAP -- sent if a brief (< 300 ms) press and release occurs on one or more
+             keys. If keys are tapped together (say, within 200 ms), 
+             only a single TAP event should be sent with `key` specifying both.
           - DOUBLE_TAP (unsupported)
-          - HOLD_START
-          - HOLD
-          - HOLD_END
+          - HOLD_START -- sent after 300 ms of a key being held down.
+             If two keys are starting to be pressed within 300 ms of eachother,
+             only a single HOLD_START event should be sent.
+          - HOLD -- sent every 300 ms while keys are held.
+          - HOLD_END -- sent when a held key is released, where only the
+            released keys are specified in `key`. If some keys are still
+            held, they will continue to send `HOLD`.
+            
     key:
       example: [1, 3]
       type: array
