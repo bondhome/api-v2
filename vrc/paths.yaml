@@ -98,5 +98,32 @@ PutKey:
   security:
   - BasicAuth: []
   summary: Send a virtual key event
+  description: |
+    Example:
+
+    User Behavior:
+      - user taps 1
+      - then holds 1
+      - adds 2
+      - taps 3
+      - adds 3
+      - then releases 1 and 2 at same time
+      - then releases 3
+
+    Events sent:
+
+        {event: TAP, key: 1}
+        {event: HOLD_START, key: 1}
+        {event: HOLD, key: 1, hold_ms:301}
+        {event: HOLD, key: 1, hold_ms:604}
+        {event: HOLD_START, key: 2}
+        {event: HOLD, key: [1, 2], hold_ms:302}
+        {event: TAP, key: 3}
+        {event: HOLD, key: [1, 2], hold_ms:602}
+        {event: HOLD_START, key: 3}
+        {event: HOLD_END key: [1, 2], hold_ms: 20}
+        {event: HOLD, key: 3, hold_ms:320}
+        {event: HOLD_END key: 3, hold_ms: 400}
+
   tags:
   - Virtual Remote Control
