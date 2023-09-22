@@ -53,7 +53,7 @@ Post:
     Specifically, the following requests will result in an 400 error:
 
        - POSTed `mark` is `midnight` but `sys/time.tz` is `null`
-       - POSTed `mark` is `dawn`, `dusk`, `sunrise`, or `sunset`, but `sys/time.grid` is `null`
+       - POSTed `mark` is `dawn`, `dusk`, `sunrise`, or `sunset`, but `sys/time.grid` or `sys/time.tz` is `null`
 
   tags:
   - Device Schedules
