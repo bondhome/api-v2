@@ -7,7 +7,7 @@ SidekicksPath:
 WeatherSensorSidekicksPath:
   parameters:
   - in: path
-    name: sk_id
+    name: ws_id
     required: true
     schema:
       type: string
@@ -37,7 +37,7 @@ Post:
   description: |
     Adds a Weather Sensor by ID. The Weather Sensor ID shall be specified by client
     in the `_id` field of POST request body. The newly created resource
-    can be found at `sidekicks/{sk_id}` where `sk_id` is the ID provided
+    can be found at `sidekicks/{ws_id}` where `ws_id` is the ID provided
     in `_id`.
   tags:
   - Weather Sensor
@@ -87,7 +87,7 @@ Get:
     In the Bond architecture, all Bold products
     capable of commanding devices through the Bridge are 
     considered different kinds of Sidekicks. 
-    This is why the Weather Sensor appears in the `/sidekicks/{sk_id}` tree.
+    This is why the Weather Sensor appears in the `/sidekicks/{ws_id}` tree.
 
     For the Weather Sensor, devices are linked using `event_links`, 
     where a different event number means
@@ -121,7 +121,7 @@ PropertiesPath:
     $ref: ../weather_sensor/paths.yaml#/PropertiesPatch
   parameters:
   - in: path
-    name: sk_id
+    name: ws_id
     required: true
     schema:
       type: string
@@ -172,7 +172,7 @@ StatePath:
     $ref: ../weather_sensor/paths.yaml#/StateGet
   parameters:
   - in: path
-    name: sk_id
+    name: ws_id
     required: true
     schema:
       type: string
@@ -203,7 +203,7 @@ TestPath:
     $ref: ../weather_sensor/paths.yaml#/TestPut
   parameters:
   - in: path
-    name: sk_id
+    name: ws_id
     required: true
     schema:
       type: string
