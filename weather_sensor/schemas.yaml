@@ -87,7 +87,7 @@ Properties:
       example: True
       type: boolean
       description: |
-        Enable or disable the push notification for when the wind speed approaches the configured threshhold.
+        Enable or disable the push notification for when the wind speed approaches the configured threshold.
     wind_threshold_dms:
       example: 85
       type: integer
@@ -119,7 +119,7 @@ State:
       readOnly: true
       description: |
         String indicating the current status of the Weather Sensor. 
-        Possible value are:
+        Possible values are:
         - `idle`
         - `triggered_wind`
         - `triggered_rain`

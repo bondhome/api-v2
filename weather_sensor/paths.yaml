@@ -165,7 +165,7 @@ PropertiesPatch:
   summary: Modify properties of a Weather Sensor.
   description: |
     This endpoint is used to modify the properties of a Weather Sensor.
-    Use this call to modify detection thredholds and enabling/disabling features.
+    Use this call to modify detection thresholds and enabling/disabling features.
   tags:
   - Weather Sensor Properties
 
@@ -220,13 +220,15 @@ TestPut:
             type: object
             example:
               event_name: rain
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
     '401':
       $ref: ../common/responses.yaml#/Unauthorized
     '404':
       $ref: ../common/responses.yaml#/NotFound
     '500':
       $ref: ../common/responses.yaml#/InternalServerError
-  summary: Test/simulate the weather events, triggering linked actions.
+  summary: Test/simulate weather events, triggering linked actions.
   description: |
     Execute all linked actions for the specified event type. Usefull for
     simulating weather events to check if device actions are configured
