@@ -154,6 +154,8 @@ PropertiesPatch:
           schema:
             $ref: schemas.yaml#/Properties
       description: Weather Sensor properties object
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
     '401':
       $ref: ../common/responses.yaml#/Unauthorized
     '404':
