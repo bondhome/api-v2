@@ -110,3 +110,11 @@
     $ref: ../firmware/paths.yaml#/BackupPut
   delete:
     $ref: ../firmware/paths.yaml#/BackupDelete
+/v2/sidekicks/{ws_id}:
+    $ref: ../weather_sensor/paths.yaml#/WeatherSensorSidekicksPath
+/v2/sidekicks/{ws_id}/properties:
+    $ref: ../weather_sensor/paths.yaml#/PropertiesPath
+/v2/sidekicks/{ws_id}/state:
+    $ref: ../weather_sensor/paths.yaml#/StatePath
+/v2/sidekicks/{ws_id}/test:
+    $ref: ../weather_sensor/paths.yaml#/TestPath
