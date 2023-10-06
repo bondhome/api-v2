@@ -84,7 +84,7 @@ Get:
   description: |
     Get information about a Weather Sensor. 
 
-    In the Bond architecture, all Bold products
+    In the Bond architecture, all Bond products
     capable of commanding devices through the Bridge are 
     considered different kinds of Sidekicks. 
     This is why the Weather Sensor appears in the `/sidekicks/{ws_id}` tree.
