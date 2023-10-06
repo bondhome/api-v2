@@ -1,0 +1,238 @@
+SidekicksPath:
+  get:
+    $ref: ../weather_sensor/paths.yaml#/GetList
+  post:
+    $ref: ../weather_sensor/paths.yaml#/Post
+
+WeatherSensorSidekicksPath:
+  parameters:
+  - in: path
+    name: sk_id
+    required: true
+    schema:
+      type: string
+  get:
+    $ref: ../weather_sensor/paths.yaml#/Get
+  patch:
+    $ref: ../weather_sensor/paths.yaml#/Patch
+  delete:
+    $ref: ../weather_sensor/paths.yaml#/Delete
+
+Post:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/WeatherSensor
+  responses:
+    '201':
+      $ref: ../common/responses.yaml#/Created
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Add a Weather Sensor to Bridge.
+  description: |
+    Adds a Weather Sensor by ID. The Weather Sensor ID shall be specified by client
+    in the `_id` field of POST request body. The newly created resource
+    can be found at `sidekicks/{sk_id}` where `sk_id` is the ID provided
+    in `_id`.
+  tags:
+  - Weather Sensor
+
+Patch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/WeatherSensor
+  responses:
+    '200':
+      description: Sidekick modified
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Modify an existing Weather Sensor metadata and links
+  description: |
+    Modifies metadata and/or links of a Weather Sensor.
+    Please, refer to Sidekick explanation of linking/unlinking of actions.
+  tags:
+  - Weather Sensor
+
+Get:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/WeatherSensor
+      description: Weather Sensor object returned
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Get specific Weather Sensor
+  description: |
+    Get information about a Weather Sensor. 
+
+    In the Bond architecture, all Bold products
+    capable of commanding devices through the Bridge are 
+    considered different kinds of Sidekicks. 
+    This is why the Weather Sensor appears in the `/sidekicks/{sk_id}` tree.
+
+    For the Weather Sensor, devices are linked using `event_links`, 
+    where a different event number means
+    one of the possible weather events.
+
+    For a complete explanation of how patch logic works for modifying 
+    linked devices, refer to the `sidekick` documentation.
+  tags:
+  - Weather Sensor
+
+Delete:
+  responses:
+    '204':
+      description: Sidekick deleted
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Delete a Weather Sensor
+  description: |
+    Deletes specified Weather Sensor.
+  tags:
+  - Weather Sensor
+
+PropertiesPath:
+  get:
+    $ref: ../weather_sensor/paths.yaml#/PropertiesGet
+  patch:
+    $ref: ../weather_sensor/paths.yaml#/PropertiesPatch
+  parameters:
+  - in: path
+    name: sk_id
+    required: true
+    schema:
+      type: string
+
+PropertiesGet:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Properties
+      description: Weather Sensor properties object
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Get properties of a Weather Sensor.
+  description: |
+    This endpoint is used to get the current properties of a Weather Sensor.
+  tags:
+  - Weather Sensor Properties
+
+PropertiesPatch:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Properties
+      description: Weather Sensor properties object
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Modify properties of a Weather Sensor.
+  description: |
+    This endpoint is used to modify the properties of a Weather Sensor.
+    Use this call to modify detection thredholds and enabling/disabling features.
+  tags:
+  - Weather Sensor Properties
+
+StatePath:
+  get:
+    $ref: ../weather_sensor/paths.yaml#/StateGet
+  parameters:
+  - in: path
+    name: sk_id
+    required: true
+    schema:
+      type: string
+
+StateGet:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/State
+      description: Get Weather Sensor state
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Get Weather Sensor current state
+  description: |
+    Get the current state of a Weather Sensor. This object
+    includes the last measurement and flags indicating the status of the sensor.
+  tags:
+  - Weather Sensor State
+
+TestPath:
+  put:
+    $ref: ../weather_sensor/paths.yaml#/TestPut
+  parameters:
+  - in: path
+    name: sk_id
+    required: true
+    schema:
+      type: string
+
+TestPut:
+  responses:
+    '200':
+      description: Test/Simulation of weather event requested.
+      content:
+        application/json:
+          schema:
+            type: object
+            example:
+              event_name: rain
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Test/simulate the weather events, triggering linked actions.
+  description: |
+    Execute all linked actions for the specified event type. Usefull for
+    simulating weather events to check if device actions are configured
+    as expected.
+
+    Object member `event_name` must be the event of interest. Allowed values are:
+    - `wind`: for simulating the wind event.
+    - `rain`: for simulating the rain event.
+    - `sun_high`: for simulating the sun level event.
+  tags:
+  - Weather Sensor Test
