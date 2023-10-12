@@ -55,6 +55,16 @@
     $ref: ../skeds/group-paths.yaml#/SkedsPath
 /v2/groups/{group_id}/skeds/{sked_id}:
     $ref: ../skeds/group-paths.yaml#/SkedPath
+/v2/scenes:
+    $ref: ../scenes/paths.yaml#/ScenesPath
+/v2/scenes/{scene_id}:
+    $ref: ../scenes/paths.yaml#/ScenePath
+/v2/scenes/{scene_id}/run:
+    $ref: ../scenes/paths.yaml#/RunPath
+/v2/scenes/{scene_id}/skeds:
+    $ref: ../skeds/scene-paths.yaml#/SkedsPath
+/v2/scenes/{scene_id}/skeds/{sked_id}:
+    $ref: ../skeds/scene-paths.yaml#/SkedPath
 /v2/sidekicks:
     $ref: ../sidekicks/paths.yaml#/SidekicksPath
 /v2/sidekicks/{sk_id}:

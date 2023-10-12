@@ -1,0 +1,53 @@
+Scene:
+  properties:
+    name:
+      example: Privacy
+      type: string
+    actors:
+      description: |
+        Array of actions to be executed when the Scene is run.
+
+        This field must contain at least one action during Scene creation.
+        It may be updated using PATCH.
+      type: array
+      example:
+        - {"device": "aabbccdd", "action": "TurnOn"}
+        - {"group": "11223344", "action": "SetBrightness", "argument": 50}
+    types:
+      readOnly: true
+      description: |
+        For values, see `type` field of Device schema.
+
+        Automatically set by the Bond Bridge to be the set of types of the
+        underlying devices. Note that Scene types is always an array, even if it has zero or one element.
+        In the event that a Scene contains Groups, the types of the underlying devices
+        are used to determine the Scene types array.
+
+        When devies of multiple types are mixed in a single Scene,
+        this `types` lists each type.
+        For example, a Ceiling Fan (CF) and a Light (LT) combined would be
+        ["CF", "LT"] (with the order being aribitrary).
+      example:
+        - "MS"
+      type: array
+    locations:
+      readOnly: true
+      example:
+         - Kitchen
+      type: array
+      description: |
+        Similar to `types`, if all Devices in the Scene are in the same Location,
+        this field will be an array with a single string. However, when Devices
+        from multiple Locations are combined in one Scene, this field lists
+        each unique Location in arbitrary order.
+  required:
+  - name
+
+SceneList:
+  type: object
+  example:
+    _: "7fc1e84b"
+    3b20f300:
+        _: "9a5e1136"
+    4caf6472:
+        _: "409d124b"
