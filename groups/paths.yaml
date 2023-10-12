@@ -6,8 +6,9 @@ GroupsPath:
       has changed. The hash is not updated if underlying Devices are updated
       in a way which does not effect the Group state or type.
 
-      Groups are only supported on Bond Bridges, not on Smart by Bond.
-      Furthermore, Groups may only include Devices on the same Bridge.
+      Groups are supported on Bridges and on Smart by Bond.
+      Groups may span multiple Bonds (Bridges and SBB devices) by using the same
+      Group ID on each Bond. See the introductory section "Groups and Scenes".
     responses:
       '200':
         content:
@@ -165,7 +166,6 @@ PatchProperties:
     Example: If you set up 8 individual shades in your kitchen and then add
     them all to a Group, you can then, with a single request, enable or disable
     the `feature_position` Property to enable/disable the "slider" feature.
-    [This "slider" feature is avaiable only on the Bond Bridge Pro.]
   tags:
   - Group Properties
 
@@ -209,7 +209,7 @@ Post:
   - Groups
 Get:
   description: |
-    Groups are collections of Devices on a single Bridge.
+    Groups are collections of Devices.
   responses:
     '200':
       content:
