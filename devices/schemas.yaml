@@ -113,6 +113,15 @@ State:
     power: 0
     speed: 2
     timer: 3599
+  properties:
+    _lock_priority:
+      type: number
+      description: |
+        Device lock priority number.
+    _lock_expiration:
+      type: number
+      description: |
+        Remaining time for expiration of the lock, in miliseconds.
 
 Properties:
   properties:
