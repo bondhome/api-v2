@@ -451,6 +451,13 @@ PatchState:
     This does NOT cause the Bond to transmit any control signal.
 
     (Bridge-Only)
+
+    The state of the device lock can be patched using the `_lock_priority` and 
+    `_lock_expiration` fields. For the case of reseting the lock to the default state,
+    respecting the priority of other requests that may had happen, utilize the negative 
+    of the setted priority value.
+    Example: If one of yours APIs utilizes a `_lock_priority` of 60 when acting into a device,
+    remove the lock patching it with a value of -60.
   tags:
   - Device State
 
