@@ -6,8 +6,9 @@ GroupsPath:
       has changed. The hash is not updated if underlying Devices are updated
       in a way which does not effect the Group state or type.
 
-      Groups are only supported on Bond Bridges, not on Smart by Bond.
-      Furthermore, Groups may only include Devices on the same Bridge.
+      Groups are supported on Bridges and on Smart by Bond.
+      Groups may span multiple Bonds (Bridges and SBB devices) by using the same
+      Group ID on each Bond. See the introductory section "Groups and Scenes".
     responses:
       '200':
         content:
@@ -55,10 +56,6 @@ GroupsPath:
       the client to predetermine what devices are compatible in the sense
       of having a non-empty Actions intersection. If even a single device is
       incompatible, then the entire POST will fail with a 400 error.
-      For this reason, it is
-      simpler for the client to make individual Groups Devices POSTs for each
-      device to be added to the Group, so that the Bond firmware may provide
-      a 400 error in case a device cannot be added due to incompatability.
 
       Note that `types` and `locations` fields cannot be specified when
       creating a Group: these fields are calculated based on the member Devices.
@@ -78,14 +75,6 @@ GroupPath:
     $ref: ../groups/paths.yaml#/Patch
   delete:
     $ref: ../groups/paths.yaml#/Delete
-
-DevicesPath:
-  post:
-    $ref: ../groups/paths.yaml#/DevicesPost
-
-DevicePath:
-  delete:
-    $ref: ../groups/paths.yaml#/DeviceDelete
 
 StatePath:
   get:
@@ -165,7 +154,6 @@ PatchProperties:
     Example: If you set up 8 individual shades in your kitchen and then add
     them all to a Group, you can then, with a single request, enable or disable
     the `feature_position` Property to enable/disable the "slider" feature.
-    [This "slider" feature is avaiable only on the Bond Bridge Pro.]
   tags:
   - Group Properties
 
@@ -209,7 +197,7 @@ Post:
   - Groups
 Get:
   description: |
-    Groups are collections of Devices on a single Bridge.
+    Groups are collections of Devices.
   responses:
     '200':
       content:
@@ -260,9 +248,6 @@ Patch:
     If the `devices` list is PATCHed to empty, the group shard will vanish.
     That is, the group shard will be removed from the groups enumeration.
     The groups enumeration will be sent as a gratuitous GET response.
-
-    To add Devices to the Group, use POST method on the Group Devices enumeration.
-    To remove a Device from the Group, use the DELETE method of the Group Device resource.
   tags:
   - Groups
 Delete:
@@ -282,82 +267,6 @@ Delete:
     The entire Group is deleted.
   tags:
   - Groups
-
-DevicesPost:
-  parameters:
-  - in: path
-    name: group_id
-    required: true
-    schema:
-      type: string
-  requestBody:
-    content:
-      application/json:
-        schema:
-          properties:
-            device:
-              example: "aabbccdd"
-              type: string
-              description: |
-                ID of Device to add
-  responses:
-    '204':
-      description: Add Device to Group
-    '401':
-      $ref: ../common/responses.yaml#/Unauthorized
-    '404':
-      $ref: ../common/responses.yaml#/NotFound
-    '500':
-      $ref: ../common/responses.yaml#/InternalServerError
-  security:
-  - BasicAuth: []
-  summary: Add Device to Group
-  description: |
-    Device with the specified ID is added to the Group.
-
-    A gratuitous update of the corresponding Group endpoint will occur
-    to update clients as to the new devices, actions, state, and properties.
-  tags:
-  - Group Devices
-
-DeviceDelete:
-  parameters:
-  - in: path
-    name: group_id
-    required: true
-    schema:
-      type: string
-  - in: path
-    name: device_id
-    required: true
-    schema:
-      type: string
-  responses:
-    '204':
-      description: Remove Device from Group
-    '401':
-      $ref: ../common/responses.yaml#/Unauthorized
-    '404':
-      $ref: ../common/responses.yaml#/NotFound
-    '500':
-      $ref: ../common/responses.yaml#/InternalServerError
-  security:
-  - BasicAuth: []
-  summary: Remove Device from Group
-  description: |
-    Device with the ID specified in the URL is removed from the Group.
-
-    A gratuitous update of the corresponding Group endpoint will occur
-    to update clients as to the new devices, actions, state, and properties.
-
-    When the last device is removed from a group shard,
-    the group shard will vanish. This applies whether the removal is explicit
-    or implicit when the device is deleted entirely from the Bridge.
-    
-    That is, the group shard will be removed from the groups enumeration.
-    The groups enumeration will be sent as a gratuitous GET response.
-  tags:
-  - Group Devices
 
 GetState:
   responses:
