@@ -452,13 +452,14 @@ PatchState:
 
     (Bridge-Only)
 
-    The state of the device lock can be patched using the `_lock_priority` and 
-    `_lock_expiration` fields. For the case of reseting the lock to the default state,
-    respecting the priority of other requests that may had happen, utilize the negative 
-    of the setted priority value.
-    Example: If one of yours APIs utilizes a `_lock_priority` of 60 when acting into a device,
-    remove the lock patching it with a value of -60. The lock will be reset to the default of 
-    `100` only if the current priority matches the requested negative one.
+    You can modify the state of the device lock using the `_lock_priority` and `_lock_expiration` fields. 
+    To reset the lock to its default state while still honoring the priority of other requests that may
+    have occurred, use the negative value of the previously set priority.
+
+    Example: If your API sets a `_lock_priority` of 60 when interacting with a device, you can remove 
+    the lock by setting it to a value of -60. The lock will only be reset to the default value of 
+    100 if the current priority matches the specified negative value.
+
   tags:
   - Device State
 
