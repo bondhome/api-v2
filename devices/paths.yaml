@@ -457,7 +457,8 @@ PatchState:
     respecting the priority of other requests that may had happen, utilize the negative 
     of the setted priority value.
     Example: If one of yours APIs utilizes a `_lock_priority` of 60 when acting into a device,
-    remove the lock patching it with a value of -60.
+    remove the lock patching it with a value of -60. The lock will be reset to the default of 
+    `100` only if the current priority matches the requested negative one.
   tags:
   - Device State
 
