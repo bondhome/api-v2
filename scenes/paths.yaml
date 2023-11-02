@@ -1,0 +1,216 @@
+ScenesPath:
+  get:
+    description: |
+      Returns a list of Scene IDs and the corresponding Scene hashes.
+      The hashes change if any part of the Scene (its name, state, type, etc.)
+      has changed. The hash is not updated if underlying Actors (Devices and/or Groups) are updated
+      in a way which does not effect the Scene state or type.
+
+      Scenes are supported on Bridges and on Smart by Bond.
+      Scenes may span multiple Bonds (Bridges and SBB devices) by using the same
+      Scene ID on each Bond. See the introductory section "Groups and Scenes".
+    responses:
+      '200':
+        content:
+          application/json:
+            schema:
+              $ref: schemas.yaml#/SceneList
+        description: List Scenes
+      '401':
+        $ref: ../common/responses.yaml#/Unauthorized
+      '500':
+        $ref: ../common/responses.yaml#/InternalServerError
+    security:
+      - OAuth: ["oauth2"]
+    summary: List your Scenes
+    tags:
+    - Scenes
+  post:
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: ../scenes/schemas.yaml#/Scene
+    responses:
+      '201':
+        $ref: ../common/responses.yaml#/Created
+      '400':
+        $ref: ../common/responses.yaml#/BadRequest
+      '401':
+        $ref: ../common/responses.yaml#/Unauthorized
+      '409':
+        $ref: ../common/responses.yaml#/Conflict
+      '500':
+        $ref: ../common/responses.yaml#/InternalServerError
+    summary: Create new Scene
+    description: |
+      For the creation of a Scene distributed across multiple Bonds,
+      clients should provide a 64-bit ID for the Scene and provide that
+      same ID in each Scene POST request in the `_id` field. See
+      introductory section "Groups and Scenes" for detail. If the `_id`
+      field is not provided, a random ID will be assigned as with
+      POST requests to other enumerations.
+
+      A Scene is created containing the actor IDs and actions to execute in the `actors` array.
+
+      Note that `types` and `locations` fields cannot be specified when
+      creating a Scene: these fields are calculated based on the member Devices.
+    tags:
+    - Scenes
+
+ScenePath:
+  get:
+    $ref: ../scenes/paths.yaml#/Get
+  parameters:
+    - in: path
+      name: scene_id
+      required: true
+      schema:
+        type: number
+  patch:
+    $ref: ../scenes/paths.yaml#/Patch
+  delete:
+    $ref: ../scenes/paths.yaml#/Delete
+
+RunPath:
+  put:
+    $ref: ../scenes/paths.yaml#/Run
+  parameters:
+    - in: path
+      name: scene_id
+      required: true
+      schema:
+        type: number
+
+GetList:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/SceneList
+      description: List active Scenes
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+    - OAuth: ["oauth2"]
+  summary: List your Scenes
+  tags:
+  - Scenes
+Post:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          required: true
+          $ref: schemas.yaml#/Scene
+  responses:
+    '201':
+      $ref: ../common/responses.yaml#/Created
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '409':
+      $ref: ../common/responses.yaml#/Conflict
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Create new Scene
+  tags:
+  - Scenes
+Get:
+  description: |
+    Scenes are a set of actions to run on Devices and/or Groups
+    with a single request.
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            required: true
+            $ref: schemas.yaml#/Scene
+      description: Get Scene
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+    - OAuth: ["oauth2"]
+  summary: Get Scene
+  tags:
+  - Scenes
+Patch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          required: true
+          $ref: schemas.yaml#/Scene
+          type: object
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Scene
+      description: Change Scene field
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Change Scene field
+  description: |
+    The `actors` list may be PATCHed to perform a bulk change to the membership in the scene.
+
+    If the `actors` list is PATCHed to empty, the scene shard will vanish.
+    That is, the scene shard will be removed from the scenes enumeration.
+    The scenes enumeration will be sent as a gratuitous GET response.
+  tags:
+  - Scenes
+Delete:
+  responses:
+    '204':
+      description: Delete Scene
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Delete Scene
+  description: |
+    The entire Scene is deleted.
+  tags:
+  - Scenes
+  
+Run:
+  description: |
+    Execute specified Scene.
+    Each actor will be executed individually.
+
+    For shade hembar alignment on supported technologies,
+    please use a Group as an actor in the Scene.
+  responses:
+    '204': 
+      description: Scene executed
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+    - OAuth: ["oauth2"]
+  summary: Execute Scene
+  tags:
+  - Scenes

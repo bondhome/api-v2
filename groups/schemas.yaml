@@ -19,8 +19,8 @@ Group:
       description: |
         For values, see `type` field of Device schema.
 
-        Type is automatically set by the Bond Bridge to be the type of the
-        underlying devices when all devices are of the same type. Note that
+        Type is automatically set by the Bond Bridge to be the set of types of the
+        underlying devices. Note that
         Group types is always an array, even if it has zero or one element.
 
         When devies of multiple types are mixed in a single Group,

@@ -32,10 +32,14 @@ x-tagGroups:
       - Group State
       - Group Properties
       - Group Actions
+  - name: Scenes
+    tags:
+      - Scenes
   - name: Schedules
     tags:
       - Device Schedules
       - Group Schedules
+      - Scene Schedules
   - name: Sidekick
     tags:
       - Sidekick
