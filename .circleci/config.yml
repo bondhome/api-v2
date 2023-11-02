@@ -41,7 +41,8 @@ jobs:
           command: |
             ls -la
             pwd
-            aws s3 cp --acl "public-read" local.html s3://bond-api-docs/$(echo $CIRCLE_BRANCH | sed -e "s/\//-/g")-local.html
+            ls /home/circleci/project/
+            aws s3 cp --acl "public-read" /home/circleci/project/local.html s3://bond-api-docs/$(echo $CIRCLE_BRANCH | sed -e "s/\//-/g")-local.html
   deploy_master:
     docker:
       - image: python:3.7-alpine
