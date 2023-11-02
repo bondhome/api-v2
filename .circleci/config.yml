@@ -13,7 +13,7 @@ jobs:
           command: python -m openapi_spec_validator local.yaml
   build:
     docker:
-      - image: node:14-alpine
+      - image: cimg/node:21.1
     steps:
       - checkout
       - run:
