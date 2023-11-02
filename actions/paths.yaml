@@ -19,8 +19,22 @@ Put:
       application/json:
         schema:
           type: object
+          properties:
+            _lock_priority:
+              type: number
+              optional: true
+              description: |
+                The priority number desired for the lock, from 1 to 999.
+                If not specified, defaults to the default priority of 100. 
+            _lock_expiration: 
+              type: number
+              description: |
+                The expiration time desired for the lock, in miliseconds. Use 0 for
+                acquiring the lock with immediate expiration.
           example:
             argument: 4
+            _lock_priority: 50
+            _lock_expiration: 5000
   responses:
     '200':
       description: Action executed [since v2.12.4]
@@ -30,12 +44,16 @@ Put:
             type: object
             example:
               argument: 4
+              _lock_priority: 50
+              _lock_expiration: 4900
     '204':
       description: Action executed [prior to v2.12.4]
     '400':
       $ref: ../common/responses.yaml#/BadRequest
     '401':
       $ref: ../common/responses.yaml#/Unauthorized
+    '423':
+      $ref: ../common/responses.yaml#/Locked
     '500':
       $ref: ../common/responses.yaml#/InternalServerError
   summary: Execute a device action
@@ -53,6 +71,15 @@ Put:
     and what argument is expected, if any.
     For example, the action `SetSpeed` takes an integer parameter
     which is the desired speed number.
+
+    When performing an action, the device can be locked with a priority and 
+    expiration time, using the optional fields `_lock_priority` and `_lock_expiration`. 
+
+    Any other action that has a lower priority (higher priority number) will not
+    be executed if the `_lock_expiration` is not expired. Actions with higher
+    priority (lower priority number) will be executed and will acquire the lock.
+
+    If `_lock_priority` is not specified, the default value `100` is assumed.
   tags:
   - Device Actions
   security:

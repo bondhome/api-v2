@@ -58,3 +58,11 @@ Created:
       type: string
       description: id of new device
   type: object
+Locked:
+  allOf:
+  - $ref: '#/ErrorBaseSchema'
+  - properties:
+      _error_msg:
+        example: Device is locked with non expired higher priority
+        type: string
+    type: object

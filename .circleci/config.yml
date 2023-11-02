@@ -40,6 +40,14 @@ jobs:
           name: Deploy to AWS
           command: |
             aws s3 cp --acl "public-read" /home/circleci/project/local.html s3://bond-api-docs/$(echo $CIRCLE_BRANCH | sed -e "s/\//-/g")-local.html
+      - run:
+          name: Comment on PR with S3 link
+          command: |
+            apk add --no-cache curl jq
+            PR_NUMBER=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/bondhome/api-v2/pulls?head=bondhome:$CIRCLE_BRANCH" | jq '.[].number')
+            S3_URL="https://bond-api-docs.s3.amazonaws.com/$(echo $CIRCLE_BRANCH | sed -e "s/\//-/g")-local.html"
+            COMMENT_PAYLOAD=$(printf '{ "body": "The rendered doc is at: %s" }' "$S3_URL")
+            curl -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/json" -d "$COMMENT_PAYLOAD" "https://api.github.com/repos/bondhome/api-v2/issues/$PR_NUMBER/comments"
   deploy_master:
     docker:
       - image: python:3.7-alpine
@@ -59,9 +67,7 @@ workflows:
   build-test-and-deploy:
     jobs:
       - test
-      - build:
-          requires:
-            - test
+      - build
       - deploy:
           context:
             - aws
@@ -72,6 +78,7 @@ workflows:
             - aws
           requires:
             - build
+            - test
           filters:
             branches:
               only:
