@@ -39,6 +39,8 @@ jobs:
       - run:
           name: Deploy to AWS
           command: |
+            ls -la
+            pwd
             aws s3 cp --acl "public-read" local.html s3://bond-api-docs/$(echo $CIRCLE_BRANCH | sed -e "s/\//-/g")-local.html
   deploy_master:
     docker:
