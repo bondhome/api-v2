@@ -39,9 +39,6 @@ jobs:
       - run:
           name: Deploy to AWS
           command: |
-            ls -la
-            pwd
-            ls /home/circleci/project/
             aws s3 cp --acl "public-read" /home/circleci/project/local.html s3://bond-api-docs/$(echo $CIRCLE_BRANCH | sed -e "s/\//-/g")-local.html
   deploy_master:
     docker:
@@ -56,7 +53,7 @@ jobs:
       - run:
           name: Deploy to AWS (master)
           command: |
-            aws s3 cp --acl "public-read" local.html s3://docs-local.appbond.com/index.html
+            aws s3 cp --acl "public-read" /home/circleci/project/local.html s3://docs-local.appbond.com/index.html
 workflows:
   version: 2
   build-test-and-deploy:
