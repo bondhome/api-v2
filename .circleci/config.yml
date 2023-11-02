@@ -18,7 +18,7 @@ jobs:
       - checkout
       - run:
           name: Install redoc
-          command: npm install redoc && npm install redoc-cli
+          command: npm install redoc && sudo npm install -g redoc-cli
       - run:
           name: Create bundle html file for local api
           command: redoc-cli bundle local.yaml -o local.html
