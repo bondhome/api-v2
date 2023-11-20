@@ -1565,7 +1565,7 @@ description: |
       however, if `Unpair` _is_ present, then `Pair` will only pair the device if it is not already paired
       and can be safely used to assert pairing.
   - **Unpair()**: (optional) unpairs a Bridge device from an appliance,
-      requring user to manually put appliance into pairing mode.
+      requiring user to manually put appliance into pairing mode.
   - **UnpairSelf()**: (optional) unpairs Bridge device from all appliances in range.
       Does _not_ require pairing mode.
 
