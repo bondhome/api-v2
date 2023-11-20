@@ -1557,7 +1557,7 @@ description: |
 
   ### Actions
 
-  - **Pair()**: pair (or unpair) the Bridge device with an appliance. 
+  - **Pair()**: pair (or toggle pair) the Bridge device with an appliance. 
       Requires user to manually put appliance into pairing mode using a button on the appliance,
       a button on the appliance's remote control, or sometimes by power-cycling the appliance.
       If the `Unpair` action is _not_ present, then `Pair` will unpair the device if it is already paired,
