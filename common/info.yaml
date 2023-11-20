@@ -1532,6 +1532,43 @@ description: |
   - **TurnFpFanOn()**: Turn the fireplace fan on, restoring the previous speed
   - **SetFpFan(speed)**: Sets the speed of the fireplace fan
 
+  ## Pair
+
+  Most shade devices work by pairing rather than cloning of a remote control.
+  Use the actions of the Pair feature to manipulate the address table of the appliance.
+  Note that appliances have different means of entering pairing mode, 
+  and different behaviors when the pairing table is full: some override the oldest entry,
+  while others stop accepting new pair signals until other remotes are unpaired
+  or the appliance is factory-reset.
+
+  When using a well-supported shade technology, the Bond Home app provides detailed guidance
+  on how to Pair or Unpair available in Device Settings. However, for shades with a lesser
+  level of support, users need to refer to their remote control or motor's user manual
+  for the pairing procedure, and use the `Pair` or `Unpair` actions in the place of a
+  button press or hold on the remote control to be added or removed.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+  (none)
+
+  ### Actions
+
+  - **Pair()**: pair (or toggle pair) the Bridge device with an appliance. 
+      Requires user to manually put appliance into pairing mode using a button on the appliance,
+      a button on the appliance's remote control, or sometimes by power-cycling the appliance.
+      If the `Unpair` action is _not_ present, then `Pair` will unpair the device if it is already paired,
+      acting as a toggle;
+      however, if `Unpair` _is_ present, then `Pair` will only pair the device if it is not already paired
+      and can be safely used to assert pairing.
+  - **Unpair()**: (optional) unpairs a Bridge device from an appliance,
+      requiring user to manually put appliance into pairing mode.
+  - **UnpairSelf()**: (optional) unpairs Bridge device from all appliances in range.
+      Does _not_ require pairing mode.
+
   ## Misc, including dimmers
 
   Collected here are some actions that may be used with other features, but
@@ -1541,7 +1578,6 @@ description: |
 
   - **Stop()**: This action tells the Bond to stop any in-progress transmission and empty its transmission queue.
   - **Hold()**: Can be used when a signal is required to tell a device to stop moving or the like, since *Stop* is a special "stop transmitting" action
-  - **Pair()**: Used in devices that need to be paired with a receiver.
   - **StartDimmer()**: Start dimming. The Bond should time out its transmission after 30 seconds, or when the *Stop* action is called.
   - **StartUpLightDimmer()**: Use this and the *StartDownLightDimmer* instead of *StartDimmer* if your device has two dimmable lights.
   - **StartDownLightDimmer()**: The counterpart to *StartUpLightDimmer*
