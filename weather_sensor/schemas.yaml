@@ -185,6 +185,12 @@ State:
       readOnly: True
       description: |
         Flag indicating if Weather Sensor data rate is lower than expected.
+    status_flag_no_data:
+      type: boolean
+      example: false
+      readOnly: True
+      description: |
+        Flag indicating if Weather Sensor data is missing for more than 30 minutes.
     status_flag_battery_low:
       type: boolean
       example: false
