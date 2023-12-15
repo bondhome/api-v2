@@ -51,7 +51,7 @@ WeatherSensor:
       example: 80
       type: integer
       description: |
-        Weather Sensor solar battery remaining in percentage, range 1-100.
+        Weather Sensor battery remaining in percentage, range 1-100.
     model:
       readOnly: true
       example: BWS-1000
