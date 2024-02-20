@@ -1569,6 +1569,45 @@ description: |
   - **UnpairSelf()**: (optional) unpairs Bridge device from all appliances in range.
       Does _not_ require pairing mode.
 
+  ## Hold
+
+  The Hold feature is available on most shades.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+  (none)
+
+  ### Actions
+
+  - **Hold()**: Stop the motion of the device. This is useful for stopping the device
+    when the device is moving to a specific position. When Hold is called the device 
+    is now in an unknown state and will show as open. Note that Somfy RTS uses the
+    same command for both Hold and Preset (My), so calling Hold while the product is
+    not in motion will send the shade instead to the preset position.
+
+  ## Preset
+
+  The Preset feature is available on many shades, and we hope to make it available on all shades.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+  (none)
+
+  ### Actions
+
+  - **Preset()**: Move the device to the preset position, also known as "My" or "Favorite" position.
+    Note that Bond Bridge does not know the percentage of the preset position, so position will
+    report as -1 (unknown) after this action is called unless your shade has two-way communication
+    (currently limited to IP-IP integrations).
+
   ## Misc, including dimmers
 
   Collected here are some actions that may be used with other features, but
@@ -1577,7 +1616,6 @@ description: |
   ### Actions
 
   - **Stop()**: This action tells the Bond to stop any in-progress transmission and empty its transmission queue.
-  - **Hold()**: Can be used when a signal is required to tell a device to stop moving or the like, since *Stop* is a special "stop transmitting" action
   - **StartDimmer()**: Start dimming. The Bond should time out its transmission after 30 seconds, or when the *Stop* action is called.
   - **StartUpLightDimmer()**: Use this and the *StartDownLightDimmer* instead of *StartDimmer* if your device has two dimmable lights.
   - **StartDownLightDimmer()**: The counterpart to *StartUpLightDimmer*
