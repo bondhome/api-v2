@@ -1511,6 +1511,106 @@ description: |
 
   (none)
 
+  ## TDBU
+
+  Top-Down Bottom-Up shades have two rails: a lower rail which opens in the usual bottom-up
+  fashion, and an upper rail which opens from the top down allowing for privacy while
+  still allowing light to enter the room.
+
+  We use the terms "upper rail" and "lower rail" rather than "top" and "bottom" to avoid
+  confusion as the meaning of "top-down" and "bottom-up" can be ambiguous.
+
+  The TDBU feature requires the Position feature.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+    - **upper_rail_position**: (integer) value from 0 to 100: 0 = open, 100 = closed.
+    - **lower_rail_position**: (integer) value from 0 to 100: 0 = open, 100 = closed.
+
+  ### Actions
+
+    - **SetUpperRailPosition(position)**: Set the position of the upper rail.
+    - **SetLowerRailPosition(position)**: Set the position of the lower rail.
+
+    The SetPosition action will set the upper rail to 0% and the lower rail to the
+    requested position.
+
+    Note: if an action requests a position that is not possible due to the
+    position of the other rail, the Bond Bridge will adjust the other rail
+    the minimum amount necessary to make the requested position possible.
+    For example, if the upper rail is at 50% and the lower rail is at 75%,
+    and the user requests the upper rail to 80%, the lower rail will be
+    "pushed" to 80% as well.
+
+    To change the position of both rails, call both actions in any order.
+    The start times of the rails motion may be slightly staggered.
+
+  ## TiltPosition
+
+  The TiltPosition feature is used to describe a device that can be tilted to a specific position as a percentage,
+  such as venitian blinds. We currently do not support products that can tilt to an open or closed position
+  but lack the ability to tilt to a specific position.
+
+  ### Properties
+
+    - **min_tilt**: (integer) minimum tilt position (degrees, default 0).
+      Traditional wooden blinds can tilt approximately 180 degrees,
+      which we model as -90 to 90 degrees, with 0 degrees being horizontal.
+      Many motorized blinds can tilt only 90 degrees and are restricted to
+      being tilted closed (+90) while in any position other than fully extended.
+
+    - **max_tilt**: (integer) maximum tilt position (degrees, default 90).
+      Usually unspecified, please default to 90 degrees.
+
+  ### State Variables
+
+    - **tilt_position**: (integer) angle of slats in degrees.
+
+  ### Actions
+
+    - **SetTiltPosition(position)**: Set slats to specified tilt position in degrees.
+    - **ToggleTilt()**: Close the slats they are open, open them if they are closed
+
+    NOTE: IncreaseTilt, DecreaseTilt, TiltOpen, and TiltClose are not available.
+
+  ## SheerBlackoutDuo
+
+    This feature is present on some motorized shades which have two layers of fabric:
+    a sheer layer and a blackout layer. 
+    
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+    - **blackout_position**: (integer) value from 0 to 100: 0 = open, 100 = closed.
+    - **sheer_position**: (integer) value from 0 to 100: 0 = open, 100 = closed.
+
+  ### Actions
+
+    - **SetBlackoutPosition(position)**: Set the position of the blackout layer.
+    - **SetSheerPosition(position)**: Set the position of the sheer layer.
+
+    The SetPosition action will set the sheer layer to the requested position and the
+    blackout layer to 0%. (THIS IS SUBJECT TO CHANGE. If you have a strong preference
+    please let us know.)
+
+    The two layers can often be positioned independently,
+    but there is sometimes a constraint such as that the blackout layer cannot be positioned
+    below the sheer layer, or that the sheer layer must be completely extended before the
+    blackout layer can be extended at all. These constraints are enforced by the Bond Bridge
+    and need not concern the client. If an impossible position is requested, the Bond Bridge
+    will adjust the other layer the minimum amount necessary to make the requested position possible.
+
+    To change the position of both layers, call both actions in any order.
+    The start times of the layers' motion may be slightly staggered.
+
   ## FpFan
 
   The FpFan feature controls a fireplace fan. The FpFan feature is independent
