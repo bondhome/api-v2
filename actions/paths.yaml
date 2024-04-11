@@ -18,6 +18,7 @@ Put:
     content:
       application/json:
         schema:
+          $ref: schemas.yaml#/Args
           type: object
           properties:
             _lock_priority:
