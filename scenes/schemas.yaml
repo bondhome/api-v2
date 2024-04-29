@@ -9,6 +9,11 @@ Scene:
 
         This field must contain at least one action during Scene creation.
         It may be updated using PATCH.
+
+        This field may be missing for imorted Scenes,
+        which means that the Scene is opaque (i.e. the Bond Bridge does not know
+        what the Scene does) and may only be edited on the partner system it was
+        imported from. See `imported_from` field.
       type: array
       example:
         - {"device": "aabbccdd", "action": "TurnOn"}
@@ -40,6 +45,14 @@ Scene:
         this field will be an array with a single string. However, when Devices
         from multiple Locations are combined in one Scene, this field lists
         each unique Location in arbitrary order.
+      imported_from:
+        description: |
+          If the Scene was imported from a Managed Technology (that is, a parter control system),
+          this field contains the ID of the partner system. The corresponding endpoint on the 
+          Bridge for managing this technology is `api/{imported_from}` and the WebGUI is
+          at `http://{bridge_ip_address}/{imported_from}`.
+        type: string
+        example: "powerview"
   required:
   - name
 
