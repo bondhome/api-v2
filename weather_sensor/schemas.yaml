@@ -209,3 +209,15 @@ State:
       readOnly: True
       description: |
         Flag indicating if Weather Sensor temperature is low, recommending operation with external 12V supply.
+    data_temperature_dc:
+      example: 212
+      type: integer
+      readOnly: True
+      description: |
+        Last measurement of the temperature in deci-Celsius.
+    data_humidity_percent:
+      example: 65
+      type: integer
+      readOnly: True
+      description: |
+        Last measurement of the humidity in percentage (0 to 100).
