@@ -33,7 +33,7 @@ Time:
 
         Device Schedules do not run unless `time_set` is true.
     tz:
-      example: America/Sao_Paolo
+      example: America/Sao_Paulo
       type: string
       nullable: true
       description: |
