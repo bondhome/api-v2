@@ -1640,3 +1640,18 @@ description: |
 
   (none)
 
+  ## Signal
+
+  The Signal feature indicates the quality of the RF communication between the Bond Bridge and the device.
+  Depending on the device technology, it may indicate either just the downlink or
+  an aggregate of the uplink and downlink link quality.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+   - **signal**: (integer) value from 0 to 100, representing the signal quality in percent.
+     Clients should render this as a 4-bar signal strength indicator, where:
+     0--20 = no bars, 21--40 = 1 bar, 41--60 = 2 bars, 61--80 = 3 bars, 81--100 = 4 bars.
