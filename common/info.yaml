@@ -1621,3 +1621,22 @@ description: |
   - **StartDownLightDimmer()**: The counterpart to *StartUpLightDimmer*
   - **StartIncreasingBrightness()**: Similar to StartDimmer, but doesn't cycle and only increases brightness.
   - **StartDecreasingBrightness()**: Similar to StartDimmer, but doesn't cycle and only decreases brightness.
+
+  ## Battery
+
+  The Battery feature is used to report the battery level of a device.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+   - **battery**: (integer) value from 0 to 100, representing the battery level in percent.
+     Clients are encouraged to use the following rendering on their UIs:
+     100 = full (green or blue), 31--99 = OK (green), 11--30 = low (Yellow), 1--10 = critical (red), and 0 = empty (red or blank).
+
+  ### Actions
+
+  (none)
+
