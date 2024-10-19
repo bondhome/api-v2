@@ -36,13 +36,11 @@ WeatherSensor:
           - `action`: action to call on device
           - `argument`: (optional) argument to above action, such as position percentage
 
-        [As of v4.8] Unlike for Sidekick keypads, the device specified need not be on the same Bridge as the Weather Sensor,
-        only on the same subnet.
-        The Bridge will broadcast a request to all Bonds in the network to take action on the device.
-        The other devices may even be Smart by Bond devices, as long as they also have firmware v4.8 or later.
-        This does have the consequence that if the Backup & Restore feature has been abused to clone devices across Bridges
-        (resulting in multiple devices with the same 64-bit device ID),
-        the action will be taken on all clones of the device which may be undesirable.
+        [As of v4.8] You may now link to devices that are elsewhere in the network.
+        To do so, prefix the device ID with the bond ID and a colon, like so: `<bond_id>:<device_id>`.
+        The other device may even be a Smart by Bond device, as long as it also has firmware v4.8 or later.
+        This does have the consequence that if a device moves from one Bridge to another using Backup & Restore feature,
+        you will need to re-link it with the weather sensor.
     signal:
       readOnly: true
       example: 97
