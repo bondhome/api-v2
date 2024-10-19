@@ -23,8 +23,7 @@ WeatherSensor:
       type: object
       description: |
         Object describes every link between weather events from this Weather Sensor and the
-        device, group, and scene actions which they trigger.
-        (In future will permit specifying `group` or `scene` instead of `device`.)
+        device actions to be taken in response to those events.
 
         Each weather event maps to an event number:
           - `1` = Wind event: triggered when wind speed reaches configured level
@@ -36,6 +35,12 @@ WeatherSensor:
           - `device`: which device will act in response to the weather event
           - `action`: action to call on device
           - `argument`: (optional) argument to above action, such as position percentage
+
+        [As of v4.8] You may now link to devices that are elsewhere in the network.
+        To do so, prefix the device ID with the bond ID and a colon, like so: `<bond_id>:<device_id>`.
+        The other device may even be a Smart by Bond device, as long as it also has firmware v4.8 or later.
+        This does have the consequence that if a device moves from one Bridge to another using Backup & Restore feature,
+        you will need to re-link it with the weather sensor.
     signal:
       readOnly: true
       example: 97
