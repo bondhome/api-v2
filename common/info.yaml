@@ -994,7 +994,18 @@ description: |
 
   ### Properties
 
-  (none)
+  - **default_auto_timer_s**: 
+    type: integer
+    description: >
+      (integer, optional). This property is available only for heater devices (HT). 
+      When specified, the timer starts automatically with *default_auto_timer_s* seconds whenever the Power feature is activated. 
+      If the timer is explicitly set using the *SetTimer()* action, the new value will override the current timer state, up to a maximum of *default_auto_timer_s*. 
+      Any action that updates the device state (including updates from the Panel, Skeds, or Groups) resets the timer countdown to the current *default_auto_timer_s* value. 
+      Turning off the device cancels the timer.
+
+      This feature ensures heaters comply with fire code requirements to turn off automatically after a specified time (commonly 2 hours). 
+      UIs should display *default_auto_timer_s* as the maximum available value when this property is present. 
+      This setting cannot be overridden by the user.
 
   ### State Variables
 
