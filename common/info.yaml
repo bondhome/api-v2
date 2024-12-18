@@ -1448,6 +1448,9 @@ description: |
   - **IncreaseHeat(heat)**: Increase heat level of device by specified number of *heats*. If the device is off, implicitly turn on the power.
   - **DecreaseHeat(heat)**: Decrease heat level by specified number of *heats*. If attempting to decrease device heat below `1`, the device will remain at heat 1. That is, power will not be implicitly turned off.
   - **CycleFlamePresetUp()**: Jump to next preset heat value from an internal list of presets. Number and value of presets undefined and may vary by model. Useful for integrations with buttons.
+  - **CycleFlamePresetDown()**: Jump to previous preset heat value from an internal list of presets. Number and value of presets undefined and may vary by model. Useful for integrations with buttons.
+
+  NOTE: The heat level is remembered on TurnOff and restored on TurnOn.
 
   ## Open
 
