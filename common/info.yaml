@@ -1425,6 +1425,30 @@ description: |
   - **IncreaseFlame(flame)**: Increase flame level of fireplace by specified number of *flames*. If the fireplace is off, implicitly turn on the power.
   - **DecreaseFlame(flame)**: Decrease flame level by specified number of *flames*. If attempting to decrease fireplace flame below `1`, the fireplace will remain at fflame 1. That is, power will not be implicitly turned off. If the power is already off, DecreaseFlame is ignored.
 
+  ## Heat
+
+  The Heat feature control devices capable of providing adjustable heat levels, allowing fine control over the intensity of the heating element. 
+  This feature is commonly used in heater devices.
+
+  ### Requirements
+
+  The Heat feature requires the Power feature to be available.
+
+  ### Properties
+
+  - **feature_heat**: (boolean, PATCH-able) true = Heat feature enabled (default), false = Heat feature disabled
+
+  ### State Variables
+
+  - **heat**: (integer) value from 1 to 100. If power=0, heat represents the last heat setting and the heat to which the device resumes when user asks to turn on.
+
+  ### Actions
+
+  - **SetHeat(heat)**: Set heat level and turn on. If heat>100, 100 is assumed. If the device is off, implicitly turn on the power. Setting heat to zero or a negative value is ignored.
+  - **IncreaseHeat(heat)**: Increase heat level of device by specified number of *heats*. If the device is off, implicitly turn on the power.
+  - **DecreaseHeat(heat)**: Decrease heat level by specified number of *heats*. If attempting to decrease device heat below `1`, the device will remain at heat 1. That is, power will not be implicitly turned off.
+  - **CycleFlamePresetUp()**: Jump to next preset heat value from an internal list of presets. Number and value of presets undefined and may vary by model. Useful for integrations with buttons.
+
   ## Open
 
   The Open feature is used to describe a device that can be opened and closed.
