@@ -994,7 +994,10 @@ description: |
 
   ### Properties
 
-  (none)
+  - **default_auto_timer_s**: (positive integer, optional)
+    This property is available only for heater devices (HT).
+    When present, the timer is automatically started with *default_auto_timer_s* seconds whenever the Power feature is activated.
+    If the timer is explicitly set using the SetTimer() action, it will override the current timer state (limited to at max *default_auto_timer_s*).
 
   ### State Variables
 
