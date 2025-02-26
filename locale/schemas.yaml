@@ -10,3 +10,14 @@ Locale:
         Supported options:
           - us: USA, Canada, Mexico
           - au: Australia [v2.15]
+          - il: Israel [v4.12]
+          - eu: Europe [v4.12]
+    compliance_regions:
+      example: [us, au, il, eu]
+      type: array
+      items:
+        type: string
+      description: |
+        [Added in v4.12]
+        List of compliance regions supported by this Bond.
+        Setting any region not on the list will return a 400 error.
