@@ -1737,3 +1737,41 @@ description: |
   - **StartDownLightDimmer()**: The counterpart to *StartUpLightDimmer*
   - **StartIncreasingBrightness()**: Similar to StartDimmer, but doesn't cycle and only increases brightness.
   - **StartDecreasingBrightness()**: Similar to StartDimmer, but doesn't cycle and only decreases brightness.
+
+  ## Battery
+
+  The Battery feature is used to report the battery level of a device.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+   - **battery**: (integer) value from 0 to 100, representing the battery level in percent.
+     Clients are encouraged to use the following rendering on their UIs:
+     100 = full (green or blue), 31--99 = OK (green), 11--30 = low (Yellow), 1--10 = critical (red), and 0 = empty (red or blank).
+
+  ### Actions
+
+  (none)
+
+  ## Signal
+
+  The Signal feature indicates the quality of the RF communication between the Bond Bridge and the device.
+  Depending on the device technology, it may indicate either just the downlink or
+  an aggregate of the uplink and downlink link quality.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+   - **signal**: (integer) value from 0 to 100, representing the signal quality in percent.
+     Clients should render this as a 4-bar signal strength indicator, where:
+     0--25 = Weak (1 bar), 26--50 = Fair (2 bars), 51--75 = Good (3 bars), 76--100 = Excellent (4 bars).
+
+  ### Actions
+
+  (none)
