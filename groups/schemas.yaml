@@ -1,0 +1,73 @@
+Group:
+  properties:
+    name:
+      example: Kitchen Shades
+      type: string
+    devices:
+      description: |
+        List of member Device IDs.
+
+        This field may be set during Group creation,
+        or may be updated using PATCH.
+      type: array
+      example:
+        - "aabbccdd"
+        - "11223344"
+        - "deadbeef"
+    types:
+      readOnly: true
+      description: |
+        For values, see `type` field of Device schema.
+
+        Type is automatically set by the Bond Bridge to be the set of types of the
+        underlying devices. Note that
+        Group types is always an array, even if it has zero or one element.
+
+        When devies of multiple types are mixed in a single Group,
+        this `types` lists each type.
+        For example, a Ceiling Fan (CF) and a Light (LT) combined would be
+        ["CF", "LT"] (with the order being aribitrary).
+      example:
+        - "MS"
+      type: array
+    locations:
+      readOnly: true
+      example:
+         - Kitchen
+      type: array
+      description: |
+        Similar to `types`, if all Devices in the Group are in the same Location,
+        this field will be an array with a single string. However, when Devices
+        from multiple Locations are combined in one Group, this field lists
+        each unique Location in arbitrary order.
+    actions:
+      readOnly: true
+      type: array
+      example:
+        - "Open"
+        - "Close"
+        - "Preset"
+      description: |
+        The list of available Actions on the Group.
+        This is the intersection of Actions for the Devices in the Group.
+        In other words, the Group Actions are those Actions which are common
+        to all Devices in the Group.
+    state:
+      readOnly: true
+      type: object
+      example:
+        _: "ad9bcde4"
+  required:
+  - name
+
+GroupList:
+  type: object
+  example:
+    _: "7fc1e84b"
+    3b20f300:
+        _: "9a5e1136"
+    4caf6472:
+        _: "409d124b"
+State:
+  example:
+    open: 1

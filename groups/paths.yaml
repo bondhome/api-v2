@@ -1,0 +1,296 @@
+GroupsPath:
+  get:
+    description: |
+      Returns a list of Group IDs and the corresponding Group hashes.
+      The hashes change if any part of the Group (its name, state, type, etc.)
+      has changed. The hash is not updated if underlying Devices are updated
+      in a way which does not effect the Group state or type.
+
+      Groups are supported on Bridges and on Smart by Bond.
+      Groups may span multiple Bonds (Bridges and SBB devices) by using the same
+      Group ID on each Bond. See the introductory section "Groups and Scenes".
+    responses:
+      '200':
+        content:
+          application/json:
+            schema:
+              $ref: schemas.yaml#/GroupList
+        description: List Groups
+      '401':
+        $ref: ../common/responses.yaml#/Unauthorized
+      '500':
+        $ref: ../common/responses.yaml#/InternalServerError
+    security:
+      - OAuth: ["oauth2"]
+    summary: List your Groups
+    tags:
+    - Groups
+  post:
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: ../groups/schemas.yaml#/Group
+    responses:
+      '201':
+        $ref: ../common/responses.yaml#/Created
+      '400':
+        $ref: ../common/responses.yaml#/BadRequest
+      '401':
+        $ref: ../common/responses.yaml#/Unauthorized
+      '409':
+        $ref: ../common/responses.yaml#/Conflict
+      '500':
+        $ref: ../common/responses.yaml#/InternalServerError
+    summary: Create new Group
+    description: |
+      For the creation of a Group distributed across multiple Bonds,
+      clients should provide a 64-bit ID for the Group and provide that
+      same ID in each Group POST request in the `_id` field. See
+      introductory section "Groups and Scenes" for detail. If the `_id`
+      field is not provided, a random ID will be assigned as with
+      POST requests to other enumerations.
+
+      A Group is created containing the device IDs in the `devices` array.
+      Using the `devices` field requires
+      the client to predetermine what devices are compatible in the sense
+      of having a non-empty Actions intersection. If even a single device is
+      incompatible, then the entire POST will fail with a 400 error.
+
+      Note that `types` and `locations` fields cannot be specified when
+      creating a Group: these fields are calculated based on the member Devices.
+    tags:
+    - Groups
+
+GroupPath:
+  get:
+    $ref: ../groups/paths.yaml#/Get
+  parameters:
+    - in: path
+      name: group_id
+      required: true
+      schema:
+        type: number
+  patch:
+    $ref: ../groups/paths.yaml#/Patch
+  delete:
+    $ref: ../groups/paths.yaml#/Delete
+
+StatePath:
+  get:
+    $ref: ../groups/paths.yaml#/GetState
+  parameters:
+  - in: path
+    name: group_id
+    required: true
+    schema:
+      type: number
+
+PropertiesPath:
+  get:
+    $ref: ../groups/paths.yaml#/GetProperties
+  patch:
+    $ref: ../groups/paths.yaml#/PatchProperties
+  parameters:
+  - in: path
+    name: group_id
+    required: true
+    schema:
+      type: number
+GetProperties:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: ../devices/schemas.yaml#/Properties
+      description: Get Group properties
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+    - OAuth: ["oauth2"]
+  summary: Get Group properties
+  description: |
+    See the Features section above for other properties which may be available
+    on your Groups.
+
+    Similar to the Group State object, the Properties available for a Group
+    are those Properties which exist on every Device in the Group.
+    If all Devices have the same value for a Property, then that value will
+    be provided here. If Devices do not agree on a value, then that Property
+    will be listed but with a `null` value.
+  tags:
+  - Group Properties
+
+PatchProperties:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: ../devices/schemas.yaml#/Properties
+  responses:
+    '200':
+      description: Properties updated
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+    - OAuth: ["oauth2"]
+  summary: Update properties
+  description: |
+    PATCHing one or more Group Properties implicitely PATCHes those Properties
+    on all Devices in the Group. Gratuitous PATCH replies are sent for each
+    Device before this PATCH reply returns. If any errors occur in any of the
+    underlying Device PATCH requests, this request will return a 500 error
+    and the Devices' Properties will be left in undefined condition.
+
+    Example: If you set up 8 individual shades in your kitchen and then add
+    them all to a Group, you can then, with a single request, enable or disable
+    the `feature_position` Property to enable/disable the "slider" feature.
+  tags:
+  - Group Properties
+
+GetList:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/GroupList
+      description: List active Groups
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+    - OAuth: ["oauth2"]
+  summary: List your Groups
+  tags:
+  - Groups
+Post:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          required: true
+          $ref: schemas.yaml#/Group
+  responses:
+    '201':
+      $ref: ../common/responses.yaml#/Created
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '409':
+      $ref: ../common/responses.yaml#/Conflict
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Create new Group
+  tags:
+  - Groups
+Get:
+  description: |
+    Groups are collections of Devices.
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            required: true
+            $ref: schemas.yaml#/Group
+      description: Get Group
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+    - OAuth: ["oauth2"]
+  summary: Get Group
+  tags:
+  - Groups
+Patch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          required: true
+          $ref: schemas.yaml#/Group
+          type: object
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Group
+      description: Change Group field
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Change Group field
+  description: |
+    The `devices` list may be PATCHed to perform a bulk change to the membership in the group.
+    A 400 error is returned if the devices are incompatible.
+
+    If the `devices` list is PATCHed to empty, the group shard will vanish.
+    That is, the group shard will be removed from the groups enumeration.
+    The groups enumeration will be sent as a gratuitous GET response.
+  tags:
+  - Groups
+Delete:
+  responses:
+    '204':
+      description: Delete Group
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Delete Group
+  description: |
+    The entire Group is deleted.
+  tags:
+  - Groups
+
+GetState:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/State
+      description: Get Group State
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+    - OAuth: ["oauth2"]
+  summary: Get Group State
+  description: |
+    Group State lists those state variables which are common to all member
+    Devices. If all member Devices have the same value for a particular state
+    variable, then the Group variable will take that value. However, if member
+    Devices differ in value, then the Group variable will take the value `null`.
+
+    Note that Group states cannot be PATCHed.
+  tags:
+  - Group State

@@ -1,6 +1,6 @@
 ---
 title: Bond API
-version: "v2.18.2"
+version: "v3.0.0"
 x-logo:
   url: https://s3.amazonaws.com/docs-cloud.appbond.com/bond.png
 description: |
@@ -214,6 +214,27 @@ description: |
 
   # API Concepts
 
+  ## 64-bit Keys
+
+  As of v3.0.0 firmware, Bond products have moved to 64-bit keys as resource
+  identifiers, instead of the previous 32-bit keys. So, rather than a device
+  being identified by an 8-digit hex string, the ids for newly created devices
+  will be 16-digit hex strings.
+
+  In an effort to minimize distruption to API clients,
+  already created resources (devices, commands, skeds, etc.) will continue
+  to be represented using the same exact string on the API. Additional
+  leading zeros will not be added. So, for example, a device with id `01abcdef`
+  will continue to enumerate as `01abcdef` in v2.22. The Bond API is however
+  libral in what it accepts, removing leading zeros.
+  So any of the following received ids will be
+  understood to point to this device: `1abcdef`, `01abcdef`, `0000000001abcdef`.
+
+  Internally, the Bond API uses this rule:
+
+    If the upper 32-bits of an ID are zero, then send as 8 hex digits (32-bit).
+    Otherwise, send as 16 hex digits (64-bit).
+
   ## Hash Tree
 
   The Bond API is organized as a tree of endpoints,
@@ -267,6 +288,22 @@ description: |
   which would return the name and location directly associated with the device,
   as well as hash objects for the child nodes of device: `commands` and `state`.
 
+  ## Local Hash vs Subtree Hash
+
+  The `_` hashes discussed above are designed to allow a client to quickly
+  discover changes to a Bond's state. As we've shown, this requires the hash
+  at a particular endpoint to incorporate not only that endpoint's state but
+  also the state of all the children. However, it is sometimes desireable
+  to have a hash of just the data local to that endpoint, that is, data
+  not contained within a child.
+
+  [As of v3 firmware] we introduce a new `__` (double underscore) field
+  called a "local hash". This is intended to be used by the Bond Cloud
+  and Bond Apps specifically for downwards synchronization as required
+  for the Groups and Scenes features.
+
+  Most integrators can safely ignore the local hashes.
+
   ## Request ID
 
   The purpose of the Request ID is to allow a client to retry a non-idempotent
@@ -275,6 +312,365 @@ description: |
 
   If you need to implement a retry mechanism in your integration,
   please contact the Bond Engineering Team via the Bond Forums https://forum.bondhome.io/
+
+  ## Request Flags
+
+  Each request may contain a number of request flags,
+  which can be specified on HTTP via the `Bond-Flags` header
+  (or via the `f` field for BPUP and MQTT transports).
+  These flags are not needed in most integrations,
+  but are used by Bond Home app and some partner integrations
+  to facilitate debugging at scale.
+
+  Flags are:
+
+    - bit 0: (reserved)
+    - bit 1: DOWNSYNC: request is part of downward synchronization
+    - bit 2: UP: request is moving away from Bond
+    - bit 3: DUP: request is retransmitted or cached reply
+    - bit 4: UCAST: (internal use)
+    - bit 5: QUIET: (internal use)
+    - bit 6: BCAST: (internal use)
+    - bit 7: PASSTHRU: (internal use)
+
+  ## Modified Times
+
+  Certain endpoints may track their last modified time in a special
+  `__modified` field. The modified time is an integer representing
+  the time in seconds since the Unix epoch when the endpoint was last modified.
+
+  Currently the endpoints exposing `__modified` are:
+
+      groups/{}
+      groups/{}/skeds
+      groups/{}/skeds/{}
+      scenes/{}
+      scenes/{}/skeds
+      scenes/{}/skeds/{}
+
+  The modified times are set using the request time as specified in the
+  `BOND-Unixtime` HTTP header (or `u` flag on BPUP and MQTT).
+  Example:
+
+      BOND-Unixtime: 1643114517
+
+      { ..., "u":"1643114517", ... }
+
+  Clients who may modify any shard endpoints should specify this header
+  on all reqeusts. If this "unixtime" field is not provided, the Bond
+  will use its internal real-time clock, if already set.
+
+  Conversely, if the Bond's internal clock is not yet set, it will use
+  the timestamp specified in this field as the internal time.
+  For this reason, only use the `BOND-Unixtime` header on systems with
+  accurate clocks, such as smart phones. Incorrectly set times may result
+  in shard synchronization issues and skeds running unexpectedly.
+
+  # Groups and Scenes
+
+  Bond Home V3 introduces Groups and Scenes as major new features.
+  In designing these features, we needed to meet several requirements
+  requested by the Bond community:
+
+    1. Groups and Scenes **must work offline**. A loss of internet connection
+       must not interfere with control and feedback, and should not
+       prevent creation and management, when the Bond Home app is on the same
+       local network as the devices in question.
+    2. Smart by Bond devices can be grouped or added to a Scene with **no
+       Bond Bridge required as a hub**.
+    3. Groups and Scenes must be **resiliant to any individual Bond units
+       going offline**. That is, there must not be a central controller
+       as a single point of failure. If only a subset of the Group or Scene
+       devices are online, then they should still execute action requests.
+    4. **Intuitive UI** in the Bond Home app for creating, managing,
+       and controling Groups and Scenes. The user should be blissfully unaware
+       of any lower-level complexities.
+
+  In order to achieve the above, we chose a design where a Group or
+  Scene object is distributed among the participating Bond units.
+  The Group or Scene endpoint data that lives on a single Bond
+  is called a _shard_. Each Bond unit acts as if it were the only
+  participant in the Group or Scene, using only the data in its own shard,
+  with no communication among Bond units.
+
+  The API client is responsible for managing the various shards.
+  The most difficult aspects of this---involving correction of inconsistent
+  data between Bonds---is handled by the Bond Home apps. However, some
+  complexity does remain for integrators who need to send multiple requests
+  to control a Group and must merge the data returned by those requests
+  to present a sensible interface to the control system and ultimately the user.
+
+  We will here discuss:
+
+   - discovery, control, and feedback (for all API clients)
+   - management (for Bond Home app)
+
+  The following discussion is in terms of Groups but should be understood
+  as also applying to Scenes unless otherwise specified.
+
+  ## Discovery
+
+  To discover the Groups available on a Bond network,
+  the client should first query the `groups/` enumeration
+  to get the group IDs in which each Bond participates.
+  The union of the Group IDs gives the list of Groups on the network.
+
+  For example:
+
+      ZZBL12345:groups = {
+        "0000000000000001":{...},
+        "0000000000000002":{...},
+        "0000000000000003":{...}
+      }
+
+      KSMJWCE12345:groups = {
+        "0000000000000002":{...},
+        "0000000000000004":{...}
+      }
+
+  There are a total of 4 groups on the network:
+
+      "0000000000000001"
+      "0000000000000002"
+      "0000000000000003"
+      "0000000000000004"
+
+  In this example, the Bond Bridge (ZZ...) participates in three groups with IDs 1, 2, and 3,
+  while a Smart by Bond fan (K...) participates in groups 2 and 4.
+
+  Next, the client should query each of the group shard endpoints `group/{}`.
+  The list of devices participating in the group is the union of the devices
+  in the group shards.
+
+  For example, if the result of querying the `groups/{}` endpoint for the
+  group with ID 2 is:
+
+      ZZBL12345:groups/0000000000000002 = {
+        "__modified": 1642788966,
+        "name": "Great Room Fans",
+        "types": ["CF"],
+        "locations": ["Great Room"],
+        "devices": ["aabbccdd", "11223344"],
+        "actions": ["TurnOn", "TurnOff"]
+      }
+
+      KSMJWCE12345:groups/0000000000000002 = {
+        "__modified": 1642788968,
+        "name": "Great Room Fans",
+        "types": ["CF"],
+        "locations": ["Great Room"],
+        "devices": ["1"]
+        "actions": ["TurnOn", "TurnOff", "TurnLightOn", "TurnLightOff"]
+      }
+
+  Then the API client concludes that the group named "Great Room Fans"
+  contains three devices:
+
+      ZZBL12345:aabbccdd
+      ZZBL12345:11223344
+      KSMJWCE12345:1
+
+  In the case of a disagreement of the `name` between shards, the client
+  should use the name from the group shard with the most recent
+  modified time (`__modified`). If there is a tie for modified time,
+  the client may choose arbitrarily among the shards.
+
+  The type of the group is indicated by the `types` array,
+  which is typically only of length one. In this case we see it is `CF`
+  for Ceiling Fan.
+
+  ## Control
+
+  ### Determining Available Actions
+
+  The actions available on a group is the intersection of the actions
+  available on the group shards. So, using the example from the previous
+  section, although the group shard on the Smart by Bond fan
+  (serial number K...) supports `TurnLightOn` and `TurnLightOff` actions,
+  the shard on the Bond Bridge does not. So the intersection of the `actions`
+  arrays is just:
+
+      ["TurnOn", "TurnOff"]
+
+  ### Executing a Group Action
+
+  To execute an action on the group, the client should send PUT requests
+  to the actions on each group shard. So, to turn on the Great Room Fans
+  group, the client would send two requests using the same Group ID:
+
+      PUT http://ZZBL12345/v2/groups/0000000000000001/actions/TurnOn
+      PUT http://KSMJWCE12345/v2/groups/0000000000000001/actions/TurnOn
+
+  Preferably these requests should be run concurrently so that the time
+  required to process the first request does not delay the execution of
+  the action on the second shard.
+
+  ### Success, Error, and Timeout
+
+  If all requests complete successfully, then the group action can be considered
+  a success. If any errors or timeouts occur, then an error should be reported
+  to the user.
+
+  ## State Feedback
+
+  Whenever a group changes state, a state update is sent for the group shards
+  and all member devices. Whenever a device state changes, a state update is
+  sent for that devices plus an update for the state of any groups which contain
+  that device.
+
+  Group shards report state under `groups/{}/state`. The schema of this endpoint
+  is similar to that of `devices/{}/state`, except that state variables on a
+  group can take the value `null` when the member devices disagree,
+  as discussed below in the documentation for this endpoint.
+  Although the Bond Bridge will combine the states of the member devices
+  into a single state for the group shard, it is the responsibility of the
+  API client to merge the states of each group shard to obtain an overall
+  state for the group.
+
+  For example, suppose the client receives the following state updates:
+
+      ZZBL12345:groups/0000000000000001/state = {
+        "power": 1,
+      }
+
+      KSMJWCE12345:groups/0000000000000001/state = {
+        "power": 1,
+        "light": 0
+      }
+
+  The client would intersect the state keys to remove any state variables
+  not shared by all shards, and then set the values to either `null` if
+  there is disagreement between shards, or to the common value. In this
+  case the client would conclude the group state to be:
+
+      {"power": 1}
+
+  If now one of the member devices, say the Smart by Bond fan, is turned off,
+  then the client would receive a state update for the device and group:
+
+      KSMJWCE12345:devices/1/state = {
+        "power": 0,
+        "light": 0
+      }
+
+      KSMJWCE12345:groups/0000000000000001/state = {
+        "power": 0,
+        "light": 0
+      }
+
+  The client would now combine the two group shard states to conclude:
+
+      {"power": null}
+
+  That is, that the power state of the group is indeterminate. On a UI
+  with seperate ON/OFF buttons, this would usually be represented by
+  highlighting neither button.
+
+  ## Management
+
+  ### Group Creation
+
+  To create a new group, the client should send requests to each of the
+  participating Bonds with the list of devices to include. Crucially,
+  all shards must have the same group ID so that they will be understood
+  as a single group by other clients. The preferred way to accomplish this
+  is to allow the Bond to generate a random ID for the first shard,
+  and then to specify that ID in the `_post_id` field during the subsequent
+  POST requests to the other Bonds.
+
+  For example, suppose we want to add 3 Smart by Bond lights to a group
+  called "Kitchen Lights". The requests and responses might go like this:
+
+      > POST http://TWCTBXX00001/v2/groups {"name": "Kitchen Lights", "devices": [1]}
+      < 201 OK {"_post_id": "0000000000000001"}
+
+      > POST http://TWCTBXX00002/v2/groups {"_post_id": "0000000000000001", "name": "Kitchen Lights", "devices": [1]}
+      < 201 OK {"_post_id": "0000000000000001"}
+
+      > POST http://TWCTBXX00003/v2/groups {"_post_id": "0000000000000001", "name": "Kitchen Lights", "devices": [1]}
+      < 201 OK {"_post_id": "0000000000000001"}
+
+  The last two requests could be parallelized.
+
+  Alternatively the client could pre-generate the ID and parallelize all three
+  requests. However, the client MUST be sure to use a good random number
+  generator and generate a 64-bit (16-nibble) hex string in lower-case
+  with leading zeros.
+
+  ### Group Deletion
+
+  To delete a group, the client should send a DELETE request to each
+  of the shards. If one of the Bonds is offline, then the group will only
+  be partially deleted. The user must bring that Bond back online in order
+  to finish deleting the group. In the meantime, the group will still exist
+  containing just the devices on the offline Bond.
+
+  ### Removing Device from Group
+
+  Devices may be removed from the Group via DELETE `groups/{}/devices/{}`.
+  When the last device is removed from a group, the shard containing that
+  device will disappear (an implicit deletion).
+
+  ### Changing Group Name
+
+  To change the name of a group, the client should send a PATCH request
+  to each of the shards. The name can be changed as long as there is at least
+  one online Bond participating in the group. If any Bonds are offline,
+  their `group/{}` endpoints will still have the old name. However, this
+  does not pose a problem for API clients because the `name` should be taken
+  from the group shard with the most recent `__modified` field.
+
+  The Bond Home app performs a special downward synchronization whereby
+  out-of-date group shard names are updated with the latest. That is,
+  when Bonds previously offline come back online, they are PATCHed with the
+  name of the most recent shard in the group. Other API clients do not
+  need to perform this downward sync function.
+
+  ## Skeds
+
+  Schedules on groups and scenes need to be installed into each shard,
+  and the Bond Home app performs downward synchronization on the skeds.
+
+  ### Sked Creation
+
+  Similar to group creation, Bond Home app creates the sked on each shard
+  **using the same 64-bit ID** for that sked on each shard. The sked ID
+  must be different than the group ID. Example:
+
+      > POST http://TWCTBXX00001/v2/groups/0000000000000001/skeds {"action":"SetBrightness", "argument":75, "mark":"sunrise", "seconds":0}
+      < 201 OK {"_post_id": "0000000000000007"}
+
+      > POST http://TWCTBXX00002/v2/groups/0000000000000001/skeds {"_post_id": "0000000000000007", "action":"SetBrightness", "argument":75, "mark":"sunrise", "seconds":0}
+      < 201 OK {"_post_id": "0000000000000007"}
+
+      > POST http://TWCTBXX00003/v2/groups/0000000000000001/skeds {"_post_id": "0000000000000007", "action":"SetBrightness", "argument":75, "mark":"sunrise", "seconds":0}
+      < 201 OK {"_post_id": "0000000000000007"}
+
+  The last two requests could be parallelized.
+
+  ### Sked Modification
+
+  Similar to changing the name of a group, the client can modify the sked
+  settings by broadcasting a PATCH to the sked on each group shards.
+
+  Here, in the event that a Bond is offline, the sked will continue being
+  executed with the outdated parameters until the Bond Home app performs
+  downward synchronization to update that sked.
+
+  ### Sked Deletion
+
+  Deleting a group or scene sked is as simple as sending DELETE to the sked
+  on each shard.
+
+  In the event of one or more Bonds being offline, they will continue to execute
+  the sked until the Bond Home app syncs with them and removes the sked
+  which was supposed to be deleted. The Bond Home app knows that a sked
+  was deleted by checking the `__modified` timestamp on the group shard skeds
+  enumeration `groups/{}/skeds`. If a sked is present on an older enumeration
+  but absent on a newer one, it will be removed from the old enumeration.
+  Similarly, if a sked is present on the *newer* enumeration but absent on the
+  old one, then the Bond Home app will downwards-synchronize by POSTing the
+  missing sked.
 
   # Bond Push UDP Protocol (BPUP)
 
@@ -371,6 +767,47 @@ description: |
   The MQTT broker to which the Bond is connected is treated as trusted, so token
   authentication is not necessary. Make sure you check the server certificate using
   the appropriate fields in the `api/mqtt` endpoint to avoid man-in-the-middle attacks.
+
+  # HomeKit
+
+  [Added in v3.5.1]
+  The HomeKit integration is available on Bond Bridge Pro and support Shade devices.
+  The integration is disabled by default, but you can enable/disable it through
+  the Bond Home iOS app or the `api/bhk` endpoint.
+
+  ## Setup Code
+
+  The Setup Code is generated based on your Bond PIN (your Bond PIN two times).
+  The Bond PIN is located on the product label.
+  The Setup Code is also available on the Bond Home iOS app.
+
+  ### Setup Code example
+
+  For Bond PIN "1234", your HomeKit Setup Code is "12341234".
+
+  ## Bond Home iOS app
+
+  As of iOS app version v2.40.2, the HomeKit info is available in both the Bond Settings screen and the Manage Integrations screen.
+
+  In the Bond Settings screen, the HomeKit info is presented under the Advanced Settings section.
+
+  In the Manage Integrations screen you should see the HomeKit listed if at least one of your Bonds supports it.
+  The HomeKit cell shows how many Bonds have the HomeKit integration enabled (**not** available) at the moment.
+  Tapping on the cell will take you to the HomeKit List screen, showing the HomeKit info for every Bond that supports it.
+
+  The HomeKit info consists of a toggle switch to enable/disable the feature and shows its Setup Code.
+
+  ## Add a Bridge in the Home app
+
+  Open the Home app on your iPhone/iPad and follow these steps:
+
+  * Tap on "Add Accessory"
+  * Choose the "I Don't Have a Code or Cannot Scan" option
+  * Tap on your Bond Bridge name in the list of Nearby Accessories
+  * Select the "Add Anyway" option for the "Uncertified Accessory" prompt
+  * Enter yours Bond Bridge Setup code and hit Continue
+  * Set the Location and Name for your Bridge
+  * Set the location and Name for your Bridge's devices, if any
 
   # Discoverability
 
@@ -557,7 +994,18 @@ description: |
 
   ### Properties
 
-  (none)
+  - **default_auto_timer_s**: 
+    type: integer
+    description: >
+      (integer, optional). This property is available only for heater devices (HT). 
+      When specified, the timer starts automatically with *default_auto_timer_s* seconds whenever the Power feature is activated. 
+      If the timer is explicitly set using the *SetTimer()* action, the new value will override the current timer state, up to a maximum of *default_auto_timer_s*. 
+      Any action that updates the device state (including updates from the Panel, Skeds, or Groups) resets the timer countdown to the current *default_auto_timer_s* value. 
+      Turning off the device cancels the timer.
+
+      This feature ensures heaters comply with fire code requirements to turn off automatically after a specified time (commonly 2 hours). 
+      UIs should display *default_auto_timer_s* as the maximum available value when this property is present. 
+      This setting cannot be overridden by the user.
 
   ### State Variables
 
@@ -866,6 +1314,110 @@ description: |
       Number and value of presets undefined and may vary by model.
       Useful for very basic integrations where you have just a single push button.
 
+  ## Color
+
+  The Color feature is available on full color lighting products.
+
+  The Color feature requires the Light and Brightness features.
+  The ColorTemp is optionally also available at the same time as Color.
+
+  Whenever `SetBrightness` or other brightness-changing actions are called,
+  `rgb` and `hsv` values are updated to reflect the change. For example, if the 
+  rgb values are (128, 0, 0) with brightness 50, and brightness is increased
+  to 100, then rgb values are updated to (255, 0, 0).
+
+  ### Properties
+
+    (none)
+
+  ### State Variables
+
+    - **rgb**: (object) JSON object containing the following keys
+       which describe the apparent color of the light.
+       * `r` - (0--255) apparent red value
+       * `g` - (0--255) apparent green value
+       * `b` - (0--255) apparent blue value
+    - **hsv**: (object) similar to `rgb` but for the HSV colorspace.
+       * `h` - (0--359) apparent hue (in degrees)
+       * `s` - (0--100) apparent saturation (in percent)
+       * `v` - (0--100) apparent value in HSV colorspace (in percent).
+               Note that `v` and `brightness` are the same value.
+               Users should typically use `brightness` rather than `v`.
+
+  ### Actions
+
+    - **SetRGB({r:int, g:int, b:int})**
+      Set color by RGB values.
+      Light is implicitly turned on if off.
+      A subset of the apparent color components may be specified,
+      in which case unspecified values are left unchanged.
+      Example use case is an integration with seperate R, G, and B sliders,
+      which would do SetRGB(r:int) when the red slider is adjusted.
+
+    - **SetHSV({h:int, s:int, v:int})**
+      Set color by HSV values.
+      Light is implicitely turned on if off.
+      A subset of the `h`, `s`, and `v` parameters may be provided.
+      Unspecified parameters will remain unchanged.
+
+      The recommended use case is a 2-D color picker where only the `h` and `s`
+      parameters would be supplied, leaving brightness unchanged.
+
+    - **CycleColorPreset()**
+      Change to next color preset.
+      In HSV-space, these presets are line segments of constant hue
+      and maximum saturation, seperated by 60 degrees.
+      The next color preset is skipped if current hue is within 30 degrees.
+      Light is implicitely turned on if off.
+      Different devices will specify different sets of color presets.
+      This is intended to be used with tapping action on "Color" button
+      of RGB SBB products' front-panels.
+
+    - **CycleColor(amount)**
+      Implicitly increase Hue by specified amount, wrapping around. 
+      Saturation remains unchanged.
+      Value (brightness) is unchanged.
+      Light is implicitely turned on if off.
+      This is intended to be used with _holding_ action on "Color" button
+      of RGB SBB products' front-panels.
+
+  ## RGBW
+
+  The RGBW feature is available on products which under-the-hood
+  actually have four-channel LEDs with a seperate white channel.
+
+  The RGBW feature requires the RGB feature.
+
+  We use a mapping between RGB/HSV-space and RGBW-space,
+  which is currently to use only the W channel when S is zero,
+  and to use only the RGB channels when S is non-zero.
+  However this is subject to change.
+
+  RGBW mapping with ColorTemp feature is currently undefined.
+
+  ### Properties
+
+    (none)
+
+  ### State Variables
+
+    - **rgbw**: (object) JSON object containing the following keys
+       which describe the low-level values of the LED channels.
+       These values are updated whenever the color changes.
+       All are integers in the range 0-255:
+       * `r` - low-level red channel
+       * `g` - low-level green channel
+       * `b` - low-level blue channel
+       * `w` - low-level white channel
+
+  ### Actions
+
+    - **SetRGBW({r:int, g:int, b:int, w:int})**
+      Set low-level values of LED channels.
+      Light is implicitely turned on if off.
+      Note that with SetRGBW, combinations of LED channels can be achieved
+      which are unreachable with SetRGB.
+
   ## Flame
 
   The Flame feature is used by fireplaces to indicate flame level.
@@ -883,6 +1435,33 @@ description: |
   - **SetFlame(flame)**: Set flame and turn on. If flame>100, 100 is assumed. If the fireplace is off, implicitly turn on the power. Setting flame to zero or a negative value is ignored.
   - **IncreaseFlame(flame)**: Increase flame level of fireplace by specified number of *flames*. If the fireplace is off, implicitly turn on the power.
   - **DecreaseFlame(flame)**: Decrease flame level by specified number of *flames*. If attempting to decrease fireplace flame below `1`, the fireplace will remain at fflame 1. That is, power will not be implicitly turned off. If the power is already off, DecreaseFlame is ignored.
+
+  ## Heat
+
+  The Heat feature control devices capable of providing adjustable heat levels, allowing fine control over the intensity of the heating element. 
+  This feature is commonly used in heater devices.
+
+  ### Requirements
+
+  The Heat feature requires the Power feature to be available.
+
+  ### Properties
+
+  - **feature_heat**: (boolean, PATCH-able) true = Heat feature enabled (default), false = Heat feature disabled
+
+  ### State Variables
+
+  - **heat**: (integer) value from 1 to 100. If power=0, heat represents the last heat setting and the heat to which the device resumes when user asks to turn on.
+
+  ### Actions
+
+  - **SetHeat(heat)**: Set heat level and turn on. If heat>100, 100 is assumed. If the device is off, implicitly turn on the power. Setting heat to zero or a negative value is ignored.
+  - **IncreaseHeat(heat)**: Increase heat level of device by specified number of *heats*. If the device is off, implicitly turn on the power.
+  - **DecreaseHeat(heat)**: Decrease heat level by specified number of *heats*. If attempting to decrease device heat below `1`, the device will remain at heat 1. That is, power will not be implicitly turned off.
+  - **HeatPresetNext()**: Jump to next preset heat value from an internal list of presets. Number and value of presets undefined and may vary by model. Useful for integrations with buttons.
+  - **HeatPresetPrev()**: Jump to previous preset heat value from an internal list of presets. Number and value of presets undefined and may vary by model. Useful for integrations with buttons.
+
+  NOTE: The heat level is remembered on TurnOff and restored on TurnOn.
 
   ## Open
 
@@ -918,10 +1497,7 @@ description: |
 
   ### Properties
 
-   - **course_time**: (integer) specifies the amount of time, in milliseconds,
-     required for the device to fully open or close. Depending on the device
-     template, this property may or may not be present. Defaults to -1,
-     meaning unconfigured.
+  (none)
 
   ### State Variables
 
@@ -1026,6 +1602,31 @@ description: |
   so as to avoid integrations from showing a slider interface without
   the Bridge having the capability of setting tilt position.
 
+  ## CourseTime
+
+  The CourseTime feature is used for shades whose RF protocols
+  do not natively support Position. Bond Bridge Pro emulates
+  a Position feature using a custom dead reckoning algorithm.
+  This requires the client to specify the time required for the
+  shade to open or close.
+
+  The CourseTime feature requires the Position feature.
+
+  ### Properties
+
+   - **course_time**: (integer) specifies the amount of time, in milliseconds,
+     required for the device to fully open or close. Depending on the device
+     template, this property may or may not be present. Defaults to -1,
+     meaning unconfigured.
+
+  ### State Variables
+
+  (none)
+
+  ### Actions
+
+  (none)
+
   ## FpFan
 
   The FpFan feature controls a fireplace fan. The FpFan feature is independent
@@ -1047,6 +1648,82 @@ description: |
   - **TurnFpFanOn()**: Turn the fireplace fan on, restoring the previous speed
   - **SetFpFan(speed)**: Sets the speed of the fireplace fan
 
+  ## Pair
+
+  Most shade devices work by pairing rather than cloning of a remote control.
+  Use the actions of the Pair feature to manipulate the address table of the appliance.
+  Note that appliances have different means of entering pairing mode, 
+  and different behaviors when the pairing table is full: some override the oldest entry,
+  while others stop accepting new pair signals until other remotes are unpaired
+  or the appliance is factory-reset.
+
+  When using a well-supported shade technology, the Bond Home app provides detailed guidance
+  on how to Pair or Unpair available in Device Settings. However, for shades with a lesser
+  level of support, users need to refer to their remote control or motor's user manual
+  for the pairing procedure, and use the `Pair` or `Unpair` actions in the place of a
+  button press or hold on the remote control to be added or removed.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+  (none)
+
+  ### Actions
+
+  - **Pair()**: pair (or toggle pair) the Bridge device with an appliance. 
+      Requires user to manually put appliance into pairing mode using a button on the appliance,
+      a button on the appliance's remote control, or sometimes by power-cycling the appliance.
+      If the `Unpair` action is _not_ present, then `Pair` will unpair the device if it is already paired,
+      acting as a toggle;
+      however, if `Unpair` _is_ present, then `Pair` will only pair the device if it is not already paired
+      and can be safely used to assert pairing.
+  - **Unpair()**: (optional) unpairs a Bridge device from an appliance,
+      requiring user to manually put appliance into pairing mode.
+  - **UnpairSelf()**: (optional) unpairs Bridge device from all appliances in range.
+      Does _not_ require pairing mode.
+
+  ## Hold
+
+  The Hold feature is available on most shades.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+  (none)
+
+  ### Actions
+
+  - **Hold()**: Stop the motion of the device. This is useful for stopping the device
+    when the device is moving to a specific position. When Hold is called the device 
+    is now in an unknown state and will show as open. Note that Somfy RTS uses the
+    same command for both Hold and Preset (My), so calling Hold while the product is
+    not in motion will send the shade instead to the preset position.
+
+  ## Preset
+
+  The Preset feature is available on many shades, and we hope to make it available on all shades.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+  (none)
+
+  ### Actions
+
+  - **Preset()**: Move the device to the preset position, also known as "My" or "Favorite" position.
+    Note that Bond Bridge does not know the percentage of the preset position, so position will
+    report as -1 (unknown) after this action is called unless your shade has two-way communication
+    (currently limited to IP-IP integrations).
+
   ## Misc, including dimmers
 
   Collected here are some actions that may be used with other features, but
@@ -1055,8 +1732,6 @@ description: |
   ### Actions
 
   - **Stop()**: This action tells the Bond to stop any in-progress transmission and empty its transmission queue.
-  - **Hold()**: Can be used when a signal is required to tell a device to stop moving or the like, since *Stop* is a special "stop transmitting" action
-  - **Pair()**: Used in devices that need to be paired with a receiver.
   - **StartDimmer()**: Start dimming. The Bond should time out its transmission after 30 seconds, or when the *Stop* action is called.
   - **StartUpLightDimmer()**: Use this and the *StartDownLightDimmer* instead of *StartDimmer* if your device has two dimmable lights.
   - **StartDownLightDimmer()**: The counterpart to *StartUpLightDimmer*

@@ -1,19 +1,19 @@
 SkedsPath:
   parameters:
   - in: path
-    name: device_id
+    name: scene_id
     required: true
     schema:
       type: string
   get:
-    $ref: ../skeds/paths.yaml#/GetList
+    $ref: ../skeds/scene-paths.yaml#/GetList
   post:
-    $ref: ../skeds/paths.yaml#/Post
+    $ref: ../skeds/scene-paths.yaml#/Post
 
 SkedPath:
   parameters:
   - in: path
-    name: device_id
+    name: scene_id
     required: true
     schema:
       type: string
@@ -23,11 +23,11 @@ SkedPath:
     schema:
       type: string
   get:
-    $ref: ../skeds/paths.yaml#/Get
+    $ref: ../skeds/scene-paths.yaml#/Get
   patch:
-    $ref: ../skeds/paths.yaml#/Patch
+    $ref: ../skeds/scene-paths.yaml#/Patch
   delete:
-    $ref: ../skeds/paths.yaml#/Delete
+    $ref: ../skeds/scene-paths.yaml#/Delete
 
 Post:
   requestBody:
@@ -44,9 +44,11 @@ Post:
       $ref: ../common/responses.yaml#/Unauthorized
     '500':
       $ref: ../common/responses.yaml#/InternalServerError
-  summary: Create new Device Schedule
+  summary: Create new Scene Schedule
   description: |
-    Creates a Device Schedule under a specific Device.
+    Creates a Scene Schedule under a specific Scene.
+
+    Note that `action` must not be set for Scene Schedules.
 
     If the timezone or location settings in `sys/time` are not set,
     a 400 error may result depending on what `mark` is requested.
@@ -56,7 +58,7 @@ Post:
        - POSTed `mark` is `dawn`, `dusk`, `sunrise`, or `sunset`, but `sys/time.grid` or `sys/time.tz` is `null`
 
   tags:
-  - Device Schedules
+  - Scene Schedules
 
 Patch:
   requestBody:
@@ -66,7 +68,7 @@ Patch:
           $ref: schemas.yaml#/Sked
   responses:
     '200':
-      description: Device Schedule modified
+      description: Scene Schedule modified
     '400':
       $ref: ../common/responses.yaml#/BadRequest
     '401':
@@ -75,11 +77,11 @@ Patch:
       $ref: ../common/responses.yaml#/NotFound
     '500':
       $ref: ../common/responses.yaml#/InternalServerError
-  summary: Modify an existing Device Schedule
+  summary: Modify an existing Scene Schedule
   description: |
-    Modifies any fields of an existing Device Schedule.
+    Modifies any fields of an existing Scene Schedule.
   tags:
-  - Device Schedules
+  - Scene Schedules
 
 GetList:
   description: |
@@ -91,16 +93,16 @@ GetList:
         application/json:
           schema:
             $ref: schemas.yaml#/SkedList
-      description: Device Schedule list returned
+      description: Scene Schedule list returned
     '401':
       $ref: ../common/responses.yaml#/Unauthorized
     '404':
       $ref: ../common/responses.yaml#/NotFound
     '500':
       $ref: ../common/responses.yaml#/InternalServerError
-  summary: Get list of Device Schedules
+  summary: Get list of Scene Schedules
   tags:
-  - Device Schedules
+  - Scene Schedules
 
 Get:
   responses:
@@ -109,32 +111,32 @@ Get:
         application/json:
           schema:
             $ref: schemas.yaml#/Sked
-      description: Device Schedule object returned
+      description: Scene Schedule object returned
     '401':
       $ref: ../common/responses.yaml#/Unauthorized
     '404':
       $ref: ../common/responses.yaml#/NotFound
     '500':
       $ref: ../common/responses.yaml#/InternalServerError
-  summary: Get specific Device Schedule
+  summary: Get specific Scene Schedule
   description: |
-    Get information about a Device Schedule.
+    Get information about a Scene Schedule.
   tags:
-  - Device Schedules
+  - Scene Schedules
 
 Delete:
   responses:
     '204':
-      description: Device Schedule deleted
+      description: Scene Schedule deleted
     '401':
       $ref: ../common/responses.yaml#/Unauthorized
     '404':
       $ref: ../common/responses.yaml#/NotFound
     '500':
       $ref: ../common/responses.yaml#/InternalServerError
-  summary: Delete a Device Schedule
+  summary: Delete a Scene Schedule
   description: |
-    Deletes specified Device Schedule.
-    Naturally, the Device Schedule will be canceled.
+    Deletes specified Scene Schedule.
+    Naturally, the Scene Schedule will be canceled.
   tags:
-  - Device Schedules
+  - Scene Schedules

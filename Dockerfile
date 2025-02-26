@@ -1,7 +1,4 @@
-FROM node:8-alpine
-
-RUN apk update && apk upgrade && \
-    apk add --no-cache bash git openssh
+FROM cimg/node:21.1.0
 
 RUN npm install redoc && npm install -g redoc-cli
 
@@ -9,4 +6,4 @@ WORKDIR /code
 
 COPY . /code
 
-CMD ["redoc-cli", "bundle", "openapi.yaml", "-o=docs.html"]
+CMD ["redoc-cli", "bundle", "local.yaml", "-o=docs.html"]

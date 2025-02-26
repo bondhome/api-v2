@@ -144,7 +144,7 @@
 /v2/sys/wifi/scan:
   get:
     $ref: ../network/paths.yaml#/ScanGet
-/v2/sys/watchdog:
+/v2/sys/wifi/watchdog:
   get:
     $ref: ../network/paths.yaml#/WatchdogGet
   patch:
@@ -172,13 +172,6 @@
 /v2/sys/free:
   get:
     $ref: ../firmware/paths.yaml#/FreeGet
-/v2/sys/backup:
-  get:
-    $ref: ../firmware/paths.yaml#/BackupGet
-  put:
-    $ref: ../firmware/paths.yaml#/BackupPut
-  delete:
-    $ref: ../firmware/paths.yaml#/BackupDelete
 /v2/sys/reset:
   put:
     $ref: ../firmware/paths.yaml#/ResetPut
@@ -211,6 +204,13 @@
     $ref: ../api/paths.yaml#/BPUPPatch
   delete:
     $ref: ../api/paths.yaml#/BPUPDelete
+/v2/api/bhk:
+  get:
+    $ref: ../api/paths.yaml#/BHKGet
+  patch:
+    $ref: ../api/paths.yaml#/BHKPatch
+  delete:
+    $ref: ../api/paths.yaml#/BHKDelete
 /v2/debug/wifi:
   get:
     $ref: ../debug/paths.yaml#/WifiGet

@@ -1,0 +1,80 @@
+Schema:
+  properties:
+    enabled:
+      example: false
+      type: boolean
+      description: |
+        - `false`: HomeKit logic and operations will not be executed. All settings remains in device database. (default)
+        - `true`: HomeKit logic and operations will run.
+    paired:
+      example: false
+      type: boolean
+      readOnly: true
+      description: |
+        When enabled is false, paired will always be false.
+        When enabled is true, paired means:
+          - `false`: Bond is not paired to an account and is discoverable by the HomeKit Protocol. (default)
+          - `true`: Bond is paired and is not discoverable.
+    setup_code:
+      example: "12341234"
+      type: string
+      readOnly: true
+      description: |
+        The HomeKit Setup Code is your Bond PIN two times.
+        For example, if your Bond PIN is "1234", your HomeKit Setup Code is "12341234".
+
+Path:
+  get:
+    responses:
+      '200':
+        description: Bond HomeKit configuration.
+        content:
+          application/json:
+            schema:
+              $ref: ./bhk.yaml#/Schema
+      '401':
+        $ref: ../common/responses.yaml#/Unauthorized
+      '500':
+        $ref: ../common/responses.yaml#/InternalServerError
+    security:
+    - BasicAuth: []
+    summary: Get Bond HomeKit configuration.
+    tags:
+    - HomeKit
+  patch:
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: ./bhk.yaml#/Schema
+    responses:
+      '200':
+        description: Bond HomeKit enabled info updated.
+      '400':
+        $ref: ../common/responses.yaml#/BadRequest
+      '401':
+        $ref: ../common/responses.yaml#/Unauthorized
+      '500':
+        $ref: ../common/responses.yaml#/InternalServerError
+    security:
+    - BasicAuth: []
+    summary: Enable or disable the Bond HomeKit integration.
+    tags:
+    - HomeKit
+  delete:
+    responses:
+      '204':
+        description: |
+          Bond HomeKit info reseted.
+          That means the Bond will delete all info, unpairing if paired and set enabled to default (0).
+          If you have not removed the Bond from your account on Home app, the Bond and its devices
+          will show as not responding. You can remove from the Home app later as usual.
+      '401':
+        $ref: ../common/responses.yaml#/Unauthorized
+      '500':
+        $ref: ../common/responses.yaml#/InternalServerError
+    security:
+    - BasicAuth: []
+    summary: Reset Bond HomeKit configuration, unpairing if paired.
+    tags:
+    - HomeKit

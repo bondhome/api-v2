@@ -2,7 +2,7 @@ TokenGet:
   properties:
     locked:
       example: 0
-      type: int
+      type: integer
       description: |
         If 1, means that client must provide pin to unlock.
 
@@ -35,7 +35,7 @@ TokenGet:
         even if accound_code is unmodified.
     pin_attempts_left:
       example: 9
-      type: int
+      type: integer
       description: |
         Number of times which the PIN may be guessed.
 
@@ -53,7 +53,7 @@ TokenPatch:
   properties:
     locked:
       example: 0
-      type: int
+      type: integer
       description: |
         If 1, means that the client wants to immediately re-lock this endpoint.
 

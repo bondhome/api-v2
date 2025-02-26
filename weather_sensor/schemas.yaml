@@ -1,0 +1,223 @@
+WeatherSensor:
+  type: object
+  properties:
+    _id:
+      writeOnly: true
+      example: "WEAXX12345"
+      type: string
+      description: |
+        Provided only on POST request to specify the Weather Sensor ID.
+    name:
+      example: My Weather Sensor
+      type: string
+      description: |
+        Name of Weather Sensor on Bond Home app and suggested name for 
+        control system integrations.
+    location:
+      example: My garden
+      type: string
+      description: |
+        Location of Weather Sensor.
+    event_links:
+      example: {"1":[{"device:": "xxyyzzww", "action": "TurnOn"}], "2":[{"device": "aabbccdd", "action": "SetPosition", "argument": 75}], "3":[]}
+      type: object
+      description: |
+        Object describes every link between weather events from this Weather Sensor and the
+        device, group, and scene actions which they trigger.
+        (In future will permit specifying `group` or `scene` instead of `device`.)
+
+        Each weather event maps to an event number:
+          - `1` = Wind event: triggered when wind speed reaches configured level
+          - `2` = Rain event: triggered when starts to rain
+          - `3` = Sun event:  triggered when sun intensity reaches configured level
+  
+        Each event number maps to an array, each element of which is called
+        a "event link". Each event link has two or three fields:
+          - `device`: which device will act in response to the weather event
+          - `action`: action to call on device
+          - `argument`: (optional) argument to above action, such as position percentage
+    signal:
+      readOnly: true
+      example: 97
+      type: integer
+      description: |
+        Signal quality indication, range 1-100.
+        Note that, to avoid hash thrashing, 
+        changes in this signal indication do not cause
+        an update to the endpoint hashes. Clients wishing to check
+        signal strength must explicitly query this endpoint.
+    battery:
+      readOnly: true
+      example: 80
+      type: integer
+      description: |
+        Weather Sensor battery remaining in percentage, range 1-100.
+    model:
+      readOnly: true
+      example: BWS-1000
+      type: string
+      description: |
+        User-facing model number of Weather Sensor.
+    type:
+      readOnly: True
+      example: weather_sensor
+      type: string
+      description: |
+        Indicates the type of Sidekick, always return `weather_sensor`.
+
+Properties:
+  type: object
+  properties:
+    feature_wind:
+      example: True
+      type: boolean
+      description: |
+        Enable or disable the wind detection functionality.
+    feature_rain:
+      example: True
+      type: boolean
+      description: |
+        Enable or disable the rain detection functionality.
+    feature_sun:
+      example: True
+      type: boolean
+      description: |
+        Enable or disable the sunlight intensity detection functionality.
+    feature_wind_push:
+      example: True
+      type: boolean
+      description: |
+        Enable or disable the push notification for when the wind speed approaches the configured threshold.
+    wind_threshold_dms:
+      example: 85
+      type: integer
+      description: |
+        Wind detection threshold in decimeters/second. 
+    sun_threshold_level:
+      example: 5
+      type: integer
+      description: |
+        Sun level threshold. From 1 (lowest intensity) to 8 (highest intensity).
+    wind_ignore:
+      example: True
+      type: boolean
+      description: |
+        Ignore wind detections for a specified amount of time. 
+        When setting to true, requires setting `wind_ignore_expiration`.
+    wind_ignore_expiration:
+      example: 3600
+      type: integer
+      description: |
+        Number of seconds for ignoring wind detections.
+
+State:
+  type: object
+  properties:
+    status:
+      example: triggered_wind
+      type: string
+      readOnly: true
+      description: |
+        String indicating the current status of the Weather Sensor. 
+        Possible values are:
+        - `idle`
+        - `triggered_wind`
+        - `triggered_rain`
+        - `triggered_sun_high`
+        - `triggered_wind_manual`
+    data_wind_speed_dms:
+      example: 32
+      type: integer
+      readOnly: True
+      description: |
+        Last measurement of wind speed in decimeters/second.
+    data_rain_mmh:
+      example: 2
+      type: integer
+      readOnly: True
+      description: |
+        Last measurement of rain rate in milimeters/hour.
+    data_sun_level:
+      example: 6
+      type: integer
+      readOnly: True
+      description: |
+        Last measurement of sun level.
+    data_unixtime:
+      example: 1696479511
+      type: integer
+      readOnly: True
+      description: |
+        Unixtime of the last data measurements.
+    is_raining:
+      example: False
+      type: boolean
+      readOnly: True
+      description: |
+        Flag indicating if it is currently raining or not.
+    battery_voltage_dV:
+      example: 24
+      type: integer
+      readOnly: True
+      description: |
+        Current state of the Weather Sensor solar battery in decivolts.
+    battery_2_voltage_dV:
+      example: 24
+      type: integer
+      readOnly: True
+      description: |
+        Current state of the Weather Sensor backup battery (AA cells) in decivolts.
+    battery:
+      example: 80
+      type: integer
+      readOnly: True
+      description: |
+       Current state of the Weather Sensor solar battery in percentage, range 1-100.
+    battery_2:
+      example: 80
+      type: integer
+      readOnly: True
+      description: |
+       Current state of the Weather Sensor backup battery in percentage, range 1-100.
+    status_flag_unstable:
+      type: boolean
+      example: false
+      readOnly: True
+      description: |
+        Flag indicating if Weather Sensor data rate is lower than expected.
+    status_flag_no_data:
+      type: boolean
+      example: false
+      readOnly: True
+      description: |
+        Flag indicating if Weather Sensor data is missing for more than 30 minutes.
+    status_flag_battery_low:
+      type: boolean
+      example: false
+      readOnly: True
+      description: |
+        Flag indicating if solar battery is running low.
+    status_flag_battery_2_low:
+      example: True
+      type: boolean
+      readOnly: True
+      description: |
+        Flag indicating if backup battery (AA cells) is running low.
+    status_flag_low_temperature:
+      example: True
+      type: boolean
+      readOnly: True
+      description: |
+        Flag indicating if Weather Sensor temperature is low, recommending operation with external 12V supply.
+    data_temperature_dc:
+      example: 212
+      type: integer
+      readOnly: True
+      description: |
+        Last measurement of the temperature in deci-Celsius.
+    data_humidity_percent:
+      example: 65
+      type: integer
+      readOnly: True
+      description: |
+        Last measurement of the humidity in percentage (0 to 100).

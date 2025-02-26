@@ -1,0 +1,177 @@
+Sidekick:
+  type: object
+  properties:
+    _id:
+      writeOnly: true
+      example: "SNAXX12345"
+      type: string
+      description: |
+        Provided only on POST request to specify the Sidekick ID.
+    name:
+      example: My Sidekick
+      type: string
+      description: |
+        Name of Sidekick on Bond Home app and suggested name for 
+        control system integrations.
+    location:
+      example: My Room
+      type: string
+      description: |
+        Location of Sidekick.
+    keys:
+      readOnly: true
+      example: 3
+      type: integer
+      description: |
+        Number of keys available on this Sidekick.
+        May change after creation due to user changing mode.
+    chans:
+      readOnly: true
+      example: 5
+      type: integer
+      description: |
+        Number of channels available on this Sidekick.
+        May change after creation due to user changing mode.
+    chan_links:
+      example: {"1":[{"device":"aabbccdd", "direct": 1}, {"device":"11223344", "direct": 0}],"2":[],"3":[],"4":[],"5":[]}
+      type: object
+      description: |
+        Object describes every link between channels of this Sidekick and the
+        devices which they control. (In future will permit specifying `group`
+        instead of `device`.)
+
+        Each channel number maps to an array, each element of which is called
+        a "channel link". Each link has two fields:
+
+          - `device`: device id channel is linked to
+          - `direct`: 
+            - 0 = channel configured for relay
+            - 1 = channel configured for correct direct technology
+            - -1 = channel configured for incorrect direct technology, Bridge will relay signal.
+
+        Note that there are valid circumstances where `direct` field is -1.
+        For example, a channel may be linked to an RTS motor and an ARC motor.
+        The user can only pick a single direct technology, for example RTS.
+        The ARC motor will then be in the -1 case.
+
+    key_links:
+      example: {"1":[], "2":[{"event":"DOUBLE_TAP", "device": "aabbccdd", "action": "SetPosition", "argument": 75}], "3":[]}
+      type: object
+      description: |
+        Object describes every link between key events from this Sidekick and the
+        device, group, and scene actions which they trigger. 
+        (In future will permit specifying `group` or `scene` instead of `device`.)
+
+        Each key number maps to an array, each element of which is called
+        a "key link". Each key link has three or four fields:
+
+          - `event`: which key event to trigger on
+            - `TAP`
+            - `DOUBLE_TAP`
+            - `HOLD_START`
+            - `HOLD`
+            - `HOLD_END`
+          - `device`: which device will act in response to trigger
+          - `action`: action to call on device
+          - `argument`: (optional) argument to above action, such as position percentage
+    signal:
+      readOnly: true
+      example: 97
+      type: integer
+      description: |
+        Signal quality indication, range 1-100.
+        Note that, to avoid hash thrashing, 
+        changes in this signal indication do not cause
+        an update to the endpoint hashes. Clients wishing to check
+        signal strength must explicitly query this endpoint.
+    battery:
+      readOnly: true
+      example: 80
+      type: integer
+      description: |
+        Sidekick battery remaining, range 1-100.
+        Values may be limited to:
+          - 90: battery OK (Green)
+          - 30: low battery (Yellow) (replace witin ~1 year from when first indicated low)
+          - 10: battery critical (Red) (may fail at any time, or may already be failing)
+    model:
+      readOnly: true
+      example: SKN-386
+      type: string
+      description: |
+        User-facing model number of Sidekick.
+    
+
+Keystream:
+  type: object
+  properties:
+    seq:
+      example: 3210
+      type: integer 
+      description: |
+        Sequence number which increments each time this Sidekick transmits
+        a BondSync signal. Usually not needed by integrations.
+    event:
+      example: TAP
+      type: string
+      description: |
+        Event which occured on the specified key. Possibilities are:
+          - TAP
+          - DOUBLE_TAP
+          - HOLD_START
+          - HOLD
+          - HOLD_END
+    key:
+      example: 3
+      type: integer
+      description: |
+        1-based key number.
+    hold_ms:
+      example: 1760
+      type: integer
+      description: |
+        Length of time for which key has been held, in milliseconds.
+        Only provided for HOLD and HOLD_END events.
+
+SidekickList:
+  type: object
+  example:
+    _: "7fc1e84b"
+    3b20f300:
+        _: "9a5e1136"
+    4ad874d2:
+        _: "84819a9f"
+    a94328bc:
+        _: "23141efa"
+    d87d6ef2:
+        _: "2425a8bc"
+
+Learn:
+  type: object
+  properties:
+    learn_window_ms:
+      example: 60000
+      type: integer
+      readOnly: true
+      description: |
+        Duration of learn window (milliseconds).
+    learn_window_remaining_ms:
+      example: 1100
+      type: integer
+      readOnly: true
+      description: |
+        Milliseconds remaining before learn window closes.
+    learn_window_open:
+      example: true
+      type: boolean
+      description: |
+        Whether new Sidekick can be learned.
+        True iff learn_window_remaining_ms is nonzero.
+    learn_count:
+      example: 0
+      type: integer
+      readOnly: true
+      description: |
+        Number of times a new Sidekick has been learned on this boot.
+        Useful in UI design to know that the learn process completed,
+        even if the learned address is the same.

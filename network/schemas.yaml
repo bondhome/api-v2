@@ -31,6 +31,7 @@ Sta:
       description: |
         Indication of whether the Wi-Fi settings have been successful:
           - -4 = Wi-Fi not configured
+          - -3 = disabled because Ethernet is selected
           - -2 = authentication failure
           - -1 = network not found
           - 0 = attempting to connect
@@ -40,9 +41,13 @@ Sta:
     ssid:
       example: bGlua3N5cw==
       type: string
+      nullable: true
+      description: Can be `null` if it's not set.
     bssid:
       example: "001122334455"
       type: string
+      nullable: true
+      description: Can be `null` if it's not set.
     bssid_set:
       readOnly: true
       example: true
@@ -62,12 +67,18 @@ Sta:
     ip:
       example: '192.168.1.42'
       type: string
+      nullable: true
+      description: Can be `null` if it's not connected.
     gw:
       example: '192.168.1.1'
       type: string
+      nullable: true
+      description: Can be `null` if it's not connected.
     netmask:
       example: '255.255.255.0'
       type: string
+      nullable: true
+      description: Can be `null` if it's not connected.
     dns_set:
       example: true
       type: boolean
@@ -79,14 +90,20 @@ Sta:
     dns:
       example: '8.8.8.8'
       type: string
+      nullable: true
+      description: Can be `null` if it's not connected.
     dns_alt:
       example: '8.8.4.4'
       type: string
+      nullable: true
+      description: Can be `null` if it's not connected.
     password:
       example: cGFzc3dvcmQ=
       format: password
       type: string
+      nullable: true
       writeOnly: true
+      description: Can be `null` if it's not set.
 Eth:
   properties:
     status:

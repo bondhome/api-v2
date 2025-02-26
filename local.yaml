@@ -19,14 +19,38 @@ x-tagGroups:
       - Device Actions
       - Device Remote Address
       - Device Reload
+      - Power Cycle State
   - name: Commands
     tags:
       - Device Commands
       - Device Command Signal
       - Device Command Transmit
+  - name: Groups
+    tags:
+      - Groups
+      - Group Devices
+      - Group State
+      - Group Properties
+      - Group Actions
+  - name: Scenes
+    tags:
+      - Scenes
   - name: Schedules
     tags:
       - Device Schedules
+      - Group Schedules
+      - Scene Schedules
+  - name: Sidekick
+    tags:
+      - Sidekick
+      - Sidekick Learn
+      - Keystream
+  - name: Weather Sensor
+    tags:
+      - Weather Sensor
+      - Weather Sensor Properties
+      - Weather Sensor State
+      - Weather Sensor Test
   - name: Bridge
     tags:
       - Bridge
@@ -41,6 +65,7 @@ x-tagGroups:
       - Token
       - MQTT
       - BPUP
+      - HomeKit
   - name: Network
     tags:
       - Wi-Fi Scan
@@ -51,6 +76,7 @@ x-tagGroups:
     tags:
       - Upgrade
       - Version
+      - Backup
       - Reset
       - Reboot
       - Time

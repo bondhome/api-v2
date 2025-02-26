@@ -179,6 +179,114 @@ PatchProperties:
   tags:
   - Device Properties
 
+PowerCycleStatePath:
+  get:
+    $ref: ../devices/paths.yaml#/GetPowerCycleState
+  patch:
+    $ref: ../devices/paths.yaml#/PatchPowerCycleState
+  delete:
+    $ref: ../devices/paths.yaml#/DeletePowerCycleState
+  parameters:
+  - in: path
+    name: device_id
+    required: true
+    schema:
+      type: number
+
+PatchPowerCycleState:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/PowerCycleState
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/PowerCycleState
+      description: Power Cycle State updated
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+    - OAuth: ["oauth2"]
+  summary: Update Power Cycle State
+  tags:
+  - Power Cycle State
+
+GetPowerCycleState:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/PowerCycleState
+      description: Current Power Cycle State
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+    - OAuth: ["oauth2"]
+  summary: Read Power Cycle State
+  description: |
+    This feature is intended to be used with smart Ceiling Fan receivers
+    that are connected to "dumb" wall switches. Many users have existing
+    non-smart ceiling fans which are connected to non-smart wall switches.
+    These non-smart ceiling fans typically have some pull switches where
+    the user can set the desired state, and then the wall switch is used
+    as the means of operating the device. For example, the ceiling fan may
+    be the primary light source in the room, and the user relies on the wall
+    switch as a normal light switch. When they then make the fan smart
+    by adding a Smart By Bond receiver to the fan, they expect that they
+    can continue to use the wall switch. A problem arises when the user
+    turns off the fan light using the API (Alexa, app, etc.) and then
+    enters the room and attempts to operate using the wall switch. The fan
+    will remain in the state with light off. The Power On State feature allows
+    users to guarantee a prefered state every time the device powers on,
+    making it easier to use in a situation where the wall switch is relied upon.
+
+    This feature is only available on certain SBB products where it makes sense,
+    specifically all ceiling fans. We have not enabled it on in-wall switches
+    and dimmers and other SBB products where there is only a power supply
+    or circuit breaker behind the product, rather than there possibly being
+    a user-facing "dumb" wall switch.
+
+    [SBB-only, added in v2.17]
+  tags:
+  - Power Cycle State
+
+DeletePowerCycleState:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/PowerCycleState
+      description: Power Cycle State restored to factory default
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+    - OAuth: ["oauth2"]
+  summary: Set Power Cycle State to defaults
+  description: |
+    Deleting the Power Cycle State for a Device will cause it to revert
+    to the default as programmed from the factory. This is typically
+    a disabled state. For most API clients, it makes more sense to use
+    PATCH rather than DELETE.
+  tags:
+  - Power Cycle State
+
 GetList:
   responses:
     '200':
@@ -343,6 +451,15 @@ PatchState:
     This does NOT cause the Bond to transmit any control signal.
 
     (Bridge-Only)
+
+    You can modify the state of the device lock using the `_lock_priority` and `_lock_expiration` fields. 
+    To reset the lock to its default state while still honoring the priority of other requests that may
+    have occurred, use the negative value of the previously set priority.
+
+    Example: If your API sets a `_lock_priority` of 60 when interacting with a device, you can remove 
+    the lock by setting it to a value of -60. The lock will only be reset to the default value of 
+    100 if the current priority matches the specified negative value.
+
   tags:
   - Device State
 

@@ -1,0 +1,52 @@
+ActionPath:
+  put:
+    $ref: ../actions/group-paths.yaml#/Put
+  parameters:
+  - in: path
+    name: action_name
+    required: true
+    schema:
+      type: string
+  - in: path
+    name: group_id
+    required: true
+    schema:
+      type: number
+
+Put:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          example:
+            argument: 4
+  responses:
+    '200':
+      description: Action executed
+      content:
+        application/json:
+          schema:
+            type: object
+            example:
+              argument: 4
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Execute a Group Action
+  description: |
+    `action_name` is the name of the action from the `actions` list in
+    the response to GET `/groups/{group_id}`.
+
+    This endpoint blocks until confirmation that the Bond has executed
+    the Action on all member Devices. Timeout shall be no more than 7 seconds.
+
+    To check the resulting state, the client may query
+    `/groups/{group_id}/state`, but the member Device States are also updated.
+  tags:
+  - Group Actions
+  security:
+    - OAuth: ["oauth2"]

@@ -1,19 +1,19 @@
 SkedsPath:
   parameters:
   - in: path
-    name: device_id
+    name: group_id
     required: true
     schema:
       type: string
   get:
-    $ref: ../skeds/paths.yaml#/GetList
+    $ref: ../skeds/group-paths.yaml#/GetList
   post:
-    $ref: ../skeds/paths.yaml#/Post
+    $ref: ../skeds/group-paths.yaml#/Post
 
 SkedPath:
   parameters:
   - in: path
-    name: device_id
+    name: group_id
     required: true
     schema:
       type: string
@@ -23,11 +23,11 @@ SkedPath:
     schema:
       type: string
   get:
-    $ref: ../skeds/paths.yaml#/Get
+    $ref: ../skeds/group-paths.yaml#/Get
   patch:
-    $ref: ../skeds/paths.yaml#/Patch
+    $ref: ../skeds/group-paths.yaml#/Patch
   delete:
-    $ref: ../skeds/paths.yaml#/Delete
+    $ref: ../skeds/group-paths.yaml#/Delete
 
 Post:
   requestBody:
@@ -44,9 +44,9 @@ Post:
       $ref: ../common/responses.yaml#/Unauthorized
     '500':
       $ref: ../common/responses.yaml#/InternalServerError
-  summary: Create new Device Schedule
+  summary: Create new Group Schedule
   description: |
-    Creates a Device Schedule under a specific Device.
+    Creates a Group Schedule under a specific Group.
 
     If the timezone or location settings in `sys/time` are not set,
     a 400 error may result depending on what `mark` is requested.
@@ -56,7 +56,7 @@ Post:
        - POSTed `mark` is `dawn`, `dusk`, `sunrise`, or `sunset`, but `sys/time.grid` or `sys/time.tz` is `null`
 
   tags:
-  - Device Schedules
+  - Group Schedules
 
 Patch:
   requestBody:
@@ -66,7 +66,7 @@ Patch:
           $ref: schemas.yaml#/Sked
   responses:
     '200':
-      description: Device Schedule modified
+      description: Group Schedule modified
     '400':
       $ref: ../common/responses.yaml#/BadRequest
     '401':
@@ -75,11 +75,11 @@ Patch:
       $ref: ../common/responses.yaml#/NotFound
     '500':
       $ref: ../common/responses.yaml#/InternalServerError
-  summary: Modify an existing Device Schedule
+  summary: Modify an existing Group Schedule
   description: |
-    Modifies any fields of an existing Device Schedule.
+    Modifies any fields of an existing Group Schedule.
   tags:
-  - Device Schedules
+  - Group Schedules
 
 GetList:
   description: |
@@ -91,16 +91,16 @@ GetList:
         application/json:
           schema:
             $ref: schemas.yaml#/SkedList
-      description: Device Schedule list returned
+      description: Group Schedule list returned
     '401':
       $ref: ../common/responses.yaml#/Unauthorized
     '404':
       $ref: ../common/responses.yaml#/NotFound
     '500':
       $ref: ../common/responses.yaml#/InternalServerError
-  summary: Get list of Device Schedules
+  summary: Get list of Group Schedules
   tags:
-  - Device Schedules
+  - Group Schedules
 
 Get:
   responses:
@@ -109,32 +109,32 @@ Get:
         application/json:
           schema:
             $ref: schemas.yaml#/Sked
-      description: Device Schedule object returned
+      description: Group Schedule object returned
     '401':
       $ref: ../common/responses.yaml#/Unauthorized
     '404':
       $ref: ../common/responses.yaml#/NotFound
     '500':
       $ref: ../common/responses.yaml#/InternalServerError
-  summary: Get specific Device Schedule
+  summary: Get specific Group Schedule
   description: |
-    Get information about a Device Schedule.
+    Get information about a Group Schedule.
   tags:
-  - Device Schedules
+  - Group Schedules
 
 Delete:
   responses:
     '204':
-      description: Device Schedule deleted
+      description: Group Schedule deleted
     '401':
       $ref: ../common/responses.yaml#/Unauthorized
     '404':
       $ref: ../common/responses.yaml#/NotFound
     '500':
       $ref: ../common/responses.yaml#/InternalServerError
-  summary: Delete a Device Schedule
+  summary: Delete a Group Schedule
   description: |
-    Deletes specified Device Schedule.
-    Naturally, the Device Schedule will be canceled.
+    Deletes specified Group Schedule.
+    Naturally, the Group Schedule will be canceled.
   tags:
-  - Device Schedules
+  - Group Schedules

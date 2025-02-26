@@ -8,13 +8,18 @@ Bridge:
       type: string
     bluelight:
       example: 127
-      type: int
+      type: integer
       description: |
         Amount of blue light emitted from the Bond when it's idle: at `0` the light is off,
         and at `255` the light is at its maximum brightness.
     frequencies:
-      read_only: true
+      readOnly: true
       example: [[38, 38], [433050, 434079]]
+      type: array
+      items:
+        type: array
+        items:
+          type: integer
       description: |
         List of intervals (inclusive) of supported frequencies,
         in kHz. Values less than 1000 refer to IR rather than RF.
