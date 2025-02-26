@@ -38,8 +38,11 @@ x-tagGroups:
   - name: Schedules
     tags:
       - Device Schedules
-      - Group Schedules
+      - Group Schedules 
       - Scene Schedules
+  - name: Virtual Remote Control
+    tags:
+      - Virtual Remote Control
   - name: Sidekick
     tags:
       - Sidekick
