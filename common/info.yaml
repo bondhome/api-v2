@@ -1654,4 +1654,8 @@ description: |
 
    - **signal**: (integer) value from 0 to 100, representing the signal quality in percent.
      Clients should render this as a 4-bar signal strength indicator, where:
-     0--20 = no bars, 21--40 = 1 bar, 41--60 = 2 bars, 61--80 = 3 bars, 81--100 = 4 bars.
+     0--25 = Weak (1 bar), 26--50 = Fair (2 bars), 51--75 = Good (3 bars), 76--100 = Excellent (4 bars).
+
+  ### Actions
+
+  (none)
