@@ -1,3 +1,6 @@
+ahab:
+	redoc-cli bundle local.yaml && open redoc-static.html
+
 build:
 	docker build -t olibra.docs .
 
@@ -15,3 +18,4 @@ bundle_local:
 
 test:
 	./ci/test.sh
+

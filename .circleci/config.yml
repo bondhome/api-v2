@@ -13,15 +13,15 @@ jobs:
           command: python -m openapi_spec_validator local.yaml
   build:
     docker:
-      - image: node:14-alpine
+      - image: cimg/node:21.1
     steps:
       - checkout
       - run:
           name: Install redoc
-          command: npm i -g npm && npm install redoc && npm install -g redoc-cli
+          command: npm install redoc && sudo npm install -g redoc-cli
       - run:
           name: Create bundle html file for local api
-          command: redoc-cli bundle local.yaml -o local.html
+          command: redoc-cli bundle local.yaml -o=./local.html
       - save_cache:
           key: build-{{ .Revision }}
           paths:
@@ -39,7 +39,15 @@ jobs:
       - run:
           name: Deploy to AWS
           command: |
-            aws s3 cp --acl "public-read" local.html s3://bond-api-docs/$(echo $CIRCLE_BRANCH | sed -e "s/\//-/g")-local.html
+            aws s3 cp --acl "public-read" /home/circleci/project/local.html s3://bond-api-docs/$(echo $CIRCLE_BRANCH | sed -e "s/\//-/g")-local.html
+      - run:
+          name: Comment on PR with S3 link
+          command: |
+            apk add --no-cache curl jq
+            PR_NUMBER=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/bondhome/api-v2/pulls?head=bondhome:$CIRCLE_BRANCH" | jq '.[].number')
+            S3_URL="https://bond-api-docs.s3.amazonaws.com/$(echo $CIRCLE_BRANCH | sed -e "s/\//-/g")-local.html"
+            COMMENT_PAYLOAD=$(printf '{ "body": "The rendered doc is at: %s" }' "$S3_URL")
+            curl -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/json" -d "$COMMENT_PAYLOAD" "https://api.github.com/repos/bondhome/api-v2/issues/$PR_NUMBER/comments"
   deploy_master:
     docker:
       - image: python:3.7-alpine
@@ -53,15 +61,13 @@ jobs:
       - run:
           name: Deploy to AWS (master)
           command: |
-            aws s3 cp --acl "public-read" local.html s3://docs-local.appbond.com/index.html
+            aws s3 cp --acl "public-read" /home/circleci/project/local.html s3://docs-local.appbond.com/index.html
 workflows:
   version: 2
   build-test-and-deploy:
     jobs:
       - test
-      - build:
-          requires:
-            - test
+      - build
       - deploy:
           context:
             - aws
@@ -72,6 +78,7 @@ workflows:
             - aws
           requires:
             - build
+            - test
           filters:
             branches:
               only:

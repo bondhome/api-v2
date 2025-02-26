@@ -5,7 +5,7 @@ Sked:
       example: True
       type: boolean
       description: |
-        If false, schedule will never execute, but will remain in device database.
+        If false, schedule will never execute, but will remain in Bond database.
 
         Oneshot schedules (with `days_of_week` all False) automatically
         disable after executing once.
@@ -15,7 +15,8 @@ Sked:
       example: SetBrightness
       type: string
       description: |
-        Action which will be run on device when schedule executes.
+        Action which will be run on actor when schedule executes.
+        Required for Device and Group actors. Must not be set for Scene actors.
         If action requires an argument, `argument` field is required.
     argument:
       example: 80

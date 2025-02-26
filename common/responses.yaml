@@ -40,3 +40,9 @@ Created:
       schema:
         $ref: schemas.yaml#/Created
   description: Resource Created
+Locked:
+  content:
+    application/json:
+      schema:
+        $ref: schemas.yaml#/Locked
+  description: Resource is Locked

@@ -994,7 +994,18 @@ description: |
 
   ### Properties
 
-  (none)
+  - **default_auto_timer_s**: 
+    type: integer
+    description: >
+      (integer, optional). This property is available only for heater devices (HT). 
+      When specified, the timer starts automatically with *default_auto_timer_s* seconds whenever the Power feature is activated. 
+      If the timer is explicitly set using the *SetTimer()* action, the new value will override the current timer state, up to a maximum of *default_auto_timer_s*. 
+      Any action that updates the device state (including updates from the Panel, Skeds, or Groups) resets the timer countdown to the current *default_auto_timer_s* value. 
+      Turning off the device cancels the timer.
+
+      This feature ensures heaters comply with fire code requirements to turn off automatically after a specified time (commonly 2 hours). 
+      UIs should display *default_auto_timer_s* as the maximum available value when this property is present. 
+      This setting cannot be overridden by the user.
 
   ### State Variables
 
@@ -1425,6 +1436,33 @@ description: |
   - **IncreaseFlame(flame)**: Increase flame level of fireplace by specified number of *flames*. If the fireplace is off, implicitly turn on the power.
   - **DecreaseFlame(flame)**: Decrease flame level by specified number of *flames*. If attempting to decrease fireplace flame below `1`, the fireplace will remain at fflame 1. That is, power will not be implicitly turned off. If the power is already off, DecreaseFlame is ignored.
 
+  ## Heat
+
+  The Heat feature control devices capable of providing adjustable heat levels, allowing fine control over the intensity of the heating element. 
+  This feature is commonly used in heater devices.
+
+  ### Requirements
+
+  The Heat feature requires the Power feature to be available.
+
+  ### Properties
+
+  - **feature_heat**: (boolean, PATCH-able) true = Heat feature enabled (default), false = Heat feature disabled
+
+  ### State Variables
+
+  - **heat**: (integer) value from 1 to 100. If power=0, heat represents the last heat setting and the heat to which the device resumes when user asks to turn on.
+
+  ### Actions
+
+  - **SetHeat(heat)**: Set heat level and turn on. If heat>100, 100 is assumed. If the device is off, implicitly turn on the power. Setting heat to zero or a negative value is ignored.
+  - **IncreaseHeat(heat)**: Increase heat level of device by specified number of *heats*. If the device is off, implicitly turn on the power.
+  - **DecreaseHeat(heat)**: Decrease heat level by specified number of *heats*. If attempting to decrease device heat below `1`, the device will remain at heat 1. That is, power will not be implicitly turned off.
+  - **HeatPresetNext()**: Jump to next preset heat value from an internal list of presets. Number and value of presets undefined and may vary by model. Useful for integrations with buttons.
+  - **HeatPresetPrev()**: Jump to previous preset heat value from an internal list of presets. Number and value of presets undefined and may vary by model. Useful for integrations with buttons.
+
+  NOTE: The heat level is remembered on TurnOff and restored on TurnOn.
+
   ## Open
 
   The Open feature is used to describe a device that can be opened and closed.
@@ -1511,6 +1549,106 @@ description: |
 
   (none)
 
+  ## TDBU
+
+  Top-Down Bottom-Up shades have two rails: a lower rail which opens in the usual bottom-up
+  fashion, and an upper rail which opens from the top down allowing for privacy while
+  still allowing light to enter the room.
+
+  We use the terms "upper rail" and "lower rail" rather than "top" and "bottom" to avoid
+  confusion as the meaning of "top-down" and "bottom-up" can be ambiguous.
+
+  The TDBU feature requires the Position feature.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+    - **upper_rail_position**: (integer) value from 0 to 100: 0 = open, 100 = closed.
+    - **lower_rail_position**: (integer) value from 0 to 100: 0 = open, 100 = closed.
+
+  ### Actions
+
+    - **SetUpperRailPosition(position)**: Set the position of the upper rail.
+    - **SetLowerRailPosition(position)**: Set the position of the lower rail.
+
+    The SetPosition action will set the upper rail to 0% and the lower rail to the
+    requested position.
+
+    Note: if an action requests a position that is not possible due to the
+    position of the other rail, the Bond Bridge will adjust the other rail
+    the minimum amount necessary to make the requested position possible.
+    For example, if the upper rail is at 50% and the lower rail is at 75%,
+    and the user requests the upper rail to 80%, the lower rail will be
+    "pushed" to 80% as well.
+
+    To change the position of both rails, call both actions in any order.
+    The start times of the rails motion may be slightly staggered.
+
+  ## TiltPosition
+
+  The TiltPosition feature is used to describe a device that can be tilted to a specific position as a percentage,
+  such as venitian blinds. We currently do not support products that can tilt to an open or closed position
+  but lack the ability to tilt to a specific position.
+
+  ### Properties
+
+    - **min_tilt**: (integer) minimum tilt position (degrees, default 0).
+      Traditional wooden blinds can tilt approximately 180 degrees,
+      which we model as -90 to 90 degrees, with 0 degrees being horizontal.
+      Many motorized blinds can tilt only 90 degrees and are restricted to
+      being tilted closed (+90) while in any position other than fully extended.
+
+    - **max_tilt**: (integer) maximum tilt position (degrees, default 90).
+      Usually unspecified, please default to 90 degrees.
+
+  ### State Variables
+
+    - **tilt_position**: (integer) angle of slats in degrees.
+
+  ### Actions
+
+    - **SetTiltPosition(position)**: Set slats to specified tilt position in degrees.
+    - **ToggleTilt()**: Close the slats they are open, open them if they are closed
+
+    NOTE: IncreaseTilt, DecreaseTilt, TiltOpen, and TiltClose are not available.
+
+  ## SheerBlackoutDuo
+
+    This feature is present on some motorized shades which have two layers of fabric:
+    a sheer layer and a blackout layer. 
+    
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+    - **blackout_position**: (integer) value from 0 to 100: 0 = open, 100 = closed.
+    - **sheer_position**: (integer) value from 0 to 100: 0 = open, 100 = closed.
+
+  ### Actions
+
+    - **SetBlackoutPosition(position)**: Set the position of the blackout layer.
+    - **SetSheerPosition(position)**: Set the position of the sheer layer.
+
+    The SetPosition action will set the sheer layer to the requested position and the
+    blackout layer to 0%. (THIS IS SUBJECT TO CHANGE. If you have a strong preference
+    please let us know.)
+
+    The two layers can often be positioned independently,
+    but there is sometimes a constraint such as that the blackout layer cannot be positioned
+    below the sheer layer, or that the sheer layer must be completely extended before the
+    blackout layer can be extended at all. These constraints are enforced by the Bond Bridge
+    and need not concern the client. If an impossible position is requested, the Bond Bridge
+    will adjust the other layer the minimum amount necessary to make the requested position possible.
+
+    To change the position of both layers, call both actions in any order.
+    The start times of the layers' motion may be slightly staggered.
+
   ## FpFan
 
   The FpFan feature controls a fireplace fan. The FpFan feature is independent
@@ -1532,6 +1670,82 @@ description: |
   - **TurnFpFanOn()**: Turn the fireplace fan on, restoring the previous speed
   - **SetFpFan(speed)**: Sets the speed of the fireplace fan
 
+  ## Pair
+
+  Most shade devices work by pairing rather than cloning of a remote control.
+  Use the actions of the Pair feature to manipulate the address table of the appliance.
+  Note that appliances have different means of entering pairing mode, 
+  and different behaviors when the pairing table is full: some override the oldest entry,
+  while others stop accepting new pair signals until other remotes are unpaired
+  or the appliance is factory-reset.
+
+  When using a well-supported shade technology, the Bond Home app provides detailed guidance
+  on how to Pair or Unpair available in Device Settings. However, for shades with a lesser
+  level of support, users need to refer to their remote control or motor's user manual
+  for the pairing procedure, and use the `Pair` or `Unpair` actions in the place of a
+  button press or hold on the remote control to be added or removed.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+  (none)
+
+  ### Actions
+
+  - **Pair()**: pair (or toggle pair) the Bridge device with an appliance. 
+      Requires user to manually put appliance into pairing mode using a button on the appliance,
+      a button on the appliance's remote control, or sometimes by power-cycling the appliance.
+      If the `Unpair` action is _not_ present, then `Pair` will unpair the device if it is already paired,
+      acting as a toggle;
+      however, if `Unpair` _is_ present, then `Pair` will only pair the device if it is not already paired
+      and can be safely used to assert pairing.
+  - **Unpair()**: (optional) unpairs a Bridge device from an appliance,
+      requiring user to manually put appliance into pairing mode.
+  - **UnpairSelf()**: (optional) unpairs Bridge device from all appliances in range.
+      Does _not_ require pairing mode.
+
+  ## Hold
+
+  The Hold feature is available on most shades.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+  (none)
+
+  ### Actions
+
+  - **Hold()**: Stop the motion of the device. This is useful for stopping the device
+    when the device is moving to a specific position. When Hold is called the device 
+    is now in an unknown state and will show as open. Note that Somfy RTS uses the
+    same command for both Hold and Preset (My), so calling Hold while the product is
+    not in motion will send the shade instead to the preset position.
+
+  ## Preset
+
+  The Preset feature is available on many shades, and we hope to make it available on all shades.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+  (none)
+
+  ### Actions
+
+  - **Preset()**: Move the device to the preset position, also known as "My" or "Favorite" position.
+    Note that Bond Bridge does not know the percentage of the preset position, so position will
+    report as -1 (unknown) after this action is called unless your shade has two-way communication
+    (currently limited to IP-IP integrations).
+
   ## Misc, including dimmers
 
   Collected here are some actions that may be used with other features, but
@@ -1540,10 +1754,46 @@ description: |
   ### Actions
 
   - **Stop()**: This action tells the Bond to stop any in-progress transmission and empty its transmission queue.
-  - **Hold()**: Can be used when a signal is required to tell a device to stop moving or the like, since *Stop* is a special "stop transmitting" action
-  - **Pair()**: Used in devices that need to be paired with a receiver.
   - **StartDimmer()**: Start dimming. The Bond should time out its transmission after 30 seconds, or when the *Stop* action is called.
   - **StartUpLightDimmer()**: Use this and the *StartDownLightDimmer* instead of *StartDimmer* if your device has two dimmable lights.
   - **StartDownLightDimmer()**: The counterpart to *StartUpLightDimmer*
   - **StartIncreasingBrightness()**: Similar to StartDimmer, but doesn't cycle and only increases brightness.
   - **StartDecreasingBrightness()**: Similar to StartDimmer, but doesn't cycle and only decreases brightness.
+
+  ## Battery
+
+  The Battery feature is used to report the battery level of a device.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+   - **battery**: (integer) value from 0 to 100, representing the battery level in percent.
+     Clients are encouraged to use the following rendering on their UIs:
+     100 = full (green or blue), 31--99 = OK (green), 11--30 = low (Yellow), 1--10 = critical (red), and 0 = empty (red or blank).
+
+  ### Actions
+
+  (none)
+
+  ## Signal
+
+  The Signal feature indicates the quality of the RF communication between the Bond Bridge and the device.
+  Depending on the device technology, it may indicate either just the downlink or
+  an aggregate of the uplink and downlink link quality.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+   - **signal**: (integer) value from 0 to 100, representing the signal quality in percent.
+     Clients should render this as a 4-bar signal strength indicator, where:
+     0--25 = Weak (1 bar), 26--50 = Fair (2 bars), 51--75 = Good (3 bars), 76--100 = Excellent (4 bars).
+
+  ### Actions
+
+  (none)

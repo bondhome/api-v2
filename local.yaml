@@ -32,10 +32,14 @@ x-tagGroups:
       - Group State
       - Group Properties
       - Group Actions
+  - name: Scenes
+    tags:
+      - Scenes
   - name: Schedules
     tags:
       - Device Schedules
-      - Group Schedules
+      - Group Schedules 
+      - Scene Schedules
   - name: Virtual Remote Control
     tags:
       - Virtual Remote Control
@@ -44,6 +48,12 @@ x-tagGroups:
       - Sidekick
       - Sidekick Learn
       - Keystream
+  - name: Weather Sensor
+    tags:
+      - Weather Sensor
+      - Weather Sensor Properties
+      - Weather Sensor State
+      - Weather Sensor Test
   - name: Bridge
     tags:
       - Bridge

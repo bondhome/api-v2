@@ -1,1 +1,6 @@
 .venv/
+docs.html
+node_modules
+package-lock.json
+package.json
+redoc-static.html
