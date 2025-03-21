@@ -959,6 +959,9 @@ description: |
   In order to understand how these relate to each other,
   it is helpful to organize actions into features and study one feature at a time.
 
+  As of firmware v2.11.6, each device endpoint has a list of supported features
+  at `devices/<dev_id>.features`.
+
   ## Power
 
   The Power feature controls the basic on/off state of a device.
