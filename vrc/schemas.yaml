@@ -43,6 +43,19 @@ VrcKeystream:
       description: |
         list of 1-based key numbers. Must be non-empty.
         
+        Key mappings:
+          - Key 1: UP
+          - Key 2: STOP
+          - Key 3: DOWN
+          - Key 4: PAIR
+          - Key 5: MENU
+          - Key 6: AUX (SK_BUTTON_MATE_AUX)
+          - Key 7: K1 (SK_BUTTON_MATE_QUICK_1)
+          - Key 8: K2 (SK_BUTTON_MATE_QUICK_2)
+          - Key 9: K3 (SK_BUTTON_MATE_QUICK_3)
+          - Key 10: LEFT (SK_BUTTON_MATE_LEFT)
+          - Key 11: RIGHT (SK_BUTTON_MATE_RIGHT)
+        
         In the case of a single key, an integer may be sent instead of an array.
     hold_ms:
       example: 1760
