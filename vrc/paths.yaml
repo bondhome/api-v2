@@ -10,8 +10,6 @@ VrcPath:
       schema:
         type: number
   description: testing 123
-  tags:
-  - Virtual Remote Control
 
 VrcKeystreamPath:
   put:
@@ -23,8 +21,6 @@ VrcKeystreamPath:
     schema:
       type: number
   description: testing 123
-  tags:
-  - Virtual Remote Control
 
 Get:
   description: |
