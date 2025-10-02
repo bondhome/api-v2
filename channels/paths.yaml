@@ -1,20 +1,9 @@
 ChannelsPath:
   get:
     $ref: paths.yaml#/GetList
-  parameters:
-  - in: path
-    name: mate_id
-    required: true
-    schema:
-      type: string
 
 ChannelPath:
   parameters:
-  - in: path
-    name: mate_id
-    required: true
-    schema:
-      type: string
   - in: path
     name: channel_id
     required: true
@@ -30,7 +19,9 @@ ChannelPath:
 
 GetList:
   description: |
-    Returns a list of all channels on this Mate Pro remote.
+    Returns a list of all channels.
+
+    Applies to Mate Pro (MT-1500) and Sidekick Blue (SKS-500-B).
 
     Mate Pro supports 15 individual channels (1-15).
 
@@ -69,12 +60,14 @@ Get:
       $ref: ../common/responses.yaml#/InternalServerError
   summary: Get specific channel
   description: |
-    Get information about a specific channel on this Mate Pro remote.
+    Get information about a specific channel.
+
+    Applies to Mate Pro (MT-1500) and Sidekick Blue (SKS-500-B).
 
     Channels 1-15 are for controlling specific motors or groups of motors.
     Each channel can be independently configured with:
-    - A custom name (displayed on Mate's LED matrix)
-    - A technology/protocol (e.g., RTS, ARC, etc.)
+    - A custom name (displayed on device's LED matrix)
+    - A technology/protocol (R-number identifier)
     - Technology-specific parameters (addresses, frequencies, etc.)
   tags:
   - Channels
@@ -98,23 +91,22 @@ Patch:
       $ref: ../common/responses.yaml#/InternalServerError
   summary: Modify channel metadata
   description: |
-    Modifies metadata of a channel, such as name and label.
+    Modifies metadata of a channel, such as name, label, and technology assignment.
 
-    ### Channel Names
-    Channel names are limited to:
-    - Characters: A-Z, a-z, 0-9, space, and "-"
-    - Maximum length: 20 characters
-    - Names are displayed on Mate Pro's 13×13 LED matrix using marquee scrolling when needed
+    Applies to Mate Pro (MT-1500) and Sidekick Blue (SKS-500-B).
+
+    ### Channel Names and Labels
+    - `name`: User-facing name displayed in the app (A-Z, a-z, 0-9, space, "-", max 20 chars)
+    - `label`: [MT-1500 only] Optional display label for the device's LED matrix
+
+    The label allows for a shorter display name on the matrix while preserving
+    the full name for app display.
 
     ### Technology Assignment
-    The `template` field specifies the RF protocol used by this channel.
+    The `template` field specifies the RF protocol used by this channel (R-number identifier).
     Changing the technology may affect:
     - Available pairing procedures
     - Required properties (addr, freq, bps, etc.)
     - Compatible motors and devices
-
-    Note: For Day 1, technology assignment can also be done directly on the Mate Pro
-    via its physical interface. The app must support reading and writing the technology
-    via this API.
   tags:
   - Channels

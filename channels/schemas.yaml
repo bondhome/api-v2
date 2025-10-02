@@ -5,14 +5,18 @@ Channel:
       example: "Front Patio"
       type: string
       description: |
-        User-facing name of the channel, displayed on Mate Pro's LED matrix and in the app.
+        User-facing name of the channel, displayed in the app.
         Limited to A-Z, a-z, 0-9, space, and "-" characters.
         Maximum length: 20 characters.
     label:
       example: ""
       type: string
       description: |
-        Internal label for the channel. Reserved for future use.
+        [MT-1500 only]
+        Optional display label shown on the device's LED matrix.
+        When not set, the device may display an abbreviated version of the name.
+        Allows separating the full name (for app display) from a shorter label
+        (for the more limited matrix display).
     template:
       example: "RMS12"
       type: string
