@@ -100,17 +100,6 @@ Sidekick:
       type: string
       description: |
         User-facing model number of Sidekick.
-    channels:
-      readOnly: true
-      type: object
-      example:
-        _: "84cd8a43"
-      description: |
-        [MT-1500 only]
-        Hash indicator for the channels endpoint.
-        Only present on Mate Pro (model MT-1500).
-        When present, indicates that channels can be accessed via
-        `/v2/sidekicks/{mate_id}/channels` endpoint.
     
 
 Keystream:
