@@ -1,0 +1,120 @@
+ChannelsPath:
+  get:
+    $ref: paths.yaml#/GetList
+  parameters:
+  - in: path
+    name: mate_id
+    required: true
+    schema:
+      type: string
+
+ChannelPath:
+  parameters:
+  - in: path
+    name: mate_id
+    required: true
+    schema:
+      type: string
+  - in: path
+    name: channel_id
+    required: true
+    schema:
+      type: string
+      pattern: '^([1-9]|1[0-5])$'
+      description: |
+        Channel ID: "1" through "15" for individual channels.
+  get:
+    $ref: paths.yaml#/Get
+  patch:
+    $ref: paths.yaml#/Patch
+
+GetList:
+  description: |
+    Returns a list of all channels on this Mate Pro remote.
+
+    Mate Pro supports 15 individual channels (1-15).
+
+    Each channel can be configured with a different technology (RF protocol).
+    The hash tree structure indicates when channel metadata has changed.
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/ChannelList
+      description: Channel list with hashes
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Get list of channels
+  tags:
+  - Channels
+
+Get:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Channel
+      description: Channel object returned
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Get specific channel
+  description: |
+    Get information about a specific channel on this Mate Pro remote.
+
+    Channels 1-15 are for controlling specific motors or groups of motors.
+    Each channel can be independently configured with:
+    - A custom name (displayed on Mate's LED matrix)
+    - A technology/protocol (e.g., RTS, ARC, etc.)
+    - Technology-specific parameters (addresses, frequencies, etc.)
+  tags:
+  - Channels
+
+Patch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Channel
+  responses:
+    '200':
+      description: Channel modified
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Modify channel metadata
+  description: |
+    Modifies metadata of a channel, such as name and label.
+
+    ### Channel Names
+    Channel names are limited to:
+    - Characters: A-Z, a-z, 0-9, space, and "-"
+    - Maximum length: 20 characters
+    - Names are displayed on Mate Pro's 13×13 LED matrix using marquee scrolling when needed
+
+    ### Technology Assignment
+    The `template` field specifies the RF protocol used by this channel.
+    Changing the technology may affect:
+    - Available pairing procedures
+    - Required properties (addr, freq, bps, etc.)
+    - Compatible motors and devices
+
+    Note: For Day 1, technology assignment can also be done directly on the Mate Pro
+    via its physical interface. The app must support reading and writing the technology
+    via this API.
+  tags:
+  - Channels

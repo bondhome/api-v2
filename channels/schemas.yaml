@@ -1,0 +1,95 @@
+Channel:
+  type: object
+  properties:
+    name:
+      example: "Front Patio"
+      type: string
+      description: |
+        User-facing name of the channel, displayed on Mate Pro's LED matrix and in the app.
+        Limited to A-Z, a-z, 0-9, space, and "-" characters.
+        Maximum length: 20 characters.
+    label:
+      example: ""
+      type: string
+      description: |
+        Internal label for the channel. Reserved for future use.
+    template:
+      example: "RTS"
+      type: string
+      description: |
+        Technology template assigned to this channel.
+        Determines the RF protocol used for motor control.
+        Common values include:
+          - `RTS`: Somfy RTS (default for all channels)
+          - `ARC`: Rollease Acmeda Automate
+          - `NICE_FCODE`: Nice F-code (Nice Green)
+          - `AMP`: Turnils
+          - `DOOYA_BIDIR`: Bidirectional Dooya (Wynmotion)
+          - `COULISSE`: Coulisse
+          - `DOOYA_UNIDIR`: Unidirectional Dooya (RMS5)
+          - `DENDO`: Dendo
+          - `AOK`: AOK
+          - `BOFU`: BOFU
+          - `GAPOSA`: Gaposa
+          - `POWERSHADES`: PowerShades
+          - `FOREST`: Forest Drapery Hardware (RMS138)
+          - `ALPHA`: Alpha Motors
+          - `T2W`: Bond T2W (WindowMancer)
+          - `RTS_LIGHT`: RTS Lights from Somfy
+    properties:
+      type: object
+      description: |
+        Technology-specific properties for this channel.
+        Contents vary based on the assigned `template`.
+      properties:
+        mfg:
+          example: 0
+          type: integer
+          description: |
+            Manufacturer code or technology identifier.
+        pairing_assets_key:
+          example: ""
+          type: string
+          description: |
+            Reference to pairing assets or instructions.
+      example:
+        mfg: 0
+        pairing_assets_key: ""
+
+ChannelList:
+  type: object
+  description: |
+    Hash tree of all channels on this Mate Pro.
+    Channel IDs range from "1" to "15".
+  example:
+    _: "7fc1e84b"
+    "1":
+      _: "84819a9f"
+    "2":
+      _: "23141efa"
+    "3":
+      _: "2425a8bc"
+    "4":
+      _: "2425a8bc"
+    "5":
+      _: "2425a8bc"
+    "6":
+      _: "2425a8bc"
+    "7":
+      _: "2425a8bc"
+    "8":
+      _: "2425a8bc"
+    "9":
+      _: "2425a8bc"
+    "10":
+      _: "2425a8bc"
+    "11":
+      _: "2425a8bc"
+    "12":
+      _: "2425a8bc"
+    "13":
+      _: "2425a8bc"
+    "14":
+      _: "2425a8bc"
+    "15":
+      _: "2425a8bc"

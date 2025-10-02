@@ -128,3 +128,7 @@
     $ref: ../weather_sensor/paths.yaml#/StatePath
 /v2/sidekicks/{ws_id}/test:
     $ref: ../weather_sensor/paths.yaml#/TestPath
+/v2/sidekicks/{mate_id}/channels:
+    $ref: ../channels/paths.yaml#/ChannelsPath
+/v2/sidekicks/{mate_id}/channels/{channel_id}:
+    $ref: ../channels/paths.yaml#/ChannelPath
