@@ -2,13 +2,13 @@ Channel:
   type: object
   properties:
     name:
-      example: "Front Patio"
+      example: "North Screen"
       type: string
       description: |
         User-facing name of the channel, displayed in the app.
         Maximum length: 64 bytes of UTF-8.
     label:
-      example: ""
+      example: "N Screen"
       type: string
       description: |
         [MT-1500 only]
