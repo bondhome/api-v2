@@ -14,28 +14,12 @@ Channel:
       description: |
         Internal label for the channel. Reserved for future use.
     template:
-      example: "RTS"
+      example: "RMS12"
       type: string
       description: |
-        Technology template assigned to this channel.
+        Technology template assigned to this channel (R-number identifier).
         Determines the RF protocol used for motor control.
-        Common values include:
-          - `RTS`: Somfy RTS (default for all channels)
-          - `ARC`: Rollease Acmeda Automate
-          - `NICE_FCODE`: Nice F-code (Nice Green)
-          - `AMP`: Turnils
-          - `DOOYA_BIDIR`: Bidirectional Dooya (Wynmotion)
-          - `COULISSE`: Coulisse
-          - `DOOYA_UNIDIR`: Unidirectional Dooya (RMS5)
-          - `DENDO`: Dendo
-          - `AOK`: AOK
-          - `BOFU`: BOFU
-          - `GAPOSA`: Gaposa
-          - `POWERSHADES`: PowerShades
-          - `FOREST`: Forest Drapery Hardware (RMS138)
-          - `ALPHA`: Alpha Motors
-          - `T2W`: Bond T2W (WindowMancer)
-          - `RTS_LIGHT`: RTS Lights from Somfy
+        Uses the same R-number format as the devices API.
     properties:
       type: object
       description: |
