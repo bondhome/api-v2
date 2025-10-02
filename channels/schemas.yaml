@@ -6,14 +6,15 @@ Channel:
       type: string
       description: |
         User-facing name of the channel, displayed in the app.
-        Limited to A-Z, a-z, 0-9, space, and "-" characters.
-        Maximum length: 20 characters.
+        Maximum length: 64 bytes of UTF-8.
     label:
       example: ""
       type: string
       description: |
         [MT-1500 only]
         Optional display label shown on the device's LED matrix.
+        Limited to A-Z, a-z, 0-9, space, and "-" characters.
+        Maximum length: 20 characters.
         When not set, the device may display an abbreviated version of the name.
         Allows separating the full name (for app display) from a shorter label
         (for the more limited matrix display).

@@ -95,18 +95,7 @@ Patch:
 
     Applies to Mate Pro (MT-1500) and Sidekick Blue (SKS-500-B).
 
-    ### Channel Names and Labels
-    - `name`: User-facing name displayed in the app (A-Z, a-z, 0-9, space, "-", max 20 chars)
-    - `label`: [MT-1500 only] Optional display label for the device's LED matrix
-
-    The label allows for a shorter display name on the matrix while preserving
-    the full name for app display.
-
-    ### Technology Assignment
-    The `template` field specifies the RF protocol used by this channel (R-number identifier).
-    Changing the technology may affect:
-    - Available pairing procedures
-    - Required properties (addr, freq, bps, etc.)
-    - Compatible motors and devices
+    Changing the technology template may affect available pairing procedures,
+    required properties, and compatible motors and devices.
   tags:
   - Channels
