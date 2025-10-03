@@ -27,7 +27,6 @@ ScenesPath:
     - Scenes
   post:
     requestBody:
-      required: true
       content:
         application/json:
           schema:
@@ -102,7 +101,6 @@ GetList:
   - Scenes
 Post:
   requestBody:
-    required: true
     content:
       application/json:
         schema:
@@ -145,7 +143,6 @@ Get:
   - Scenes
 Patch:
   requestBody:
-    required: true
     content:
       application/json:
         schema:
