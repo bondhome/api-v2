@@ -1,0 +1,71 @@
+ActionPath:
+  put:
+    $ref: ../actions/channel-paths.yaml#/Put
+  parameters:
+  - in: path
+    name: action_name
+    required: true
+    schema:
+      type: string
+  - in: path
+    name: channel_id
+    required: true
+    schema:
+      type: string
+      pattern: '^(0|[1-9]|1[0-5])$'
+
+Put:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          example:
+            argument: 4
+  responses:
+    '200':
+      description: Action executed
+      content:
+        application/json:
+          schema:
+            type: object
+            example:
+              argument: 4
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Execute a Channel Action
+  description: |
+    **[v4.24+] [MT-1500 only] Development and testing endpoint**
+
+    `action_name` is the name of the action from the `actions` list in
+    the response to GET `/channels/{channel_id}`.
+
+    This endpoint executes an action directly on a channel by transmitting
+    via the configured RF technology/protocol for that channel.
+
+    **Note:** Mate is not intended to act as a bridge. This endpoint is
+    provided for development and testing purposes only, allowing
+    verification that channels are properly configured and actions
+    execute correctly. It is directly analogous to the device and group
+    action endpoints.
+
+    This endpoint blocks until confirmation that Mate has transmitted
+    the action. Timeout shall be no more than 7 seconds.
+
+    Available actions depend on the channel's configured technology and
+    channel type. Common actions include:
+    - Shade channels: Raise, Lower, Hold, SetPosition, Preset
+    - Light channels: TurnLightOn, TurnLightOff, SetBrightness
+
+    See the channels endpoint documentation for the full list of available
+    actions per channel.
+  tags:
+  - Channel Actions
+  security:
+    - OAuth: ["oauth2"]

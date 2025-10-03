@@ -50,6 +50,7 @@ x-tagGroups:
       - Sidekick Learn
       - Keystream
       - Channels
+      - Channel Actions
       - Quick Action Keys
   - name: Weather Sensor
     tags:
