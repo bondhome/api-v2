@@ -25,11 +25,15 @@ Channel:
         Technology template assigned to this channel (R-number identifier).
         Determines the RF protocol used for motor control.
         Uses the same R-number format as the devices API.
+
+        Not present for channel 0 (All channel).
     properties:
       type: object
       description: |
         Technology-specific properties for this channel.
         Contents vary based on the assigned `template`.
+
+        Not present for channel 0 (All channel).
       properties:
         mfg:
           example: 0
@@ -44,14 +48,79 @@ Channel:
       example:
         mfg: 0
         pairing_assets_key: ""
+    type:
+      readOnly: true
+      example: "MS"
+      type: string
+      description: |
+        [v4.24+] [MT-1500 only]
+        Channel type, automatically inferred from the configured technology template.
+        Uses the same enumeration as devices:
+        - `MS`: Motorized Window Coverings (Shades, Screens, Drapes, Awnings)
+        - `LT`: Light
+        - `CF`: Ceiling Fan
+        - `GX`: Generic device
+        - `FP`: Fireplace
+        - `BD`: Bidet
+
+        Channels configured for Relay mode have type `MS`.
+
+        Not present for channel 0.
+    enabled:
+      example: true
+      type: boolean
+      description: |
+        [v4.24+] [MT-1500 only]
+        Channel visibility toggle. When false, the channel is hidden from the
+        physical cycling interface (skipped when pressing Channel +/- buttons)
+        and appears grayed out in the app.
+
+        All channel configuration (name, technology, schedules, etc.) is preserved
+        when a channel is disabled.
+
+        When channel 0 (All) is disabled, it is skipped during physical cycling.
+        For bitmap-based protocols (ARC, Gaposa, etc.), disabled individual channels
+        are masked from the channel 0 bitmap. For RTS and other protocols where
+        channel 0 has its own address, the signal transmits normally.
+
+        Schedules configured for disabled channels will not execute.
+
+        Defaults to true.
+    actions:
+      readOnly: true
+      type: array
+      items:
+        type: string
+      example:
+        - "Raise"
+        - "Lower"
+        - "Stop"
+        - "SetPosition"
+      description: |
+        [v4.24+] [MT-1500 only]
+        List of actions available on this channel, determined by the channel's
+        technology and type. Used for configuring schedules and built-in scenes.
+
+        Common actions by type:
+        - Motorized Shades (MS): Raise, Lower, Stop, SetPosition, Preset
+        - Lights (LT): TurnLightOn, TurnLightOff, SetBrightness
+
+        Note: Unlike devices, channels do not expose a Features field or maintain state.
+        The actions list may include any action supported by the technology without
+        strict atomicity requirements.
+
+        Not present for channel 0.
 
 ChannelList:
   type: object
   description: |
     Hash tree of all channels on this Mate Pro.
-    Channel IDs range from "1" to "15".
+    Channel IDs range from "0" to "15".
+    Channel "0" is the "All" channel.
   example:
     _: "7fc1e84b"
+    "0":
+      _: "a1b2c3d4"
     "1":
       _: "84819a9f"
     "2":

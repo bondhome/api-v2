@@ -1,0 +1,168 @@
+SkedsPath:
+  parameters:
+  - in: path
+    name: channel_id
+    required: true
+    schema:
+      type: string
+      pattern: '^(0|[1-9]|1[0-5])$'
+      description: |
+        Channel ID: "0" for All channel, or "1" through "15" for individual channels.
+  get:
+    $ref: ../skeds/channel-paths.yaml#/GetList
+  post:
+    $ref: ../skeds/channel-paths.yaml#/Post
+
+SkedPath:
+  parameters:
+  - in: path
+    name: channel_id
+    required: true
+    schema:
+      type: string
+      pattern: '^(0|[1-9]|1[0-5])$'
+      description: |
+        Channel ID: "0" for All channel, or "1" through "15" for individual channels.
+  - in: path
+    name: sked_id
+    required: true
+    schema:
+      type: string
+  get:
+    $ref: ../skeds/channel-paths.yaml#/Get
+  patch:
+    $ref: ../skeds/channel-paths.yaml#/Patch
+  delete:
+    $ref: ../skeds/channel-paths.yaml#/Delete
+
+Post:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Sked
+  responses:
+    '201':
+      $ref: ../common/responses.yaml#/Created
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Create new Channel Schedule
+  description: |
+    Creates a Channel Schedule for a specific channel on Mate Pro (MT-1500).
+
+    Channel schedules allow autonomous time-based or solar-based automation
+    without requiring a Bond Bridge. The onboard RTC maintains ±15 minute
+    accuracy over one year.
+
+    Limits:
+    - Up to 6 schedules per channel (advertised/tested limit)
+    - Up to 12 schedules total across all channels (advertised/tested limit)
+    - Schedules on disabled channels will not execute
+
+    If the timezone or location settings in `sys/time` are not set,
+    a 400 error may result depending on what `mark` is requested.
+    Specifically, the following requests will result in a 400 error:
+
+       - POSTed `mark` is `midnight` but `sys/time.tz` is `null`
+       - POSTed `mark` is `dawn`, `dusk`, `sunrise`, or `sunset`, but `sys/time.grid` or `sys/time.tz` is `null`
+
+    Available actions depend on the channel type. Common actions:
+    - Motorized Shades (MS): Raise, Lower, Stop, SetPosition, Preset
+    - Lights (LT): TurnLightOn, TurnLightOff, SetBrightness
+
+    Note: Open and Close actions are not available for channel schedules,
+    as Mate does not track the inversion between Raise/Lower and Open/Close
+    for different shade types (e.g., awnings).
+
+  tags:
+  - Channel Schedules
+
+Patch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Sked
+  responses:
+    '200':
+      description: Channel Schedule modified
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Modify an existing Channel Schedule
+  description: |
+    Modifies any fields of an existing Channel Schedule on Mate Pro (MT-1500).
+
+    Note that modifying the action or time may cause the schedule to exceed
+    capacity limits if other schedules exist.
+  tags:
+  - Channel Schedules
+
+GetList:
+  description: |
+    Returns a list of sked_ids and the corresponding sked hashes for a channel.
+    Please see the "Hash Tree" documentation for an explanation of hashes.
+
+    Applies to Mate Pro (MT-1500) channels.
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/SkedList
+      description: Channel Schedule list returned
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Get list of Channel Schedules
+  tags:
+  - Channel Schedules
+
+Get:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Sked
+      description: Channel Schedule object returned
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Get specific Channel Schedule
+  description: |
+    Get information about a Channel Schedule on Mate Pro (MT-1500).
+  tags:
+  - Channel Schedules
+
+Delete:
+  responses:
+    '204':
+      description: Channel Schedule deleted
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Delete a Channel Schedule
+  description: |
+    Deletes specified Channel Schedule on Mate Pro (MT-1500).
+    Naturally, the Channel Schedule will be canceled.
+  tags:
+  - Channel Schedules

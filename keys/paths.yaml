@@ -1,0 +1,76 @@
+KeysPath:
+  get:
+    $ref: paths.yaml#/Get
+  patch:
+    $ref: paths.yaml#/Patch
+
+Get:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/KeyConfiguration
+      description: Key configuration returned
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Get Quick Action Button configuration
+  description: |
+    Get the current configuration for all three Quick Action Buttons (K1, K2, K3)
+    on Mate Pro (MT-1500).
+
+    Each button can be configured to either jump to a channel (goto mode) or
+    execute programmable actions via key_links (keystream mode).
+
+    Default configuration:
+    - K1: goto channel 0 (All)
+    - K2: goto channel 5
+    - K3: goto channel 10
+  tags:
+  - Quick Action Keys
+
+Patch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/KeyConfiguration
+  responses:
+    '200':
+      description: Key configuration modified
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Modify Quick Action Button configuration
+  description: |
+    Modify the configuration for Quick Action Buttons on Mate Pro (MT-1500).
+
+    You can update one or more buttons in a single request. Only include the
+    buttons you want to modify.
+
+    Mode switching behavior:
+    - Switching from keystream to goto mode: Previously configured key_links
+      are hidden in the app but preserved. They can be viewed again by switching
+      back to keystream mode.
+
+    - Switching from goto to keystream mode: The button will resume transmitting
+      BondSync signals and executing any previously configured key_links.
+
+    Physical programming:
+    When a button is in goto mode, users can set the target channel by holding
+    the button for 2 seconds while on the desired channel. This updates the
+    `channel` field in the configuration.
+
+    Note: When mode=goto, the `channel` field is required. When mode=keystream,
+    the `channel` field is ignored.
+  tags:
+  - Quick Action Keys

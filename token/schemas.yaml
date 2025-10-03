@@ -49,6 +49,33 @@ TokenGet:
         Only disable on trusted networks, and only when using fixed IP addresses
         to avoid controlling the wrong Bond. Defaults to false, i.e., token required by default.
         Available as of firmware v2.10.2.
+    identify:
+      example: 10
+      type: integer
+      description: |
+        [MT-1500 only] [v4.24+]
+        Identify duration in seconds (0-30).
+
+        When present, indicates the product supports the identify feature.
+
+        To trigger identify, PATCH this field with a value from 1 to 30,
+        specifying how many seconds the identify animation should run.
+
+        To cancel an ongoing identify animation, PATCH with 0.
+
+        The identify feature displays a radar/sonar-style animation (expanding
+        concentric circles from center point) on the device's LED matrix to help
+        users locate a specific Mate when multiple units are deployed.
+
+        The animation uses the currently configured brightness setting and can
+        be dismissed early by pressing any button on the device.
+
+        Authentication: Either the token must be unlocked (locked=0) OR a valid
+        token must be provided in the request header. This does not affect the
+        locked state or discovery age of the token endpoint.
+
+        Read-only when retrieved via GET. Value indicates remaining seconds of
+        current identify animation, or 0 if not currently identifying.
 TokenPatch:
   properties:
     locked:
@@ -80,3 +107,15 @@ TokenPatch:
         If disabled, HTTP and other local APIs will not require token to function.
         Only disable on trusted networks, and only when using fixed IP addresses
         to avoid controlling the wrong Bond. Defaults to false, i.e., token required by default.
+    identify:
+      example: 10
+      type: integer
+      description: |
+        [MT-1500 only] [v4.24+]
+        Identify duration in seconds (0-30).
+
+        Set to 1-30 to trigger identify animation for that many seconds.
+        Set to 0 to cancel an ongoing identify animation.
+
+        Requires either unlocked token (locked=0) OR valid token in request header.
+        Does not affect token locked state or discovery age.
