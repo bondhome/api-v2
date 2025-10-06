@@ -261,8 +261,12 @@ LearnGet:
     Provides information about the Sidekick learn window on this Bond.
 
     When the learn window is open, the Bond will listen for a link intent.
-    Specifically, it listens for a BondSync message of type LINK or 
+    Specifically, it listens for a BondSync message of type LINK or
     type KEYSTREAM with HOLD event and duration greater than 2 seconds.
+
+    The `new_id` field shows the ID of any newly learned Sidekick. This field
+    is cleared when opening a new learn window to prevent showing stale data
+    from previous learn sessions. [v4.24+]
 
     [New in v3.10]
   tags:
@@ -293,6 +297,18 @@ LearnPatch:
     Open/close the learn window.
 
     The learn window is never automatically opened. Must be opened by API.
+
+    ### Device Filtering [v4.24+]
+
+    The optional `pattern` field allows filtering which Sidekick devices can be
+    learned during the window. This prevents incompatible devices from pairing
+    to the wrong product type.
+
+    Example use cases:
+    - Set `pattern: "^SH"` to accept only Sidekick devices (IDs starting with SH)
+    - Omit the `pattern` field to accept all device types (backward compatible)
+
+    The pattern accepts regex syntax with a maximum length of 32 characters.
   tags:
   - Sidekick Learn
 
