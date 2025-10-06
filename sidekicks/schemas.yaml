@@ -180,7 +180,7 @@ Learn:
       type: string
       readOnly: true
       description: |
-        ID of the newly learned Sidekick, if any.
+        [v4.24+] ID of the newly learned Sidekick, if any.
         This field is cleared when opening a new learn window.
         Populated when a new Sidekick successfully links during the learn window.
     pattern:
@@ -189,7 +189,7 @@ Learn:
       writeOnly: true
       maxLength: 32
       description: |
-        Optional regex pattern to filter devices during learning (max 32 characters).
+        [v4.24+] Optional regex pattern to filter devices during learning (max 32 characters).
         Only devices whose IDs match this pattern will be accepted during the learn window.
         Example: "^SM" accepts only Mate devices (IDs starting with SM).
         If not specified, all device types are accepted (backward compatible).
