@@ -1,0 +1,151 @@
+Transformer:
+  properties:
+    name:
+      type: string
+      example: "Front Yard Transformer"
+      description: User-assigned name for the transformer
+    location:
+      type: string
+      example: "Outdoor"
+      description: User-assigned location
+    tap_mode:
+      type: array
+      items:
+        type: string
+        enum: ["legacy", "plc"]
+      minItems: 3
+      maxItems: 3
+      example: ["plc", "plc", "legacy"]
+      description: |
+        Mode configuration for each of the 3 output taps (indices 0-2).
+
+        - `legacy`: Relay-switched on/off for traditional landscape fixtures
+        - `plc`: Constant power with PLC commands for smart addressable fixtures
+
+        Note: If any PLC fixtures are commissioned, at least one tap must be set to `plc` mode.
+    fixture_count:
+      type: integer
+      readOnly: true
+      example: 12
+      description: |
+        Number of currently commissioned PLC fixtures (range 0-60).
+        This count represents fixtures that have been assigned addresses.
+    fixture_max:
+      type: integer
+      readOnly: true
+      example: 60
+      description: Maximum number of PLC fixtures supported by this transformer
+    current_ma:
+      type: integer
+      readOnly: true
+      example: 2400
+      description: |
+        Current total current draw across all taps in milliamps.
+        Updated continuously during operation.
+    current_limit_yellow_ma:
+      type: integer
+      example: 5000
+      description: |
+        Soft current limit threshold in milliamps.
+        When exceeded, fault status changes to "overload_yellow" as a warning.
+        System continues to operate.
+    current_limit_red_ma:
+      type: integer
+      example: 6000
+      description: |
+        Hard current limit threshold in milliamps.
+        When exceeded, taps shut down and fault status changes to "overload_red".
+    fault:
+      type: string
+      nullable: true
+      readOnly: true
+      enum: [null, "overload_yellow", "overload_red", "overload_hard"]
+      example: null
+      description: |
+        Current fault condition:
+
+        - `null`: No fault, normal operation
+        - `overload_yellow`: Approaching current limit (soft warning)
+        - `overload_red`: Over current limit, taps have shut down
+        - `overload_hard`: Hard fault detected (likely short circuit)
+    commission_mode:
+      type: boolean
+      example: false
+      description: |
+        Commissioning mode state. When set to `true`:
+
+        - Commissioning port is energized
+        - All other taps are shut off for safety
+        - Mode auto-expires after `commission_timeout_ms`
+
+        Used during fixture pairing and testing workflow.
+    commission_timeout_ms:
+      type: integer
+      example: 300000
+      description: |
+        Auto-expire timeout for commission_mode in milliseconds.
+        Default: 300000 (5 minutes)
+
+        After this duration, commission_mode automatically reverts to false
+        and normal tap operation resumes.
+    commission_remaining_ms:
+      type: integer
+      readOnly: true
+      example: 0
+      description: |
+        Milliseconds remaining before commission_mode automatically disables.
+        Returns 0 when commission_mode is false.
+    auto_detect_start:
+      type: boolean
+      example: false
+      description: |
+        Trigger auto-detection of fixture capabilities.
+
+        PATCH to `true` to start auto-detection process.
+        Requires `commission_mode` to be `true`.
+
+        The transformer will analyze the fixture connected to the commissioning
+        port and attempt to determine its capabilities and current draw.
+    auto_detect_busy:
+      type: boolean
+      readOnly: true
+      example: false
+      description: |
+        Indicates whether auto-detection is currently running.
+        When `true`, detection is in progress. When `false`, detection
+        has completed or has not been started.
+    detected_capability:
+      type: string
+      nullable: true
+      readOnly: true
+      enum: [null, "dimmable", "cct", "rgb", "rgbw", "rgbww"]
+      example: "rgbw"
+      description: |
+        Auto-detected fixture capability from most recent detection cycle.
+
+        - `null`: No fixture detected or detection not run
+        - `dimmable`: Dimmable white only
+        - `cct`: Tunable white (cool/warm)
+        - `rgb`: RGB color
+        - `rgbw`: RGB + warm white
+        - `rgbww`: RGB + warm white + cool white (5 channel)
+
+        This is a suggestion only. User may override during commissioning.
+    detected_current_ma:
+      type: integer
+      nullable: true
+      readOnly: true
+      example: 180
+      description: |
+        Detected current draw in milliamps from most recent auto-detection.
+        Returns `null` if no detection has been performed or no fixture detected.
+    next_available_device_id:
+      type: integer
+      readOnly: true
+      example: 13
+      description: |
+        Next available device ID for commissioning a new PLC fixture.
+        Range: 1-60
+
+        This is the device ID that will be assigned when the next fixture
+        is successfully commissioned via POST to /v2/devices.
