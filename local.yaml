@@ -48,6 +48,7 @@ x-tagGroups:
       - Sidekick
       - Sidekick Learn
       - Keystream
+      - Channels
   - name: Weather Sensor
     tags:
       - Weather Sensor

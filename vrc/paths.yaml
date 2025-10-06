@@ -10,8 +10,6 @@ VrcPath:
       schema:
         type: number
   description: testing 123
-  tags:
-  - Virtual Remote Control
 
 VrcKeystreamPath:
   put:
@@ -23,8 +21,6 @@ VrcKeystreamPath:
     schema:
       type: number
   description: testing 123
-  tags:
-  - Virtual Remote Control
 
 Get:
   description: |
@@ -34,7 +30,6 @@ Get:
       content:
         application/json:
           schema:
-            required: true
             $ref: schemas.yaml#/Vrc
       description: Get Vrc info
     '401':
@@ -51,10 +46,10 @@ Get:
 
 Patch:
   requestBody:
+    required: true
     content:
       application/json:
         schema:
-          required: true
           $ref: schemas.yaml#/Vrc
   responses:
     '200':
@@ -77,10 +72,10 @@ Patch:
 
 PutKey:
   requestBody:
+    required: true
     content:
       application/json:
         schema:
-          required: true
           $ref: schemas.yaml#/VrcKeystream
   responses:
     '200':

@@ -104,7 +104,6 @@ Post:
     content:
       application/json:
         schema:
-          required: true
           $ref: schemas.yaml#/Scene
   responses:
     '201':
@@ -129,7 +128,6 @@ Get:
       content:
         application/json:
           schema:
-            required: true
             $ref: schemas.yaml#/Scene
       description: Get Scene
     '401':
@@ -148,9 +146,7 @@ Patch:
     content:
       application/json:
         schema:
-          required: true
           $ref: schemas.yaml#/Scene
-          type: object
   responses:
     '200':
       content:

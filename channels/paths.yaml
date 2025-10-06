@@ -1,0 +1,101 @@
+ChannelsPath:
+  get:
+    $ref: paths.yaml#/GetList
+
+ChannelPath:
+  parameters:
+  - in: path
+    name: channel_id
+    required: true
+    schema:
+      type: string
+      pattern: '^([1-9]|1[0-5])$'
+      description: |
+        Channel ID: "1" through "15" for individual channels.
+  get:
+    $ref: paths.yaml#/Get
+  patch:
+    $ref: paths.yaml#/Patch
+
+GetList:
+  description: |
+    Returns a list of all channels.
+
+    Applies to Mate Pro (MT-1500) and Sidekick Blue (SKS-500-B).
+
+    Mate Pro supports 15 individual channels (1-15).
+
+    Each channel can be configured with a different technology (RF protocol).
+    The hash tree structure indicates when channel metadata has changed.
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/ChannelList
+      description: Channel list with hashes
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Get list of channels
+  tags:
+  - Channels
+
+Get:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Channel
+      description: Channel object returned
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Get specific channel
+  description: |
+    Get information about a specific channel.
+
+    Applies to Mate Pro (MT-1500) and Sidekick Blue (SKS-500-B).
+
+    Channels 1-15 are for controlling specific motors or groups of motors.
+    Each channel can be independently configured with:
+    - A custom name (displayed on device's LED matrix)
+    - A technology/protocol (R-number identifier)
+    - Technology-specific parameters (addresses, frequencies, etc.)
+  tags:
+  - Channels
+
+Patch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Channel
+  responses:
+    '200':
+      description: Channel modified
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Modify channel metadata
+  description: |
+    Modifies metadata of a channel, such as name, label, and technology assignment.
+
+    Applies to Mate Pro (MT-1500) and Sidekick Blue (SKS-500-B).
+
+    Changing the technology template may affect available pairing procedures,
+    required properties, and compatible motors and devices.
+  tags:
+  - Channels
