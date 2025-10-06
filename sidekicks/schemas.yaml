@@ -180,9 +180,9 @@ Learn:
       type: string
       readOnly: true
       description: |
-        [v4.24+] ID of the newly learned Sidekick, if any.
-        This field is cleared when opening a new learn window.
+        ID of the newly learned Sidekick, if any.
         Populated when a new Sidekick successfully links during the learn window.
+        [v4.24+] This field is cleared when opening a new learn window.
     pattern:
       example: "^SM"
       type: string
