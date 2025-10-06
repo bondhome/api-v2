@@ -175,3 +175,21 @@ Learn:
         Number of times a new Sidekick has been learned on this boot.
         Useful in UI design to know that the learn process completed,
         even if the learned address is the same.
+    new_id:
+      example: "SMXXX12345"
+      type: string
+      readOnly: true
+      description: |
+        ID of the newly learned Sidekick, if any.
+        This field is cleared when opening a new learn window.
+        Populated when a new Sidekick successfully links during the learn window.
+    pattern:
+      example: "^SM"
+      type: string
+      writeOnly: true
+      maxLength: 32
+      description: |
+        Optional regex pattern to filter devices during learning (max 32 characters).
+        Only devices whose IDs match this pattern will be accepted during the learn window.
+        Example: "^SM" accepts only Mate devices (IDs starting with SM).
+        If not specified, all device types are accepted (backward compatible).
