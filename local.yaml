@@ -38,8 +38,9 @@ x-tagGroups:
   - name: Schedules
     tags:
       - Device Schedules
-      - Group Schedules 
+      - Group Schedules
       - Scene Schedules
+      - Channel Schedules
   - name: Virtual Remote Control
     tags:
       - Virtual Remote Control
@@ -49,6 +50,8 @@ x-tagGroups:
       - Sidekick Learn
       - Keystream
       - Channels
+      - Channel Actions
+      - Quick Action Keys
   - name: Weather Sensor
     tags:
       - Weather Sensor

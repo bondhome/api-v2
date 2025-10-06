@@ -1,0 +1,72 @@
+KeyConfiguration:
+  type: object
+  description: |
+    Configuration for the three Quick Action Buttons (K1, K2, K3) on Mate Pro (MT-1500).
+
+    Each button can be independently configured to operate in one of two modes:
+    - goto: Jump to a specified channel when pressed
+    - keystream: Execute programmable actions configured in key_links (BondSync or built-in scenes)
+
+    Default configuration:
+    - K1: goto channel 0 (All)
+    - K2: goto channel 5
+    - K3: goto channel 10
+  properties:
+    "1":
+      $ref: '#/KeyConfig'
+    "2":
+      $ref: '#/KeyConfig'
+    "3":
+      $ref: '#/KeyConfig'
+  example:
+    "1":
+      mode: goto
+      channel: 0
+    "2":
+      mode: keystream
+    "3":
+      mode: goto
+      channel: 15
+
+KeyConfig:
+  type: object
+  properties:
+    mode:
+      type: string
+      enum: [goto, keystream]
+      description: |
+        Button operation mode:
+
+        - `goto`: Pressing the button jumps to the specified channel.
+          The target channel can be set via the `channel` field or by physically
+          holding the button for 2 seconds while on the desired channel.
+
+        - `keystream`: The button transmits BondSync signals and/or executes
+          programmable actions configured in the sidekick's `key_links` field.
+          This mode enables integration with Bond Bridge devices, groups, scenes,
+          and built-in scenes (actions on Mate channels).
+
+        When switching from keystream to goto mode, previously configured key_links
+        are hidden in the app but preserved in the system. Switching back to keystream
+        mode will restore the hidden key_links in the app UI.
+
+        Default mode for all buttons is `goto`.
+    channel:
+      type: integer
+      description: |
+        Target channel for goto mode (required when mode=goto).
+
+        Valid values:
+        - 0-15: Jump to the specified channel
+        - -1: Jump to whichever channel is currently selected (dynamic goto)
+
+        To set the target channel physically on the device:
+        Hold the Quick Action Button for 2 seconds while on the desired channel.
+
+        Not used when mode=keystream.
+      example: 5
+  required:
+    - mode
+  example:
+    mode: goto
+    channel: 5

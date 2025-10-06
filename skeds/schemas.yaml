@@ -16,8 +16,13 @@ Sked:
       type: string
       description: |
         Action which will be run on actor when schedule executes.
-        Required for Device and Group actors. Must not be set for Scene actors.
+        Required for Device, Group, and Channel actors. Must not be set for Scene actors.
         If action requires an argument, `argument` field is required.
+
+        For Channel schedules (MT-1500):
+        - Common shade actions: Raise, Lower, Stop, SetPosition, Preset
+        - Light actions: TurnLightOn, TurnLightOff, SetBrightness
+        - Note: Open/Close are not available for channel schedules
     argument:
       example: 80
       description: |

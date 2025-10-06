@@ -9,9 +9,9 @@ ChannelPath:
     required: true
     schema:
       type: string
-      pattern: '^([1-9]|1[0-5])$'
+      pattern: '^(0|[1-9]|1[0-5])$'
       description: |
-        Channel ID: "1" through "15" for individual channels.
+        Channel ID: "0" for All channel, or "1" through "15" for individual channels.
   get:
     $ref: paths.yaml#/Get
   patch:
@@ -23,9 +23,10 @@ GetList:
 
     Applies to Mate Pro (MT-1500) and Sidekick Blue (SKS-500-B).
 
-    Mate Pro supports 15 individual channels (1-15).
+    Mate Pro supports 16 channels: channel 0 (All) and 15 individual channels (1-15).
 
     Each channel can be configured with a different technology (RF protocol).
+    Channel 0 (All) is a special channel that broadcasts to all paired motors.
     The hash tree structure indicates when channel metadata has changed.
   responses:
     '200':
@@ -64,11 +65,17 @@ Get:
 
     Applies to Mate Pro (MT-1500) and Sidekick Blue (SKS-500-B).
 
+    Channel 0 is the "All" channel that broadcasts to all paired motors.
+    Channel 0 only supports name, label, and enabled fields.
+
     Channels 1-15 are for controlling specific motors or groups of motors.
     Each channel can be independently configured with:
-    - A custom name (displayed on device's LED matrix)
+    - A custom name and label (displayed on device's LED matrix)
     - A technology/protocol (R-number identifier)
     - Technology-specific parameters (addresses, frequencies, etc.)
+    - Channel type (auto-inferred from technology)
+    - Available actions (for schedules and built-in scenes)
+    - Visibility state (enabled/disabled)
   tags:
   - Channels
 
@@ -91,11 +98,15 @@ Patch:
       $ref: ../common/responses.yaml#/InternalServerError
   summary: Modify channel metadata
   description: |
-    Modifies metadata of a channel, such as name, label, and technology assignment.
+    Modifies metadata of a channel, such as name, label, technology assignment,
+    and visibility state.
 
     Applies to Mate Pro (MT-1500) and Sidekick Blue (SKS-500-B).
 
-    Changing the technology template may affect available pairing procedures,
-    required properties, and compatible motors and devices.
+    For channel 0 (All), only name, label, and enabled fields can be modified.
+
+    For channels 1-15, changing the technology template may affect available
+    pairing procedures, required properties, compatible motors and devices,
+    channel type, and available actions.
   tags:
   - Channels

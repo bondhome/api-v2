@@ -55,15 +55,18 @@ Sidekick:
         The ARC motor will then be in the -1 case.
 
     key_links:
-      example: {"1":[], "2":[{"event":"DOUBLE_TAP", "device": "aabbccdd", "action": "SetPosition", "argument": 75}], "3":[]}
+      example: {"1":[{"event":"TAP", "channel": 5, "action": "Raise"}], "2":[{"event":"DOUBLE_TAP", "device": "aabbccdd", "action": "SetPosition", "argument": 75}], "3":[{"event":"TAP", "channel": -1, "action": "Stop"}]}
       type: object
       description: |
         Object describes every link between key events from this Sidekick and the
-        device, group, and scene actions which they trigger. 
-        (In future will permit specifying `group` or `scene` instead of `device`.)
+        device, group, scene, or channel actions which they trigger.
+
+        For Mate Pro (MT-1500), key_links are used for "built-in scenes" - programmable
+        actions that can target channels on the Mate itself, in addition to BondSync
+        integration with Bond Bridge devices, groups, and scenes.
 
         Each key number maps to an array, each element of which is called
-        a "key link". Each key link has three or four fields:
+        a "key link". Each key link has the following fields:
 
           - `event`: which key event to trigger on
             - `TAP`
@@ -71,9 +74,26 @@ Sidekick:
             - `HOLD_START`
             - `HOLD`
             - `HOLD_END`
-          - `device`: which device will act in response to trigger
-          - `action`: action to call on device
-          - `argument`: (optional) argument to above action, such as position percentage
+
+          - Actor (choose one):
+            - `device`: device id to control (BondSync integration)
+            - `group`: group id to control (future)
+            - `scene`: scene id to run (future)
+            - `channel`: [MT-1500 only] channel number to control (0-15, or -1 for "current channel")
+
+          - `action`: action to execute on the actor
+            - For devices: device action (e.g., SetPosition, TurnOn)
+            - For channels: channel action (e.g., Raise, Lower, TurnLightOn)
+
+          - `argument`: (optional) argument to action, such as position percentage
+
+        Special channel values (MT-1500 only):
+          - 0-15: Execute action on the specified channel
+          - -1: Execute action on whichever channel is currently selected ("current channel")
+
+        When channel=-1, the available actions are the union of all channel actions.
+        If the current channel doesn't support the specified action at the time the
+        key is pressed, nothing happens (no error indication on device).
     signal:
       readOnly: true
       example: 97

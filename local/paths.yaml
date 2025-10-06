@@ -132,3 +132,11 @@
     $ref: ../channels/paths.yaml#/ChannelsPath
 /v2/channels/{channel_id}:
     $ref: ../channels/paths.yaml#/ChannelPath
+/v2/channels/{channel_id}/actions/{action_name}:
+    $ref: ../actions/channel-paths.yaml#/ActionPath
+/v2/channels/{channel_id}/skeds:
+    $ref: ../skeds/channel-paths.yaml#/SkedsPath
+/v2/channels/{channel_id}/skeds/{sked_id}:
+    $ref: ../skeds/channel-paths.yaml#/SkedPath
+/v2/keys:
+    $ref: ../keys/paths.yaml#/KeysPath
