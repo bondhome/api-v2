@@ -184,7 +184,7 @@ Learn:
         Populated when a new Sidekick successfully links during the learn window.
         [v4.24+] This field is cleared when opening a new learn window.
     pattern:
-      example: "^SM"
+      example: "^SH"
       type: string
       writeOnly: true
       maxLength: 32
