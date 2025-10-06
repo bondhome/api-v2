@@ -176,7 +176,7 @@ Learn:
         Useful in UI design to know that the learn process completed,
         even if the learned address is the same.
     new_id:
-      example: "SMXXX12345"
+      example: "SHXXX12345"
       type: string
       readOnly: true
       description: |
