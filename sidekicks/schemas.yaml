@@ -191,5 +191,5 @@ Learn:
       description: |
         [v4.24+] Optional regex pattern to filter devices during learning (max 32 characters).
         Only devices whose IDs match this pattern will be accepted during the learn window.
-        Example: "^SM" accepts only Mate devices (IDs starting with SM).
+        Example: "^SH" accepts only Sidekick devices (IDs starting with SH).
         If not specified, all device types are accepted (backward compatible).
