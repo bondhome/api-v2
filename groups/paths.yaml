@@ -176,10 +176,10 @@ GetList:
   - Groups
 Post:
   requestBody:
+    required: true
     content:
       application/json:
         schema:
-          required: true
           $ref: schemas.yaml#/Group
   responses:
     '201':
@@ -203,7 +203,6 @@ Get:
       content:
         application/json:
           schema:
-            required: true
             $ref: schemas.yaml#/Group
       description: Get Group
     '401':
@@ -219,12 +218,11 @@ Get:
   - Groups
 Patch:
   requestBody:
+    required: true
     content:
       application/json:
         schema:
-          required: true
           $ref: schemas.yaml#/Group
-          type: object
   responses:
     '200':
       content:

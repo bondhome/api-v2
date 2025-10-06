@@ -306,10 +306,10 @@ GetList:
   - Devices
 Post:
   requestBody:
+    required: true
     content:
       application/json:
         schema:
-          required: true
           $ref: schemas.yaml#/Device
   responses:
     '201':
@@ -336,7 +336,6 @@ Get:
       content:
         application/json:
           schema:
-            required: true
             $ref: schemas.yaml#/Device
       description: Get device
     '401':
@@ -352,22 +351,11 @@ Get:
   - Devices
 Patch:
   requestBody:
+    required: true
     content:
       application/json:
         schema:
-          required: true
           $ref: schemas.yaml#/Device
-          properties:
-            location:
-              example: Room
-              type: string
-            name:
-              example: Fan
-              type: string
-            type:
-              example: 1
-              type: number
-          type: object
   responses:
     '200':
       content:

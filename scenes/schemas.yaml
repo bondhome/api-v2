@@ -1,4 +1,5 @@
 Scene:
+  type: object
   properties:
     name:
       example: Privacy
@@ -45,14 +46,14 @@ Scene:
         this field will be an array with a single string. However, when Devices
         from multiple Locations are combined in one Scene, this field lists
         each unique Location in arbitrary order.
-      imported_from:
-        description: |
-          If the Scene was imported from a Managed Technology (that is, a parter control system),
-          this field contains the ID of the partner system. The corresponding endpoint on the 
-          Bridge for managing this technology is `api/{imported_from}` and the WebGUI is
-          at `http://{bridge_ip_address}/{imported_from}`.
-        type: string
-        example: "powerview"
+    imported_from:
+      description: |
+        If the Scene was imported from a Managed Technology (that is, a parter control system),
+        this field contains the ID of the partner system. The corresponding endpoint on the
+        Bridge for managing this technology is `api/{imported_from}` and the WebGUI is
+        at `http://{bridge_ip_address}/{imported_from}`.
+      type: string
+      example: "powerview"
   required:
   - name
 

@@ -1,4 +1,5 @@
 Schema:
+  type: object
   properties:
     enabled:
       example: false

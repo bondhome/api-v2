@@ -1,9 +1,11 @@
 Wifi:
+  type: object
   properties:
     shutdown:
       example: 1
       type: number
 Leds:
+  type: object
   properties:
     n:
       example: 5
@@ -26,6 +28,7 @@ Leds:
         In the example, the 5 LEDs are set to Red, Green, Blue, White,
         and Off, respectively.
 Fcc:
+  type: object
   properties:
     enabled:
       example: 0
@@ -92,6 +95,7 @@ Fcc:
       description: |
         RSSI as measured at current frequency, if in an RX mode.
 LiveLog:
+  type: object
   properties:
     ip:
       example: "192.168.1.102"
@@ -100,6 +104,7 @@ LiveLog:
       example: 1337
       type: number
 BeauDb:
+  type: object
   properties:
     live_records:
       example: 20

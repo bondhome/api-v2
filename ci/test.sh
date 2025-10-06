@@ -1,2 +1,2 @@
 pip3 install openapi-spec-validator
-python3 -m openapi_spec_validator local.yaml
+python3 ci/validate_with_refs.py local.yaml

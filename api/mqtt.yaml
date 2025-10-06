@@ -1,4 +1,5 @@
 Schema:
+  type: object
   properties:
     host:
       example: my-mqtt-server.myhome.com
