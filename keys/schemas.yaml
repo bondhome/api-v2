@@ -3,14 +3,17 @@ KeyConfiguration:
   description: |
     Configuration for the three Quick Action Buttons (K1, K2, K3) on Mate Pro (MT-1500).
 
-    Each button can be independently configured to operate in one of two modes:
+    Each button can be independently configured to operate in one of three modes:
+    - cta: Display a call-to-action message prompting users to open the Bond Home app
     - goto: Jump to a specified channel when pressed
     - keystream: Execute programmable actions configured in key_links (BondSync or built-in scenes)
 
     Default configuration:
-    - K1: goto channel 0 (All)
-    - K2: goto channel 5
-    - K3: goto channel 10
+    - K1: cta mode
+    - K2: cta mode
+    - K3: cta mode
+
+    Note: Once a button is configured to goto or keystream mode, it cannot be set back to cta mode.
   properties:
     "1":
       $ref: '#/KeyConfig'
@@ -20,8 +23,7 @@ KeyConfiguration:
       $ref: '#/KeyConfig'
   example:
     "1":
-      mode: goto
-      channel: 0
+      mode: cta
     "2":
       mode: keystream
     "3":
@@ -33,9 +35,15 @@ KeyConfig:
   properties:
     mode:
       type: string
-      enum: [goto, keystream]
+      enum: [cta, goto, keystream]
       description: |
         Button operation mode:
+
+        - `cta`: Call To Action mode (default). Pressing the button displays a
+          message on the LED matrix prompting users to open the Bond Home app.
+          This mode encourages app discovery for users who may not be aware of
+          scheduling, channel visibility, and programmable action features.
+          Once changed to goto or keystream mode, a button cannot be set back to cta.
 
         - `goto`: Pressing the button jumps to the specified channel.
           The target channel can be set via the `channel` field or by physically
@@ -50,7 +58,7 @@ KeyConfig:
         are hidden in the app but preserved in the system. Switching back to keystream
         mode will restore the hidden key_links in the app UI.
 
-        Default mode for all buttons is `goto`.
+        Default mode for all buttons is `cta`.
     channel:
       type: integer
       description: |
@@ -63,7 +71,7 @@ KeyConfig:
         To set the target channel physically on the device:
         Hold the Quick Action Button for 2 seconds while on the desired channel.
 
-        Not used when mode=keystream.
+        Not used when mode=cta or mode=keystream.
       example: 5
   required:
     - mode

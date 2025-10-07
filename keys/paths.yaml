@@ -23,13 +23,15 @@ Get:
     Get the current configuration for all three Quick Action Buttons (K1, K2, K3)
     on Mate Pro (MT-1500).
 
-    Each button can be configured to either jump to a channel (goto mode) or
-    execute programmable actions via key_links (keystream mode).
+    Each button can be configured to operate in one of three modes:
+    - cta: Display a call-to-action message prompting users to open the Bond Home app
+    - goto: Jump to a specified channel
+    - keystream: Execute programmable actions via key_links
 
     Default configuration:
-    - K1: goto channel 0 (All)
-    - K2: goto channel 5
-    - K3: goto channel 10
+    - K1: cta mode
+    - K2: cta mode
+    - K3: cta mode
   tags:
   - Quick Action Keys
 
@@ -58,6 +60,9 @@ Patch:
     buttons you want to modify.
 
     Mode switching behavior:
+    - Switching from cta mode: Once a button is changed from cta to goto or keystream
+      mode, it cannot be switched back to cta mode.
+
     - Switching from keystream to goto mode: Previously configured key_links
       are hidden in the app but preserved. They can be viewed again by switching
       back to keystream mode.
@@ -70,7 +75,7 @@ Patch:
     the button for 2 seconds while on the desired channel. This updates the
     `channel` field in the configuration.
 
-    Note: When mode=goto, the `channel` field is required. When mode=keystream,
+    Note: When mode=goto, the `channel` field is required. When mode=keystream or mode=cta,
     the `channel` field is ignored.
   tags:
   - Quick Action Keys
