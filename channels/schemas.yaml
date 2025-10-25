@@ -109,8 +109,7 @@ Channel:
         The actions list may include any action supported by the technology without
         strict atomicity requirements.
 
-        For channel 0 (All), the actions list is the union of all actions from
-        channels 1-15.
+        Not present for channel 0.
 
 ChannelList:
   type: object
