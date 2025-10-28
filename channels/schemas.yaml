@@ -26,6 +26,11 @@ Channel:
         Determines the RF protocol used for motor control.
         Uses the same R-number format as the devices API.
 
+        To configure a channel for Relay mode (BondSync-only communication
+        relayed via Bridge), set template to "(relay)". [since v4.24.2]
+        Relay channels have type "MS" but expose no actions since control
+        is handled by the paired Bridge device.
+
         Not present for channel 0 (All channel).
     properties:
       type: object
@@ -108,6 +113,9 @@ Channel:
         Note: Unlike devices, channels do not expose a Features field or maintain state.
         The actions list may include any action supported by the technology without
         strict atomicity requirements.
+
+        Relay channels (template: "(relay)") will return an empty actions array since
+        control is handled by the paired Bridge device. [since v4.24.2]
 
         Not present for channel 0.
 
