@@ -27,7 +27,7 @@ Channel:
         Uses the same R-number format as the devices API.
 
         To configure a channel for Relay mode (BondSync-only communication
-        relayed via Bridge), set template to "(relay)".
+        relayed via Bridge), set template to "(relay)". [since v4.24.2]
         Relay channels have type "MS" but expose no actions since control
         is handled by the paired Bridge device.
 
@@ -115,7 +115,7 @@ Channel:
         strict atomicity requirements.
 
         Relay channels (template: "(relay)") will return an empty actions array since
-        control is handled by the paired Bridge device.
+        control is handled by the paired Bridge device. [since v4.24.2]
 
         Not present for channel 0.
 
