@@ -61,6 +61,9 @@ x-tagGroups:
   - name: Bridge
     tags:
       - Bridge
+  - name: Transformer
+    tags:
+      - Transformer
   - name: Signals
     tags:
       - Transmit

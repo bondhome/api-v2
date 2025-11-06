@@ -11,6 +11,8 @@
     $ref: ../debug/beau.yaml
 /v2/bridge:
     $ref: ../bridge/paths.yaml
+/v2/transformer:
+    $ref: ../transformer/paths.yaml
 /v2/sys/locale:
     $ref: ../locale/paths.yaml
 /v2/devices:

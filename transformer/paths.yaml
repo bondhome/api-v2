@@ -1,0 +1,100 @@
+get:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Transformer
+      description: Get Transformer info
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+    - OAuth: ["oauth2"]
+  summary: Get Transformer info
+  description: |
+    Returns comprehensive transformer status including tap configuration,
+    PLC fixture count, current monitoring, fault status, and commissioning state.
+
+    This endpoint provides all information necessary for monitoring transformer
+    health and managing the commissioning workflow.
+  tags:
+  - Transformer
+
+patch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Transformer
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Transformer
+      description: Transformer configuration updated
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Update Transformer configuration
+  description: |
+    Modify transformer settings. Patchable fields include:
+
+    - `name`: User-assigned transformer name
+    - `location`: User-assigned location
+    - `tap_mode`: Array of 3 tap modes ("legacy" or "plc")
+    - `current_limit_yellow_ma`: Soft current warning threshold
+    - `current_limit_red_ma`: Hard current shutdown threshold
+    - `commission_mode`: Enable/disable commissioning mode
+    - `commission_timeout_ms`: Commissioning auto-expire duration
+    - `auto_detect_start`: Trigger fixture auto-detection (set to true)
+
+    **Important notes:**
+
+    - When changing `tap_mode`, at least one tap must remain in `plc` mode
+      if any PLC fixtures are currently commissioned
+    - Setting `commission_mode` to `true` will shut off all taps except
+      the commissioning port
+    - Setting `auto_detect_start` to `true` requires `commission_mode` to be `true`
+    - Auto-detection results appear in read-only fields `detected_capability`
+      and `detected_current_ma`
+
+    All read-only fields are ignored if included in the PATCH request.
+  tags:
+  - Transformer
+
+delete:
+  responses:
+    '204':
+      description: Transformer settings reset to defaults
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Reset Transformer to factory defaults
+  description: |
+    Resets transformer configuration to factory default values.
+
+    **Warning:** This does not delete commissioned PLC fixtures (devices),
+    but it will reset tap modes, current limits, and other configuration
+    to default values.
+
+    To fully reset the transformer, you must also DELETE all PLC fixture
+    devices (device IDs 1-60) and legacy tap devices (device IDs 1001-1003).
+  tags:
+  - Transformer
