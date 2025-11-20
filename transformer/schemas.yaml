@@ -79,73 +79,31 @@ Transformer:
         - Mode auto-expires after `commission_timeout_ms`
 
         Used during fixture pairing and testing workflow.
-    commission_timeout_ms:
-      type: integer
-      example: 300000
-      description: |
-        Auto-expire timeout for commission_mode in milliseconds.
-        Default: 300000 (5 minutes)
-
-        After this duration, commission_mode automatically reverts to false
-        and normal tap operation resumes.
     commission_remaining_ms:
       type: integer
       readOnly: true
-      example: 0
+      example: 30000
       description: |
         Milliseconds remaining before commission_mode automatically disables.
         Returns 0 when commission_mode is false.
-    auto_detect_start:
-      type: boolean
-      example: false
-      description: |
-        Trigger auto-detection of fixture capabilities.
-
-        PATCH to `true` to start auto-detection process.
-        Requires `commission_mode` to be `true`.
-
-        The transformer will analyze the fixture connected to the commissioning
-        port and attempt to determine its capabilities and current draw.
-    auto_detect_busy:
-      type: boolean
-      readOnly: true
-      example: false
-      description: |
-        Indicates whether auto-detection is currently running.
-        When `true`, detection is in progress. When `false`, detection
-        has completed or has not been started.
-    detected_capability:
-      type: string
-      nullable: true
-      readOnly: true
-      enum: [null, "dimmable", "cct", "rgb", "rgbw", "rgbww"]
-      example: "rgbw"
-      description: |
-        Auto-detected fixture capability from most recent detection cycle.
-
-        - `null`: No fixture detected or detection not run
-        - `dimmable`: Dimmable white only
-        - `cct`: Tunable white (cool/warm)
-        - `rgb`: RGB color
-        - `rgbw`: RGB + warm white
-        - `rgbww`: RGB + warm white + cool white (5 channel)
-
-        This is a suggestion only. User may override during commissioning.
-    detected_current_ma:
-      type: integer
-      nullable: true
-      readOnly: true
-      example: 180
-      description: |
-        Detected current draw in milliamps from most recent auto-detection.
-        Returns `null` if no detection has been performed or no fixture detected.
-    next_available_device_id:
+    commission_device_id:
       type: integer
       readOnly: true
       example: 13
       description: |
-        Next available device ID for commissioning a new PLC fixture.
+        Device ID of newly created PLC fixture.
         Range: 1-60
+        Error: -1
 
-        This is the device ID that will be assigned when the next fixture
-        is successfully commissioned via POST to /v2/devices.
+        App can then test fixture by using /v2/devices/{commission_device_id}
+
+        Present whenever commission_mode is false.
+    commission_error_msg:
+      type: string
+      readOnly: true
+      example: No fixture detected
+      description: |
+        Brief user-readable message 
+
+        Only present if commissioning process failed.
+
