@@ -18,11 +18,14 @@ IndicateGet:
       $ref: ../common/responses.yaml#/NotFound
     '500':
       $ref: ../common/responses.yaml#/InternalServerError
-  summary: Get indicate status
+  summary: Get indication status
   description: |
-    Get the current status of the identify animation.
+    [Mate Pro (MT-1500) only] [v4.26+]
 
-    Returns remaining seconds of current identify animation, or 0 if not currently identifying.
+    Get the current status of visual indication animations.
+
+    Returns the remaining duration (in seconds) for any active animation,
+    or 0 if no animation is running.
   tags:
   - Indicate
 
@@ -31,7 +34,7 @@ IndicatePatch:
     content:
       application/json:
         schema:
-          $ref: '#/IndicateSchema'
+          $ref: '#/IndicatePatchSchema'
   responses:
     '200':
       description: Indicate status updated
@@ -47,45 +50,69 @@ IndicatePatch:
       $ref: ../common/responses.yaml#/NotFound
     '500':
       $ref: ../common/responses.yaml#/InternalServerError
-  summary: Trigger identify animation
+  summary: Trigger visual indication
   description: |
-    Trigger or cancel the identify animation.
+    [Mate Pro (MT-1500) only] [v4.26+]
 
-    Set `identify` to 1-30 to trigger identify animation for that many seconds.
-    Set `identify` to 0 to cancel an ongoing identify animation.
+    Trigger or cancel visual indication animations on the device.
 
-    Requires either unlocked token (locked=0) OR valid token in request header.
-    Does not affect token locked state or discovery age.
+    Set a field to 1-30 to trigger that animation for the specified number of seconds.
+    Set to 0 to cancel an ongoing animation.
+
+    The `identify` and `commit` animations are mutually exclusive: triggering one
+    automatically cancels the other.
+
+    Authentication: Requires either unlocked token (locked=0) OR valid token in
+    request header. Does not affect token locked state or discovery age.
   tags:
   - Indicate
 
 IndicateSchema:
   type: object
+  description: |
+    [Mate Pro (MT-1500) only] [v4.26+]
+
+    Visual indication animations displayed on the device's LED matrix.
+
+    All animations:
+    - Accept duration 0-30 seconds (0 cancels, 1-30 triggers)
+    - Use the currently configured brightness setting
+    - Can be dismissed early by pressing any button on the device
+    - Are mutually exclusive (triggering one cancels any other)
+
+    On GET, values indicate remaining seconds of the animation, or 0 if inactive.
+  properties:
+    identify:
+      example: 0
+      type: integer
+      description: |
+        Radar/sonar animation: expanding concentric circles from center.
+
+        Used to locate a specific Mate among multiple deployed units,
+        helping users avoid setting up or modifying the wrong device.
+    commit:
+      example: 3
+      type: integer
+      description: |
+        Checkmark animation: brief confirmation indicator.
+
+        Used to confirm that a change has been applied, such as modifying
+        channel technology from the app.
+
+IndicatePatchSchema:
+  type: object
+  description: |
+    Provide exactly one field to trigger that animation.
   properties:
     identify:
       example: 10
       type: integer
       description: |
-        [MT-1500 only] [v4.24+]
-        Identify duration in seconds (0-30).
-
-        When present, indicates the product supports the identify feature.
-
-        To trigger identify, PATCH this field with a value from 1 to 30,
-        specifying how many seconds the identify animation should run.
-
-        To cancel an ongoing identify animation, PATCH with 0.
-
-        The identify feature displays a radar/sonar-style animation (expanding
-        concentric circles from center point) on the device's LED matrix to help
-        users locate a specific Mate when multiple units are deployed.
-
-        The animation uses the currently configured brightness setting and can
-        be dismissed early by pressing any button on the device.
-
-        Authentication: Either the token must be unlocked (locked=0) OR a valid
-        token must be provided in the request header. This does not affect the
-        locked state or discovery age of the token endpoint.
-
-        Read-only when retrieved via GET. Value indicates remaining seconds of
-        current identify animation, or 0 if not currently identifying.
+        Radar/sonar animation duration in seconds (0-30).
+    commit:
+      example: 3
+      type: integer
+      description: |
+        Checkmark animation duration in seconds (0-30).
+  example:
+    identify: 10
