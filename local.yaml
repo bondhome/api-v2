@@ -89,6 +89,7 @@ x-tagGroups:
       - Time
       - Power
       - Locale
+      - Indicate
   - name: Debug
     tags:
       - Database

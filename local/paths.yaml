@@ -113,6 +113,8 @@
   $ref: ../sys/paths.yaml#/TimePath
 /v2/sys/power:
   $ref: ../sys/paths.yaml#/PowerPath
+/v2/sys/indicate:
+  $ref: ../sys/indicate.yaml#/IndicatePath
 /v2/sys/backup:
   get:
     $ref: ../firmware/paths.yaml#/BackupGet
