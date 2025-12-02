@@ -45,14 +45,20 @@ jobs:
           command: |
             apk add --no-cache curl jq
             PR_RESPONSE=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/bondhome/api-v2/pulls?head=bondhome:$CIRCLE_BRANCH")
-            PR_COUNT=$(echo "$PR_RESPONSE" | jq '. | length')
-            if [ "$PR_COUNT" -gt 0 ]; then
-              PR_NUMBER=$(echo "$PR_RESPONSE" | jq '.[0].number')
-              S3_URL="https://bond-api-docs.s3.amazonaws.com/$(echo $CIRCLE_BRANCH | sed -e "s/\//-/g")-local.html"
-              COMMENT_PAYLOAD=$(printf '{ "body": "The rendered doc is at: %s" }' "$S3_URL")
-              curl -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/json" -d "$COMMENT_PAYLOAD" "https://api.github.com/repos/bondhome/api-v2/issues/$PR_NUMBER/comments"
+            echo "GitHub API Response: $PR_RESPONSE"
+            RESPONSE_TYPE=$(echo "$PR_RESPONSE" | jq -r 'type')
+            if [ "$RESPONSE_TYPE" = "array" ]; then
+              PR_COUNT=$(echo "$PR_RESPONSE" | jq '. | length')
+              if [ "$PR_COUNT" -gt 0 ]; then
+                PR_NUMBER=$(echo "$PR_RESPONSE" | jq '.[0].number')
+                S3_URL="https://bond-api-docs.s3.amazonaws.com/$(echo $CIRCLE_BRANCH | sed -e "s/\//-/g")-local.html"
+                COMMENT_PAYLOAD=$(printf '{ "body": "The rendered doc is at: %s" }' "$S3_URL")
+                curl -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/json" -d "$COMMENT_PAYLOAD" "https://api.github.com/repos/bondhome/api-v2/issues/$PR_NUMBER/comments"
+              else
+                echo "No PR found for branch $CIRCLE_BRANCH, skipping comment"
+              fi
             else
-              echo "No PR found for branch $CIRCLE_BRANCH, skipping comment"
+              echo "GitHub API returned non-array response (type: $RESPONSE_TYPE)"
             fi
   deploy_master:
     docker:
