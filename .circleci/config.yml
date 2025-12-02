@@ -44,10 +44,16 @@ jobs:
           name: Comment on PR with S3 link
           command: |
             apk add --no-cache curl jq
-            PR_NUMBER=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/bondhome/api-v2/pulls?head=bondhome:$CIRCLE_BRANCH" | jq '.[].number')
-            S3_URL="https://bond-api-docs.s3.amazonaws.com/$(echo $CIRCLE_BRANCH | sed -e "s/\//-/g")-local.html"
-            COMMENT_PAYLOAD=$(printf '{ "body": "The rendered doc is at: %s" }' "$S3_URL")
-            curl -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/json" -d "$COMMENT_PAYLOAD" "https://api.github.com/repos/bondhome/api-v2/issues/$PR_NUMBER/comments"
+            PR_RESPONSE=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/bondhome/api-v2/pulls?head=bondhome:$CIRCLE_BRANCH")
+            PR_COUNT=$(echo "$PR_RESPONSE" | jq '. | length')
+            if [ "$PR_COUNT" -gt 0 ]; then
+              PR_NUMBER=$(echo "$PR_RESPONSE" | jq '.[0].number')
+              S3_URL="https://bond-api-docs.s3.amazonaws.com/$(echo $CIRCLE_BRANCH | sed -e "s/\//-/g")-local.html"
+              COMMENT_PAYLOAD=$(printf '{ "body": "The rendered doc is at: %s" }' "$S3_URL")
+              curl -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/json" -d "$COMMENT_PAYLOAD" "https://api.github.com/repos/bondhome/api-v2/issues/$PR_NUMBER/comments"
+            else
+              echo "No PR found for branch $CIRCLE_BRANCH, skipping comment"
+            fi
   deploy_master:
     docker:
       - image: python:3.7-alpine
