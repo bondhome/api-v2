@@ -1587,6 +1587,49 @@ description: |
     To change the position of both rails, call both actions in any order.
     The start times of the rails motion may be slightly staggered.
 
+  ## Tilt
+
+  The Tilt feature is used to open or close a tiltable shade or similar mechanism without partial/positional stops.  
+  For finer-grained positional control, see the TiltPosition feature.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+  (none)
+
+  ### Actions
+
+  - **TiltOpen()**: Fully open tilt (e.g., rotate open).  
+  - **TiltClose()**: Fully close tilt (e.g., rotate closed).
+
+  ## TiltStep
+
+  The TiltStep feature provides partial tilt adjustments. This can be used in small increments, repeated as needed.  
+  This feature is available only when we are unable to provide a TiltPosition feature.
+
+  Integrations (including Amazon Alexa and Google Home) expose these actions for step-based adjustments. 
+  Users could, for instance, build custom routines with multiple TiltStep actions separated by small delays to approximate a partial tilt.
+
+  ### Properties
+
+  (none)
+
+  ### State Variables
+
+  (none)
+
+  ### Actions
+
+  - **TiltStepOpen()**: Increments tilt more open by one step.  
+    If shade is already fully open, this action may have no effect,
+    or it may cause the shade to move a small amount further in either direction.
+  - **TiltStepClose()**: Increments tilt more closed by one step.  
+    If shade is already fully closed, this action may have no effect,
+    or it may cause the shade to move a small amount further in either direction.
+
   ## TiltPosition
 
   The TiltPosition feature is used to describe a device that can be tilted to a specific position as a percentage,
