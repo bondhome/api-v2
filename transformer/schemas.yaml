@@ -60,15 +60,15 @@ Transformer:
       type: string
       nullable: true
       readOnly: true
-      enum: [null, "overload_yellow", "overload_red", "overload_hard"]
+      enum: [null, "overload_warning", "overload_shutdown", "overload_short"]
       example: null
       description: |
         Current fault condition:
 
         - `null`: No fault, normal operation
-        - `overload_yellow`: Approaching current limit (soft warning)
-        - `overload_red`: Over current limit, taps have shut down
-        - `overload_hard`: Hard fault detected (likely short circuit)
+        - `overload_warning`: Approaching current limit (soft warning)
+        - `overload_shutdown`: Over current limit, taps have shut down
+        - `overload_short`: Hard fault detected (likely short circuit)
     commission_mode:
       type: boolean
       example: false
