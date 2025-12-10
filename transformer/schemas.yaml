@@ -36,12 +36,13 @@ Transformer:
       example: 60
       description: Maximum number of PLC fixtures supported by this transformer
     current_ma:
-      type: integer
+      type: integer or null
       readOnly: true
       example: 2400
       description: |
         Current total current draw across all taps in milliamps.
         Updated continuously during operation.
+        Null in the case of failure to communicate with the current sensor
     current_limit_yellow_ma:
       type: integer
       example: 5000
