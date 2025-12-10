@@ -43,19 +43,19 @@ Transformer:
         Current total current draw across all taps in milliamps.
         Updated continuously during operation.
         Null in the case of failure to communicate with the current sensor
-    current_limit_yellow_ma:
+    cur_limit_warning_ma:
       type: integer
       example: 5000
       description: |
         Soft current limit threshold in milliamps.
-        When exceeded, fault status changes to "overload_yellow" as a warning.
+        When exceeded, fault status changes to "overload_warning" as a warning.
         System continues to operate.
-    current_limit_red_ma:
+    cur_limit_shutdown_ma:
       type: integer
       example: 6000
       description: |
         Hard current limit threshold in milliamps.
-        When exceeded, taps shut down and fault status changes to "overload_red".
+        When exceeded, taps shut down and fault status changes to "overload_shutdown".
     fault:
       type: string
       nullable: true
