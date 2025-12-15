@@ -1,0 +1,118 @@
+IndicatePath:
+  get:
+    $ref: '#/IndicateGet'
+  patch:
+    $ref: '#/IndicatePatch'
+
+IndicateGet:
+  responses:
+    '200':
+      description: Indicate status
+      content:
+        application/json:
+          schema:
+            $ref: '#/IndicateSchema'
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Get indication status
+  description: |
+    [Mate Pro (MT-1500) only] [v4.26+]
+
+    Get the current status of visual indication animations.
+
+    Returns the remaining duration (in seconds) for any active animation,
+    or 0 if no animation is running.
+  tags:
+  - Indicate
+
+IndicatePatch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: '#/IndicatePatchSchema'
+  responses:
+    '200':
+      description: Indicate status updated
+      content:
+        application/json:
+          schema:
+            $ref: '#/IndicateSchema'
+    '400':
+      $ref: ../common/responses.yaml#/BadRequest
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Trigger visual indication
+  description: |
+    [Mate Pro (MT-1500) only] [v4.26+]
+
+    Trigger or cancel visual indication animations on the device.
+
+    Set a field to 1-30 to trigger that animation for the specified number of seconds.
+    Set to 0 to cancel an ongoing animation.
+
+    The `identify` and `commit` animations are mutually exclusive: triggering one
+    automatically cancels the other.
+
+    Authentication: Requires either unlocked token (locked=0) OR valid token in
+    request header. Does not affect token locked state or discovery age.
+  tags:
+  - Indicate
+
+IndicateSchema:
+  type: object
+  description: |
+    [Mate Pro (MT-1500) only] [v4.26+]
+
+    Visual indication animations displayed on the device's LED matrix.
+
+    All animations:
+    - Accept duration 0-30 seconds (0 cancels, 1-30 triggers)
+    - Use the currently configured brightness setting
+    - Can be dismissed early by pressing any button on the device
+    - Are mutually exclusive (triggering one cancels any other)
+
+    On GET, values indicate remaining seconds of the animation, or 0 if inactive.
+  properties:
+    identify:
+      example: 0
+      type: integer
+      description: |
+        Radar/sonar animation: expanding concentric circles from center.
+
+        Used to locate a specific Mate among multiple deployed units,
+        helping users avoid setting up or modifying the wrong device.
+    commit:
+      example: 3
+      type: integer
+      description: |
+        Checkmark animation: brief confirmation indicator.
+
+        Used to confirm that a change has been applied, such as modifying
+        channel technology from the app.
+
+IndicatePatchSchema:
+  type: object
+  description: |
+    Provide exactly one field to trigger that animation.
+  properties:
+    identify:
+      example: 10
+      type: integer
+      description: |
+        Radar/sonar animation duration in seconds (0-30).
+    commit:
+      example: 3
+      type: integer
+      description: |
+        Checkmark animation duration in seconds (0-30).
+  example:
+    identify: 10
