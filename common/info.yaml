@@ -1591,9 +1591,15 @@ description: |
 
     - **SetUpperRailPosition(position)**: Set the position of the upper rail.
     - **SetLowerRailPosition(position)**: Set the position of the lower rail.
+    - **RaiseUpperRail()**: Raise the upper rail.
+    - **LowerUpperRail()**: Lower the upper rail.
+    - **RaiseLowerRail()**: Raise the lower rail.
+    - **LowerLowerRail()**: Lower the lower rail.
 
-    The SetPosition action will set the upper rail to 0% and the lower rail to the
-    requested position.
+    TDBU shades also have the Position feature. OpenRaiseRetract and Position actions
+    default to bottom-up (lower rail) semantics: SetPosition controls the lower rail,
+    Raise/Lower/Open/Close operate on the lower rail, and the upper rail is driven
+    all the way up.
 
     Note: if an action requests a position that is not possible due to the
     position of the other rail, the Bond Bridge will adjust the other rail
