@@ -46,6 +46,10 @@ Group:
       example:
         - "Open"
         - "Close"
+        - "Raise"
+        - "Lower"
+        - "Retract"
+        - "Extend"
         - "Preset"
       description: |
         The list of available Actions on the Group.

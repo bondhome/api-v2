@@ -1463,14 +1463,24 @@ description: |
 
   NOTE: The heat level is remembered on TurnOff and restored on TurnOn.
 
-  ## Open
+  ## OpenRaiseRetract
 
-  The Open feature is used to describe a device that can be opened and closed.
-  Common use cases are motorized shades and garage doors.
+  The OpenRaiseRetract feature is used to describe a device that can be opened and closed,
+  raised and lowered, or retracted and extended.
+  Common use cases are motorized shades, awnings, and garage doors.
 
   ### Properties
 
-  (none)
+   - **open_raises**: (boolean) When true (default), Open() raises the device and Close() lowers it.
+     When false, Open() lowers the device and Close() raises it.
+     Defaults to `true` for most devices.
+     Defaults to `false` for AWNING subtype and Top-Down roller shades.
+
+   - **open_retracts**: (boolean) When true (default), Open() retracts the device and Close() extends it.
+     When false, Open() extends the device and Close() retracts it.
+     Defaults to `true` for most devices.
+     Defaults to `false` for AWNING subtype.
+     Defaults to `true` for Top-Down roller shades.
 
   ### State Variables
 
@@ -1480,20 +1490,30 @@ description: |
 
   - **Open()**: Open the device.
   - **Close()**: Close the device.
-  - **ToggleOpen()**: Close the device if it's open, open it if it's closed
+  - **ToggleOpen()**: Close the device if it's open, open it if it's closed.
+  - **Raise()**: Raise the device. Equivalent to Open() if `open_raises` is true, otherwise equivalent to Close().
+  - **Lower()**: Lower the device. Equivalent to Close() if `open_raises` is true, otherwise equivalent to Open().
+  - **Retract()**: Retract the device. Equivalent to Open() if `open_retracts` is true, otherwise equivalent to Close().
+  - **Extend()**: Extend the device. Equivalent to Close() if `open_retracts` is true, otherwise equivalent to Open().
 
   ### Notes
+
+  The three action pairs serve different integration needs:
+
+  - **Raise/Lower**: Map to up/down buttons on remotes and wall switches.
+  - **Open/Close**: Support voice assistants and interfaces using "open"/"close" intents.
+  - **Retract/Extend**: Align with Position semantics (0 = retracted, 100 = extended); included for completeness.
 
   If your remote has a discrete stopping command, consider using the **Hold()** action
   to stop the motion of the device.
 
   ## Position
 
-  The Position feature is used to describe a device that can be opened
-  to a specific position as a percentage.
+  The Position feature is used to describe a device that can be set
+  to a specific position as a percentage of extension.
   The common use case is motorized shades.
 
-  The Position feature requires the Open feature.
+  The Position feature requires the OpenRaiseRetract feature.
 
   ### Properties
 
@@ -1501,15 +1521,13 @@ description: |
 
   ### State Variables
 
-   - **position**: (integer) value from 0 to 100: 0 = open, 100 = closed.
+   - **position**: (integer) value from 0 to 100: 0 = retracted, 100 = extended.
 
   ### Actions
 
-  - **SetPosition(position)**: Set device to specified position percentage.
-  - **IncreasePosition(amount)**: Close the device by the specified percentage
-   of the full range.
-  - **DecreasePosition(amount)**: Open the device by the specified percentage
-   of the full range.
+  - **SetPosition(position)**: Set device to specified position percentage (0 = retracted, 100 = extended).
+  - **IncreasePosition(amount)**: Extend the device by the specified percentage of the full range.
+  - **DecreasePosition(amount)**: Retract the device by the specified percentage of the full range.
 
   ### Notes
 
