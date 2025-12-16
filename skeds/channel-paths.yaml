@@ -71,12 +71,11 @@ Post:
        - POSTed `mark` is `dawn`, `dusk`, `sunrise`, or `sunset`, but `sys/time.grid` or `sys/time.tz` is `null`
 
     Available actions depend on the channel type. Common actions:
-    - Motorized Shades (MS): Raise, Lower, Retract, Extend, Stop, SetPosition, Preset
+    - Motorized Shades (MS): Raise, Lower, Stop, SetPosition, Preset
     - Lights (LT): TurnLightOn, TurnLightOff, SetBrightness
 
     Note: Open and Close actions are not available for channel schedules,
-    as Mate does not track the `open_raises` and `open_retracts` properties
-    that determine the mapping between Raise/Lower/Retract/Extend and Open/Close
+    as Mate does not track the inversion between Raise/Lower and Open/Close
     for different shade types (e.g., awnings).
 
   tags:
