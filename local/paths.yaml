@@ -99,6 +99,8 @@
   $ref: ../network/paths.yaml#/WifiStaPath
 /v2/sys/wifi/watchdog:
   $ref: ../network/paths.yaml#/WifiWatchDogPath
+/v2/sys/wifi/ap:
+  $ref: ../network/paths.yaml#/WifiApPath
 /v2/sys/eth:
   $ref: ../network/paths.yaml#/EthPath
 /v2/sys/upgrade:

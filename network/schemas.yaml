@@ -149,6 +149,33 @@ Eth:
     dns_alt:
       example: '8.8.4.4'
       type: string
+Ap:
+  description: Config AP (soft access point) control settings
+  properties:
+    auto:
+      example: true
+      type: boolean
+      description: |
+        - `true` (default): Config AP follows automatic timer logic.
+          AP is shown when AWS connection fails or during setup.
+        - `false`: Manual override mode. AP state is controlled
+          exclusively by the `enabled` field and persisted to flash.
+    enabled:
+      example: false
+      type: boolean
+      description: |
+        Current Config AP state (read), or desired state (write).
+
+        In auto mode (`auto: true`):
+        - On read: reflects whether AP is currently visible
+        - On write: temporarily enables/disables AP via internal timer
+
+        In manual mode (`auto: false`):
+        - On read: reflects persisted manual setting
+        - On write: immediately enables/disables AP and persists to flash
+
+        Use `{"auto": false, "enabled": false}` to force-disable Config AP
+        even when Bond cannot reach AWS (e.g., firewall blocks MQTT).
 Scan:
   example:
     hidden_requires_bssid: true
