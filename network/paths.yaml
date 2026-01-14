@@ -322,6 +322,8 @@ ApGet:
   - BasicAuth: []
   summary: Get Config AP settings
   description: |
+    [Added in v4.27.60]
+
     Get the current Config AP (soft access point) control settings.
 
     The Config AP is the "Bond Config XXXX" Wi-Fi network that appears
@@ -352,6 +354,8 @@ ApPatch:
   - BasicAuth: []
   summary: Control Config AP visibility
   description: |
+    [Added in v4.27.60]
+
     Control the Config AP (soft access point) behavior.
 
     **Auto mode (`auto: true`, default):**
