@@ -20,6 +20,11 @@ WifiWatchDogPath:
     $ref: ../network/paths.yaml#/WatchdogGet
   patch:
     $ref: ../network/paths.yaml#/WatchdogPatch
+WifiApPath:
+  get:
+    $ref: ../network/paths.yaml#/ApGet
+  patch:
+    $ref: ../network/paths.yaml#/ApPatch
 WifiUpgradePath:
   get:
     $ref: ../firmware/paths.yaml#/Get
@@ -302,3 +307,70 @@ WatchdogPatch:
     may lose its connection after some period of time.
   tags:
   - Network Watchdog
+
+ApGet:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Ap
+      description: Current Config AP settings
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+  security:
+  - BasicAuth: []
+  summary: Get Config AP settings
+  description: |
+    Get the current Config AP (soft access point) control settings.
+
+    The Config AP is the "Bond Config XXXX" Wi-Fi network that appears
+    during device setup or when the Bond cannot reach AWS.
+
+    The `auto` field indicates whether automatic timer-based control is active.
+    The `enabled` field reflects the current actual AP visibility state.
+  tags:
+  - Config AP
+ApPatch:
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: schemas.yaml#/Ap
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            $ref: schemas.yaml#/Ap
+      description: Config AP settings updated
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  security:
+  - BasicAuth: []
+  summary: Control Config AP visibility
+  description: |
+    Control the Config AP (soft access point) behavior.
+
+    **Auto mode (`auto: true`, default):**
+    The AP automatically appears when Bond cannot reach AWS, and hides
+    after successful cloud connection. Setting `enabled` in this mode
+    temporarily manipulates the internal timer.
+
+    **Manual mode (`auto: false`):**
+    Full manual control. The `enabled` state is persisted to flash and
+    survives reboots. Use this to force-disable the Config AP on networks
+    where MQTT is blocked but HTTP works (e.g., corporate firewalls).
+
+    **Example: Force-disable Config AP**
+    ```json
+    PATCH /v2/sys/wifi/ap
+    {"auto": false, "enabled": false}
+    ```
+
+    **Note:** A "green reset" (factory reset) will restore `auto: true`
+    to prevent users from being locked out of their device.
+  tags:
+  - Config AP
