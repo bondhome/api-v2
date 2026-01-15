@@ -108,7 +108,7 @@ Transformer:
 
         Only present if commissioning process failed.
     commission_device_info:
-    type: object
+      type: object
       readOnly: false
       example: 
         name: "Light 1"
