@@ -111,19 +111,19 @@ Transformer:
       type: object
       properties:
         name:
-          type: "string"
+          type: string
           examples:
             - "Light 1"
         location:
-          type: "string"
+          type: string
           examples:
             - "My Room"
         type:
-          type: "string"
+          type: string
           examples:
             - "LT"
         subtype:
-          type: "string"
+          type: string
           examples:
             - "GE"
       readOnly: false
