@@ -112,20 +112,16 @@ Transformer:
       properties:
         name:
           type: string
-          examples:
-            - "Light 1"
+          example: "Light 1"
         location:
           type: string
-          examples:
-            - "My Room"
+          example: "My Room"
         type:
           type: string
-          examples:
-            - "LT"
+          example: "LT"
         subtype:
           type: string
-          examples:
-            - "GE"
+          example: "GE"
       readOnly: false
       description: |
         Device infos for next successfully commissioned device.
