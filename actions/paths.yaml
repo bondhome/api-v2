@@ -38,15 +38,18 @@ Put:
             _lock_expiration: 5000
   responses:
     '200':
-      description: Action executed [since v2.12.4]
+      description: |
+        Action executed [since v2.12.4]
+
+        Note: Prior to v4.24.14, the `argument` field in this response was only
+        present on the initial response to a request. Duplicate responses to requests
+        with the same ID would return 204, which was a bug that has since been fixed.
       content:
         application/json:
           schema:
             type: object
             example:
               argument: 4
-              _lock_priority: 50
-              _lock_expiration: 4900
     '204':
       description: Action executed [prior to v2.12.4]
     '400':

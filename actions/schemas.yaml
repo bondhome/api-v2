@@ -6,9 +6,9 @@ Actions:
 Args:
   type: object
   properties:
-    field:
-      type: string
-      example: speed
-    value:
-      type: string
-      example: 70%
+    argument:
+      type: integer
+      description: |
+        Optional argument for the action. Almost always an integer.
+        Whether this is required depends on the specific action being executed.
+      example: 4
