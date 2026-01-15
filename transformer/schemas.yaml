@@ -109,12 +109,24 @@ Transformer:
         Only present if commissioning process failed.
     commission_device_info:
       type: object
+      properties:
+        name:
+          type: "string"
+          examples:
+            - "Light 1"
+        location:
+          type: "string"
+          examples:
+            - "My Room"
+        type:
+          type: "string"
+          examples:
+            - "LT"
+        subtype:
+          type: "string"
+          examples:
+            - "GE"
       readOnly: false
-      example: 
-        name: "Light 1"
-        location: "My Room"
-        type: "LT"
-        subtype: "GE"
       description: |
         Device infos for next successfully commissioned device.
         If not fulfilled prior to `commission_mode=true` the firmware will assign default names based on the ID assigned.
