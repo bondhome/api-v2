@@ -107,4 +107,15 @@ Transformer:
         Brief user-readable message 
 
         Only present if commissioning process failed.
-
+    commission_device_info:
+    type: object
+      readOnly: false
+      example: 
+        name: "Light 1"
+        location: "My Room"
+        type: "LT"
+        subtype: "GE"
+      description: |
+        Device infos for next successfully commissioned device.
+        If not fulfilled prior to `commission_mode=true` the firmware will assign default names based on the ID assigned.
+        After successfully new device is commissioned, the `commission_device_info` will be reset.
