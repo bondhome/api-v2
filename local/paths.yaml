@@ -117,6 +117,8 @@
   $ref: ../sys/paths.yaml#/PowerPath
 /v2/sys/indicate:
   $ref: ../sys/indicate.yaml#/IndicatePath
+/v2/sys/vitals:
+  $ref: ../sys/vitals.yaml#/VitalsPath
 /v2/sys/backup:
   get:
     $ref: ../firmware/paths.yaml#/BackupGet
