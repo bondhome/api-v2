@@ -112,18 +112,54 @@ Transformer:
       properties:
         name:
           type: string
-          example: "Light 1"
+          example: "My Fixture 2"
+          description: |
+            Name for the next commissioned device.
+
+            - If set via PATCH, this custom name will be used
+            - If not set, defaults to "My Fixture {N}" where N is the next available device slot (1-60)
+            - After successful commissioning, this field resets to the default pattern
         location:
           type: string
           example: "My Room"
+          description: |
+            Location for the next commissioned device.
+
+            - If set via PATCH, this custom location will be used
+            - If not set, defaults to "My Room"
         type:
           type: string
           example: "LT"
+          description: |
+            Device type code for the next commissioned device.
+
+            - Only "LT" type is supported for transformers
         subtype:
           type: string
           example: "GE"
+          description: |
+            Device subtype code for the next commissioned device.
+
+            - If set via PATCH, this custom subtype will be used
+            - If not set, defaults to "GE" (Generic)
       readOnly: false
       description: |
-        Device infos for next successfully commissioned device.
-        If not fulfilled prior to `commission_mode=true` the firmware will assign default names based on the ID assigned.
-        After successfully new device is commissioned, the `commission_device_info` will be reset.
+        Metadata for the next device to be commissioned. These values can be pre-set
+        via PATCH to customize the new device before commissioning, or left unset to
+        use intelligent defaults.
+
+        **Dynamic Default Behavior:**
+
+        - `name`: Defaults to "My Fixture {N}" where N is the next available device slot
+          - Example: If devices 1, 3, 4 exist, the default name will be "My Fixture 2"
+          - This ensures unique, predictable device names during commissioning
+        - `location`: Defaults to "My Room"
+        - `type`: Defaults to "LT" (Light)
+        - `subtype`: Defaults to "GE" (Generic)
+
+        **Workflow:**
+
+        1. GET /v2/transformer to see current default values (including next slot number)
+        2. Optionally PATCH /v2/transformer with custom commission_device_info
+        3. PATCH commission_mode=true to start commissioning
+        4. After commissioning succeeds, commission_device_info resets to defaults
