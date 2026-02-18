@@ -69,6 +69,16 @@ Transformer:
         - `overload_warning`: Approaching current limit (soft warning)
         - `overload_shutdown`: Over current limit, taps have shut down
         - `overload_short`: Hard fault detected (likely short circuit)
+    fault_reset:
+      type: boolean
+      example: false
+      description: |
+        Write-only field to clear a latched fault condition.
+
+        Set to `true` via PATCH to reset a fault (overload_shutdown or overload_short).
+        Returns 400 if no resettable fault is active.
+
+        Always returns `false` in GET responses.
     commission_mode:
       type: boolean
       example: false

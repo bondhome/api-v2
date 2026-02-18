@@ -59,6 +59,7 @@ patch:
     - `commission_mode`: Enable/disable commissioning mode
     - `commission_timeout_ms`: Commissioning auto-expire duration
     - `auto_detect_start`: Trigger fixture auto-detection (set to true)
+    - `fault_reset`: Clear a latched fault (set to true). Returns 400 if no fault active.
 
     **Important notes:**
 
@@ -69,6 +70,9 @@ patch:
     - Setting `auto_detect_start` to `true` requires `commission_mode` to be `true`
     - Auto-detection results appear in read-only fields `detected_capability`
       and `detected_current_ma`
+    - During an active fault (overload_shutdown or overload_short), changes to
+      `tap_mode` and `commission_mode` are rejected with a 500 error. Reset the
+      fault first using `fault_reset`.
 
     All read-only fields are ignored if included in the PATCH request.
   tags:
