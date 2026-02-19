@@ -43,6 +43,16 @@ Transformer:
         Current total current draw across all taps in milliamps.
         Updated continuously during operation.
         Null in the case of failure to communicate with the current sensor
+    power_w:
+      type: integer
+      nullable: true
+      readOnly: true
+      example: 76
+      description: |
+        Live active power draw in watts.
+        Updated continuously from the BL0942 energy metering IC (~500ms).
+        Returns 0 when all taps are off or no load is present.
+        Null in the case of failure to communicate with the current sensor.
     cur_limit_warning_ma:
       type: integer
       example: 5000
@@ -69,6 +79,18 @@ Transformer:
         - `overload_warning`: Approaching current limit (soft warning)
         - `overload_shutdown`: Over current limit, taps have shut down
         - `overload_short`: Hard fault detected (likely short circuit)
+    fault_power_w:
+      type: integer
+      nullable: true
+      readOnly: true
+      example: 310
+      description: |
+        Power draw in watts at the moment a latched fault occurred.
+
+        - `null` when no latched fault is active (including during overload_warning)
+        - Set when fault transitions to `overload_shutdown` or `overload_short`
+        - Persists even after current drops (fault is latched)
+        - Cleared when fault is reset via `fault_reset` or physical button
     fault_reset:
       type: boolean
       example: false
