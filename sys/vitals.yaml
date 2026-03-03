@@ -1,6 +1,8 @@
 VitalsPath:
   get:
     $ref: '#/VitalsGet'
+  delete:
+    $ref: '#/VitalsDelete'
 
 VitalsGet:
   responses:
@@ -25,6 +27,25 @@ VitalsGet:
 
     These statistics persist across reboots and factory resets, serving as an "odometer"
     for the product. Zero-valued fields are omitted from the response.
+  tags:
+  - Vitals
+
+VitalsDelete:
+  responses:
+    '204':
+      description: Vitals reset
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Reset device lifetime statistics
+  description: |
+    [Mate Pro (MT-1500) only] [v4.28+]
+
+    Resets all vitals counters to zero and sets timestamps to current time.
+    The reset is persisted immediately.
   tags:
   - Vitals
 
@@ -61,9 +82,9 @@ VitalsSchema:
       type: object
       description: Boot/reset counters by cause.
       properties:
-        total:
+        other:
           type: integer
-          description: Total boots from all causes.
+          description: Other/unclassified boot reasons.
         wdt:
           type: integer
           description: Watchdog timer resets (firmware hang or deadlock).
@@ -86,13 +107,10 @@ VitalsSchema:
       type: object
       description: User action counters (transmissions).
       properties:
-        total:
-          type: integer
-          description: Total actions from all sources.
         btn:
           type: integer
           description: Single-channel button press actions.
-        btn_all:
+        btn_ch00:
           type: integer
           description: All-channel (channel 0) button press actions.
         sked:
@@ -124,22 +142,44 @@ VitalsSchema:
     wipes:
       type: integer
       description: Factory reset count. Persists across resets.
-    powertime_s:
+    seconds:
       type: integer
       description: |
         Total powered time in seconds. Serves as an odometer for the device.
         Updated before each deep sleep cycle.
+    sleep_s:
+      type: integer
+      description: |
+        Total sleep time in seconds. Cumulative time in deep sleep as measured
+        by RTC compensation. Compare with seconds (powered time) to assess
+        sleep health.
+    timestamp_first:
+      type: number
+      description: Unix timestamp when the vitals record was created or last reset.
+    timestamp_last:
+      type: number
+      description: Unix timestamp of the last vitals save (updated before each deep sleep).
   example:
     wakes:
       acc: 142
       acc_spurious: 8
       btn: 87
     boots:
-      total: 5
+      other: 1
       powercycle: 3
       api: 2
     actions:
-      total: 312
       btn: 298
-      btn_all: 14
-    powertime_s: 86400
+      btn_ch00: 14
+      sked: 7
+    display_s:
+      high: 3600
+      low: 7200
+    ble:
+      conns: 42
+      conn_s: 1800
+    wipes: 1
+    seconds: 86400
+    sleep_s: 72000
+    timestamp_first: 1709510400
+    timestamp_last: 1709596800
