@@ -1,0 +1,185 @@
+VitalsPath:
+  get:
+    $ref: '#/VitalsGet'
+  delete:
+    $ref: '#/VitalsDelete'
+
+VitalsGet:
+  responses:
+    '200':
+      description: Device vitals
+      content:
+        application/json:
+          schema:
+            $ref: '#/VitalsSchema'
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Get device lifetime statistics
+  description: |
+    [Mate Pro (MT-1500) only] [v4.28+]
+
+    Returns lifetime statistics for the device including wake sources, boot reasons,
+    user actions, display time, BLE connections, factory wipes, and total powered time.
+
+    These statistics persist across reboots and factory resets, serving as an "odometer"
+    for the product. Zero-valued fields are omitted from the response.
+  tags:
+  - Vitals
+
+VitalsDelete:
+  responses:
+    '204':
+      description: Vitals reset
+    '401':
+      $ref: ../common/responses.yaml#/Unauthorized
+    '404':
+      $ref: ../common/responses.yaml#/NotFound
+    '500':
+      $ref: ../common/responses.yaml#/InternalServerError
+  summary: Reset device lifetime statistics
+  description: |
+    [Mate Pro (MT-1500) only] [v4.28+]
+
+    Resets all vitals counters to zero and sets timestamps to current time.
+    The reset is persisted immediately.
+  tags:
+  - Vitals
+
+VitalsSchema:
+  type: object
+  description: |
+    Device lifetime statistics. All counters are cumulative since first power-on
+    and persist across factory resets. Zero-valued fields are omitted.
+  properties:
+    wakes:
+      type: object
+      description: Wake source counters (from deep sleep).
+      properties:
+        acc:
+          type: integer
+          description: |
+            Accelerometer wake-ups followed by user interaction.
+            Indicates the user picked up or moved the device and then used it.
+        acc_spurious:
+          type: integer
+          description: |
+            Accelerometer wake-ups with no subsequent interaction.
+            High counts suggest accelerometer sensitivity is too high.
+        sked:
+          type: integer
+          description: Schedule or RTC alarm wake-ups.
+        btn:
+          type: integer
+          description: Button press wake-ups.
+        ble:
+          type: integer
+          description: BLE connection-initiated wake-ups.
+    boots:
+      type: object
+      description: Boot/reset counters by cause.
+      properties:
+        other:
+          type: integer
+          description: Other/unclassified boot reasons.
+        wdt:
+          type: integer
+          description: Watchdog timer resets (firmware hang or deadlock).
+        hardfault:
+          type: integer
+          description: Hard fault resets (CPU exception).
+        powercycle:
+          type: integer
+          description: Cold power cycle boots.
+        bor:
+          type: integer
+          description: Brown-out resets (low voltage).
+        menu:
+          type: integer
+          description: User-initiated reboots via on-device menu.
+        api:
+          type: integer
+          description: API-triggered reboots (sys/reboot).
+    actions:
+      type: object
+      description: User action counters (transmissions).
+      properties:
+        btn:
+          type: integer
+          description: Single-channel button press actions.
+        btn_ch00:
+          type: integer
+          description: All-channel (channel 0) button press actions.
+        sked:
+          type: integer
+          description: Schedule-triggered actions.
+        api:
+          type: integer
+          description: API-triggered actions.
+    display_s:
+      type: object
+      description: Display-on time in seconds by brightness level.
+      properties:
+        high:
+          type: integer
+          description: Seconds at high brightness (outdoor conditions).
+        low:
+          type: integer
+          description: Seconds at low brightness (indoor conditions).
+    ble:
+      type: object
+      description: BLE connection statistics.
+      properties:
+        conns:
+          type: integer
+          description: Total BLE connection count.
+        conn_s:
+          type: integer
+          description: Total BLE connected time in seconds.
+    wipes:
+      type: integer
+      description: Factory reset count. Persists across resets.
+    seconds:
+      type: integer
+      description: |
+        Total powered time in seconds. Serves as an odometer for the device.
+        Updated before each deep sleep cycle.
+    sleep_s:
+      type: integer
+      description: |
+        Total sleep time in seconds. Cumulative time in deep sleep as measured
+        by RTC compensation. Compare with seconds (powered time) to assess
+        sleep health.
+    timestamp_first:
+      type: number
+      description: Unix timestamp when the vitals record was created or last reset.
+    timestamp_last:
+      type: number
+      description: Unix timestamp of the last vitals save (updated before each deep sleep).
+  example:
+    wakes:
+      acc: 142
+      acc_spurious: 8
+      btn: 87
+    boots:
+      other: 1
+      powercycle: 3
+      api: 2
+    actions:
+      btn: 298
+      btn_ch00: 14
+      sked: 7
+    display_s:
+      high: 3600
+      low: 7200
+    ble:
+      conns: 42
+      conn_s: 1800
+    wipes: 1
+    seconds: 86400
+    sleep_s: 72000
+    timestamp_first: 1709510400
+    timestamp_last: 1709596800

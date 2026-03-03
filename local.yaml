@@ -91,6 +91,7 @@ x-tagGroups:
       - Power
       - Locale
       - Indicate
+      - Vitals
   - name: Debug
     tags:
       - Database
