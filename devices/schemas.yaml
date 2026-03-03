@@ -7,8 +7,10 @@ Device:
       description: |
         - `CF` : Ceiling Fan
         - `FP` : Fireplace
+        - `HT` : Heater
         - `MS` : Motorized Window Coverings (Shades, Screens, Drapes) and Awnings
         - `GX` : Generic device
+        - `SW` : Smart Switch
         - `LT` : Light
         - `BD` : Bidet
 
