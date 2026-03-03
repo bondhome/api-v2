@@ -1321,6 +1321,9 @@ description: |
   The Color feature requires the Light and Brightness features.
   The ColorTemp is optionally also available at the same time as Color.
 
+  [Changed in v4.29] The `SetRGB`, `SetRGBW` actions and `rgb`, `rgbw` state variables
+  have been removed. Integrators should use `SetHSV` and the `hsv` state variable instead.
+
   Whenever `SetBrightness` or other brightness-changing actions are called,
   HSV value is updated to reflect the change. The `v` component of HSV
   is always equal to `brightness`.
