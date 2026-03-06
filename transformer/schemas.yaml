@@ -1,0 +1,201 @@
+Transformer:
+  properties:
+    name:
+      type: string
+      example: "Front Yard Transformer"
+      description: User-assigned name for the transformer
+    location:
+      type: string
+      example: "Outdoor"
+      description: User-assigned location
+    tap_mode:
+      type: array
+      items:
+        type: string
+        enum: ["legacy", "plc"]
+      minItems: 3
+      maxItems: 3
+      example: ["plc", "plc", "legacy"]
+      description: |
+        Mode configuration for each of the 3 output taps (indices 0-2).
+
+        - `legacy`: Relay-switched on/off for traditional landscape fixtures
+        - `plc`: Constant power with PLC commands for smart addressable fixtures
+
+        Note: If any PLC fixtures are commissioned, at least one tap must be set to `plc` mode.
+    fixture_count:
+      type: integer
+      readOnly: true
+      example: 12
+      description: |
+        Number of currently commissioned PLC fixtures (range 0-60).
+        This count represents fixtures that have been assigned addresses.
+    fixture_max:
+      type: integer
+      readOnly: true
+      example: 60
+      description: Maximum number of PLC fixtures supported by this transformer
+    current_ma:
+      type: integer or null
+      readOnly: true
+      example: 2400
+      description: |
+        Current total current draw across all taps in milliamps.
+        Updated continuously during operation.
+        Null in the case of failure to communicate with the current sensor
+    power_w:
+      type: integer
+      nullable: true
+      readOnly: true
+      example: 76
+      description: |
+        Live active power draw in watts.
+        Updated continuously from the BL0942 energy metering IC (~500ms).
+        Returns 0 when all taps are off or no load is present.
+        Null in the case of failure to communicate with the current sensor.
+    cur_limit_warning_ma:
+      type: integer
+      example: 5000
+      description: |
+        Soft current limit threshold in milliamps.
+        When exceeded, fault status changes to "overload_warning" as a warning.
+        System continues to operate.
+    cur_limit_shutdown_ma:
+      type: integer
+      example: 6000
+      description: |
+        Hard current limit threshold in milliamps.
+        When exceeded, taps shut down and fault status changes to "overload_shutdown".
+    fault:
+      type: string
+      nullable: true
+      readOnly: true
+      enum: [null, "overload_warning", "overload_shutdown", "overload_short"]
+      example: null
+      description: |
+        Current fault condition:
+
+        - `null`: No fault, normal operation
+        - `overload_warning`: Approaching current limit (soft warning)
+        - `overload_shutdown`: Over current limit, taps have shut down
+        - `overload_short`: Hard fault detected (likely short circuit)
+    fault_power_w:
+      type: integer
+      nullable: true
+      readOnly: true
+      example: 310
+      description: |
+        Power draw in watts at the moment a latched fault occurred.
+
+        - `null` when no latched fault is active (including during overload_warning)
+        - Set when fault transitions to `overload_shutdown` or `overload_short`
+        - Persists even after current drops (fault is latched)
+        - Cleared when fault is reset via `fault_reset` or physical button
+    fault_reset:
+      type: boolean
+      example: false
+      description: |
+        Write-only field to clear a latched fault condition.
+
+        Set to `true` via PATCH to reset a fault (overload_shutdown or overload_short).
+        Returns 400 if no resettable fault is active.
+
+        Always returns `false` in GET responses.
+    commission_mode:
+      type: boolean
+      example: false
+      description: |
+        Commissioning mode state. When set to `true`:
+
+        - Commissioning port is energized
+        - All other taps are shut off for safety
+        - Mode auto-expires after `commission_timeout_ms`
+
+        Used during fixture pairing and testing workflow.
+    commission_remaining_ms:
+      type: integer
+      readOnly: true
+      example: 30000
+      description: |
+        Milliseconds remaining before commission_mode automatically disables.
+        Returns 0 when commission_mode is false.
+    commission_device_id:
+      type: string
+      nullable: true
+      readOnly: true
+      example: "0000000d"
+      description: |
+        Device ID (hex string) of newly created PLC fixture.
+        Null on error.
+
+        App can then test fixture by using /v2/devices/{commission_device_id}
+
+        Present whenever commission_mode is false.
+    commission_error_msg:
+      type: string
+      readOnly: true
+      example: No fixture detected
+      description: |
+        Brief user-readable message 
+
+        Only present if commissioning process failed.
+    commission_device_info:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "My Fixture 2"
+          description: |
+            Name for the next commissioned device.
+
+            - If set via PATCH, this custom name will be used
+            - If not set, defaults to "My Fixture {N}" where N is the next available device slot (1-60)
+            - After successful commissioning, this field resets to the default pattern
+        location:
+          type: string
+          example: "My Room"
+          description: |
+            Location for the next commissioned device.
+
+            - If set via PATCH, this custom location will be used
+            - If not set, defaults to "My Room"
+        type:
+          type: string
+          example: "LT"
+          description: |
+            Device type code for the next commissioned device.
+
+            - Only "LT" type is supported for transformers
+        subtype:
+          type: string
+          example: "GE"
+          description: |
+            Device subtype code for the next commissioned device.
+
+            - If set via PATCH, this custom subtype will be used
+            - If not set, defaults to "GE" (Generic)
+      readOnly: false
+      description: |
+        Metadata for the next device to be commissioned. These values can be pre-set
+        via PATCH to customize the new device before commissioning, or left unset to
+        use intelligent defaults.
+
+        **Dynamic Default Behavior:**
+
+        - `name`: Defaults to "My Fixture {N}" where N is the next available device slot
+          - Example: If devices 1, 3, 4 exist, the default name will be "My Fixture 2"
+          - This ensures unique, predictable device names during commissioning
+        - `location`: Defaults to "My Room"
+        - `type`: Defaults to "LT" (Light)
+        - `subtype`: Defaults to "GE" (Generic)
+
+        **Workflow:**
+
+        1. GET /v2/transformer to see current default values (including next slot number)
+        2. Optionally PATCH /v2/transformer with custom commission_device_info
+        3. PATCH commission_mode=true to start commissioning
+        4. After commissioning succeeds, commission_device_info resets to defaults
+
+        **Note:** Commissioned PLC fixtures expose a `fixture_address` string property ("1"-"60")
+        at `/v2/devices/{device_id}/properties`. This address uniquely identifies the fixture
+        on the PLC bus.
