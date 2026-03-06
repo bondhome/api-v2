@@ -120,13 +120,13 @@ Transformer:
         Milliseconds remaining before commission_mode automatically disables.
         Returns 0 when commission_mode is false.
     commission_device_id:
-      type: integer
+      type: string
+      nullable: true
       readOnly: true
-      example: 13
+      example: "0000000d"
       description: |
-        Device ID of newly created PLC fixture.
-        Range: 1-60
-        Error: -1
+        Device ID (hex string) of newly created PLC fixture.
+        Null on error.
 
         App can then test fixture by using /v2/devices/{commission_device_id}
 
@@ -195,3 +195,7 @@ Transformer:
         2. Optionally PATCH /v2/transformer with custom commission_device_info
         3. PATCH commission_mode=true to start commissioning
         4. After commissioning succeeds, commission_device_info resets to defaults
+
+        **Note:** Commissioned PLC fixtures expose a `fixture_address` string property ("1"-"60")
+        at `/v2/devices/{device_id}/properties`. This address uniquely identifies the fixture
+        on the PLC bus.
