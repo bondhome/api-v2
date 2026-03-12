@@ -85,6 +85,11 @@ Version:
         Symbol used for looking up a customized branded experience.
         This is not nessisarily an appropriate representation of the product's
         brand name, because this is not nessisarly known at manufacturing time.
+    mac:
+      example: "f4:4e:38:3a:b1:24"
+      type: string
+      description: |
+        Base MAC address of the device, as a lowercase colon-separated hex string.
     model:
       example: "BD-1000"
       type: string
